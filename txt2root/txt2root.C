@@ -12,7 +12,6 @@ enum workmode{
 } m_workmode;
 char m_intput_file[128];
 char m_output_file[128];
-/* end of arguments */
 
 void init_args()
 {
@@ -20,6 +19,26 @@ void init_args()
 	strcpy(m_intput_file, "input.txt");
 	strcpy(m_output_file, "output.root");
 }
+/* end of arguments */
+
+/* begin of functions */
+int txt_to_root(const char* input_file, const char* output_file){
+	fprintf(stderr,"This is txt_to_root!\n");
+	return 0;
+}
+int bin_to_root(const char* input_file, const char* output_file){
+	fprintf(stderr,"This is bin_to_root!\n");
+	return 0;
+}
+int txt_to_bin(const char* input_file, const char* output_file){
+	fprintf(stderr,"This is txt_to_bin!\n");
+	return 0;
+}
+int bin_to_txt(const char* input_file, const char* output_file){
+	fprintf(stderr,"This is bin_to_txt!\n");
+	return 0;
+}
+/* end of functions */
 
 void print_usage(char* prog_name)
 {
@@ -47,7 +66,7 @@ void print_usage(char* prog_name)
 	fprintf(stderr,"\t(3) Generate a binary file called output.bin from input.txt\n");
 	fprintf(stderr,"\t\t%s -T -i input.txt -o output.bin\n",prog_name);
 	fprintf(stderr,"\t(4) Generate a text file called output.text from input.bin\n");
-	fprintf(stderr,"\t\t%s -B -i input.bin -o output.text\n",prog_name);
+	fprintf(stderr,"\t\t%s -B -i input.bin -o output.txt\n",prog_name);
 }
 
 int main(int argc, char** argv){
@@ -91,8 +110,26 @@ int main(int argc, char** argv){
 			case 'h':
 			default:
 				print_usage(argv[0]);
-				exit(1);
+				return 1;
 		}
+	}
+
+	switch(m_workmode){
+		case txt2root:
+			txt_to_root(m_intput_file,m_output_file);
+			break;
+		case bin2root:
+			bin_to_root(m_intput_file,m_output_file);
+			break;
+		case txt2bin:
+			txt_to_bin(m_intput_file,m_output_file);
+			break;
+		case bin2txt:
+			bin_to_txt(m_intput_file,m_output_file);
+			break;
+		default:
+			printf("Cannot recognize work mode \"%i\"",m_workmode);
+			return 1;
 	}
 
 	return 0;

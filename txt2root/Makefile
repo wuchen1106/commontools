@@ -39,7 +39,7 @@ $(PROGRAM): $(OBJ) $(PROGRAM).C
 .PHONY: clean
 clean:
 	$(RM) $(OBJ)
-	$(RM) $(PROGRAM)
+	$(RM) $(MYBIN)/$(PROGRAM)
 
 .PHONY: all
 all: $(PROGRAM)
