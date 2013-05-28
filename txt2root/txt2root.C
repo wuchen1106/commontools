@@ -24,18 +24,50 @@ void init_args()
 /* begin of functions */
 int txt_to_root(const char* input_file, const char* output_file){
 	fprintf(stderr,"This is txt_to_root!\n");
+	FILE* fpi = 0;
+	fpi = fopen(input_file,"r");
+	if ( !fpi ){
+		fprintf(stderr,"Cannot open file \"%s\"!!!\n",input_file);
+		return -1;
+	}
+	FILE* fpo = 0;
+	fpo = fopen(input_file,"w");
 	return 0;
 }
 int bin_to_root(const char* input_file, const char* output_file){
 	fprintf(stderr,"This is bin_to_root!\n");
+	FILE* fpi = 0;
+	fpi = fopen(input_file,"r");
+	if ( !fpi ){
+		fprintf(stderr,"Cannot open file \"%s\"!!!\n",input_file);
+		return -1;
+	}
+	FILE* fpo = 0;
+	fpo = fopen(input_file,"w");
 	return 0;
 }
 int txt_to_bin(const char* input_file, const char* output_file){
 	fprintf(stderr,"This is txt_to_bin!\n");
+	FILE* fpi = 0;
+	fpi = fopen(input_file,"r");
+	if ( !fpi ){
+		fprintf(stderr,"Cannot open file \"%s\"!!!\n",input_file);
+		return -1;
+	}
+	FILE* fpo = 0;
+	fpo = fopen(input_file,"w");
 	return 0;
 }
 int bin_to_txt(const char* input_file, const char* output_file){
 	fprintf(stderr,"This is bin_to_txt!\n");
+	FILE* fpi = 0;
+	fpi = fopen(input_file,"r");
+	if ( !fpi ){
+		fprintf(stderr,"Cannot open file \"%s\"!!!\n",input_file);
+		return -1;
+	}
+	FILE* fpo = 0;
+	fpo = fopen(input_file,"w");
 	return 0;
 }
 /* end of functions */
@@ -116,16 +148,40 @@ int main(int argc, char** argv){
 
 	switch(m_workmode){
 		case txt2root:
-			txt_to_root(m_intput_file,m_output_file);
+			if (!txt_to_root(m_intput_file,m_output_file)){
+				fprintf(stderr,"Successfully translated \"%s\" from text type to root file \"%s\"!\n",m_intput_file,m_output_file);
+			}
+			else{
+				fprintf(stderr,"Error when translating \"%s\" from text type to root file \"%s\"!\n",m_intput_file,m_output_file);
+				return -1;
+			}
 			break;
 		case bin2root:
-			bin_to_root(m_intput_file,m_output_file);
+			if (!bin_to_root(m_intput_file,m_output_file)){
+				fprintf(stderr,"Successfully translated \"%s\" from binary type to root file \"%s\"!\n",m_intput_file,m_output_file);
+			}
+			else{
+				fprintf(stderr,"Error when translating \"%s\" from binary type to root file \"%s\"!\n",m_intput_file,m_output_file);
+				return -1;
+			}
 			break;
 		case txt2bin:
-			txt_to_bin(m_intput_file,m_output_file);
+			if (!txt_to_bin(m_intput_file,m_output_file)){
+				fprintf(stderr,"Successfully translated \"%s\" from text type to binary file \"%s\"!\n",m_intput_file,m_output_file);
+			}
+			else{
+				fprintf(stderr,"Error when translating \"%s\" from text type to binary file \"%s\"!\n",m_intput_file,m_output_file);
+				return -1;
+			}
 			break;
 		case bin2txt:
-			bin_to_txt(m_intput_file,m_output_file);
+			if (!bin_to_txt(m_intput_file,m_output_file)){
+				fprintf(stderr,"Successfully translated \"%s\" from binary type to text file \"%s\"!\n",m_intput_file,m_output_file);
+			}
+			else{
+				fprintf(stderr,"Error when translating \"%s\" from binary type to text file \"%s\"!\n",m_intput_file,m_output_file);
+				return -1;
+			}
 			break;
 		default:
 			printf("Cannot recognize work mode \"%i\"",m_workmode);
