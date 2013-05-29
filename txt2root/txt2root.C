@@ -26,14 +26,14 @@ void init_args()
 
 /* begin of functions */
 int get_names(const char* line, char** names, int *inames){
-	fprintf(stderr,"This is get_names! First line is:\n%s\n",line);
+//	fprintf(stderr,"This is get_names! First line is:\n%s\n",line);
 	*inames = 0;
 	int count = 0;
 	bool isC = false;
 	int ic = -1;
 	while(ic++<100){
 		char c = line[ic];
-		fprintf(stderr,"c[%d]=%c\n",ic,c);
+//		fprintf(stderr,"c[%d]=%c\n",ic,c);
 		if ( c == ' ' || c == '\t' ){
 			if ( isC ){
 				(*inames)++;
@@ -57,7 +57,7 @@ int get_names(const char* line, char** names, int *inames){
 		}
 	}
 	for ( int i = 0; i < *inames; i++ ){
-		fprintf(stderr,"name[%d]:%s\n",i,names[i]);
+//		fprintf(stderr,"name[%d]:%s\n",i,names[i]);
 	}
 	return 0;
 }
@@ -92,7 +92,7 @@ int txt_to_root(const char* input_file, const char* output_file){
 	int count = 0;
 	int iline = 1;
 	while(1==fscanf(fpi,"%lf",&values[count])){
-		fprintf(stderr,"values[%d]=%lf\n",count,values[count]);
+//		fprintf(stderr,"values[%d]=%lf\n",count,values[count]);
 		count++;
 		if ( count == inames ){
 			count = 0;
