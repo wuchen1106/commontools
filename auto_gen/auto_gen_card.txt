@@ -1,0 +1,161 @@
+//
+//This package is designed by Wu Chen <wuchen@ihep.ac.cn>
+//
+//This is a card aiming to telling auto_gen_factory.sh what to do
+//
+//Here are some notes for you to use this card:
+//1, "auto_gen_factory.sh" will only analyse content within a pair of markers
+//   with a form of "auto_gen_marker_*".
+//2, "auto_gen_factory.sh" will neglect lines starts with "#" and lines with 
+//   nothing but blanks inside. Other lines will be dealed with in a strict way. 
+//   So keep them in correct form, otherwise things unforeseen will happen.
+//3, to be continued...
+//
+
+//
+//auto_gen_preset
+
+func_1_tuple: yes
+func_2_svc:   yes
+func_3_property:   yes
+
+//auto_gen_preset
+//
+
+//
+//auto_gen_tuple
+
+Tuple Event
+Item int runNo STEP: 1 VALUE: ptr_EventHeader -> eventNumber()
+Item int evtNo STEP: 1 VALUE: ptr_EventHeader -> runNumber()
+Item double Kp_Kal_px STEP: 1 VALUE: vec_goodCharged[0] -> mdcKalTrack() -> px()
+Item double Kp_Kal_py STEP: 1 VALUE: vec_goodCharged[0] -> mdcKalTrack() -> py()
+Item double Kp_Kal_pz STEP: 1 VALUE: vec_goodCharged[0] -> mdcKalTrack() -> pz()
+Item double Km_Kal_px STEP: 1 VALUE: vec_goodCharged[1] -> mdcKalTrack() -> px()
+Item double Km_Kal_py STEP: 1 VALUE: vec_goodCharged[1] -> mdcKalTrack() -> py()
+Item double Km_Kal_pz STEP: 1 VALUE: vec_goodCharged[1] -> mdcKalTrack() -> pz()
+Item double Kp_Kal_fit_px STEP: 1 VALUE: vLor_fit_4c_1_0.x()
+Item double Kp_Kal_fit_py STEP: 1 VALUE: vLor_fit_4c_1_0.y()
+Item double Kp_Kal_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_0.z()
+Item double Km_Kal_fit_px STEP: 1 VALUE: vLor_fit_4c_1_1.x()
+Item double Km_Kal_fit_py STEP: 1 VALUE: vLor_fit_4c_1_1.y()
+Item double Km_Kal_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_1.z()
+Item double pi01g1_x STEP: 1 VALUE: vec_bestCandi[0] -> x()
+Item double pi01g1_y STEP: 1 VALUE: vec_bestCandi[0] -> y()
+Item double pi01g1_z STEP: 1 VALUE: vec_bestCandi[0] -> z()
+Item double pi01g1_e STEP: 1 VALUE: vec_bestCandi[0] -> energy()
+Item double pi01g2_x STEP: 1 VALUE: vec_bestCandi[1] -> x()
+Item double pi01g2_y STEP: 1 VALUE: vec_bestCandi[1] -> y()
+Item double pi01g2_z STEP: 1 VALUE: vec_bestCandi[1] -> z()
+Item double pi01g2_e STEP: 1 VALUE: vec_bestCandi[1] -> energy()
+Item double pi02g1_x STEP: 1 VALUE: vec_bestCandi[2] -> x()
+Item double pi02g1_y STEP: 1 VALUE: vec_bestCandi[2] -> y()
+Item double pi02g1_z STEP: 1 VALUE: vec_bestCandi[2] -> z()
+Item double pi02g1_e STEP: 1 VALUE: vec_bestCandi[2] -> energy()
+Item double pi02g2_x STEP: 1 VALUE: vec_bestCandi[3] -> x()
+Item double pi02g2_y STEP: 1 VALUE: vec_bestCandi[3] -> y()
+Item double pi02g2_z STEP: 1 VALUE: vec_bestCandi[3] -> z()
+Item double pi02g2_e STEP: 1 VALUE: vec_bestCandi[3] -> energy()
+Item double pi03g1_x STEP: 1 VALUE: vec_bestCandi[4] -> x()
+Item double pi03g1_y STEP: 1 VALUE: vec_bestCandi[4] -> y()
+Item double pi03g1_z STEP: 1 VALUE: vec_bestCandi[4] -> z()
+Item double pi03g1_e STEP: 1 VALUE: vec_bestCandi[4] -> energy()
+Item double pi03g2_x STEP: 1 VALUE: vec_bestCandi[5] -> x()
+Item double pi03g2_y STEP: 1 VALUE: vec_bestCandi[5] -> y()
+Item double pi03g2_z STEP: 1 VALUE: vec_bestCandi[5] -> z()
+Item double pi03g2_e STEP: 1 VALUE: vec_bestCandi[5] -> energy()
+Item double pi04g1_x STEP: 1 VALUE: vec_bestCandi[6] -> x()
+Item double pi04g1_y STEP: 1 VALUE: vec_bestCandi[6] -> y()
+Item double pi04g1_z STEP: 1 VALUE: vec_bestCandi[6] -> z()
+Item double pi04g1_e STEP: 1 VALUE: vec_bestCandi[6] -> energy()
+Item double pi04g2_x STEP: 1 VALUE: vec_bestCandi[7] -> x()
+Item double pi04g2_y STEP: 1 VALUE: vec_bestCandi[7] -> y()
+Item double pi04g2_z STEP: 1 VALUE: vec_bestCandi[7] -> z()
+Item double pi04g2_e STEP: 1 VALUE: vec_bestCandi[7] -> energy()
+Item double pi01g1_fit_px STEP: 1 VALUE: vLor_fit_4c_1_2.px()
+Item double pi01g1_fit_py STEP: 1 VALUE: vLor_fit_4c_1_2.py()
+Item double pi01g1_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_2.pz()
+Item double pi01g1_fit_pe STEP: 1 VALUE: vLor_fit_4c_1_2.e()
+Item double pi01g2_fit_px STEP: 1 VALUE: vLor_fit_4c_1_3.px()
+Item double pi01g2_fit_py STEP: 1 VALUE: vLor_fit_4c_1_3.py()
+Item double pi01g2_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_3.pz()
+Item double pi01g2_fit_pe STEP: 1 VALUE: vLor_fit_4c_1_3.e()
+Item double pi02g1_fit_px STEP: 1 VALUE: vLor_fit_4c_1_4.px()
+Item double pi02g1_fit_py STEP: 1 VALUE: vLor_fit_4c_1_4.py()
+Item double pi02g1_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_4.pz()
+Item double pi02g1_fit_pe STEP: 1 VALUE: vLor_fit_4c_1_4.e()
+Item double pi02g2_fit_px STEP: 1 VALUE: vLor_fit_4c_1_5.px()
+Item double pi02g2_fit_py STEP: 1 VALUE: vLor_fit_4c_1_5.py()
+Item double pi02g2_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_5.pz()
+Item double pi02g2_fit_pe STEP: 1 VALUE: vLor_fit_4c_1_5.e()
+Item double pi03g1_fit_px STEP: 1 VALUE: vLor_fit_4c_1_6.px()
+Item double pi03g1_fit_py STEP: 1 VALUE: vLor_fit_4c_1_6.py()
+Item double pi03g1_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_6.pz()
+Item double pi03g1_fit_pe STEP: 1 VALUE: vLor_fit_4c_1_6.e()
+Item double pi03g2_fit_px STEP: 1 VALUE: vLor_fit_4c_1_7.px()
+Item double pi03g2_fit_py STEP: 1 VALUE: vLor_fit_4c_1_7.py()
+Item double pi03g2_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_7.pz()
+Item double pi03g2_fit_pe STEP: 1 VALUE: vLor_fit_4c_1_7.e()
+Item double pi04g1_fit_px STEP: 1 VALUE: vLor_fit_4c_1_8.px()
+Item double pi04g1_fit_py STEP: 1 VALUE: vLor_fit_4c_1_8.py()
+Item double pi04g1_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_8.pz()
+Item double pi04g1_fit_pe STEP: 1 VALUE: vLor_fit_4c_1_8.e()
+Item double pi04g2_fit_px STEP: 1 VALUE: vLor_fit_4c_1_9.px()
+Item double pi04g2_fit_py STEP: 1 VALUE: vLor_fit_4c_1_9.py()
+Item double pi04g2_fit_pz STEP: 1 VALUE: vLor_fit_4c_1_9.pz()
+Item double pi04g2_fit_pe STEP: 1 VALUE: vLor_fit_4c_1_9.e()
+Item double chi2 STEP: 1 VALUE: fit_4c_1_chisq
+Item int n_goodPhoton STEP: 1 VALUE: nGamma
+
+Tuple extraPhoton
+Item int runNo STEP: 1 VALUE: ptr_EventHeader -> eventNumber()
+Item int evtNo STEP: 1 VALUE: ptr_EventHeader -> runNumber()
+Item double x STEP: 1 VALUE: ptr_RecEmcShower -> x()
+Item double y STEP: 1 VALUE: ptr_RecEmcShower -> y()
+Item double z STEP: 1 VALUE: ptr_RecEmcShower -> z()
+Item double e STEP: 1 VALUE: ptr_RecEmcShower -> energy()
+
+
+//auto_gen_tuple
+//
+
+//
+//auto_gen_svc
+
+EventHeader
+EvtRecEvent
+EvtRecTrackCol
+
+//auto_gen_svc
+//
+
+//
+//auto_gen_fit_4c_1
+wTrk_after_0
+wTrk_after_1
+vec_bestCandi[0] 0.
+vec_bestCandi[1] 0.
+vec_bestCandi[2] 0.
+vec_bestCandi[3] 0.
+vec_bestCandi[4] 0.
+vec_bestCandi[5] 0.
+vec_bestCandi[6] 0.
+vec_bestCandi[7] 0.
+//auto_gen_fit_4c_1
+//
+
+//
+//auto_gen_property
+double    ver_xy                 10.0
+double    ver_z                  1.0
+double    energy_barrel          0.05
+double    energy_endcap          0.025
+double    cosTheta_barrel        0.8
+double    cosTheta_endcap_d      0.86
+double    cosTheta_endcap_u      0.92
+double    chi2_4c                200
+double    probKaon               0.01
+double    mpi0_u                 0.09
+double    mpi0_d                 0.18
+//auto_gen_property
+//

@@ -1,0 +1,6 @@
+./dojob.sh
+./dojob.sh -h
+./dojob.sh -h
+./dojob.sh -t sim -e 100 -n 1000 -s 1000 -c haha
+./dojob.sh -t sim -e 100 -n 1000 -s 1000 -c haha
+./dojob.sh -h

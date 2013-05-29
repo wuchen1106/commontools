@@ -1,0 +1,9 @@
+//
+//hist2canvas_list
+canvas: C2 1 2 300 200
+pad: 1
+TH1D test.root histo 1 Black
+pad: 2
+TH1D test.root histo 2 Black
+//hist2canvas_list
+//

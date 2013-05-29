@@ -1,0 +1,13 @@
+HepPoint3D vx( 0., 0., 0. );
+HepSymMatrix Evx( 3, 0 );
+double bx = 1E+6;
+double by = 1E+6;
+double bz = 1E+6;
+Evx[0][0] = bx * bx;
+Evx[1][1] = by * by;
+Evx[2][2] = bz * bz;
+VertexParameter vxpar;
+vxpar.setVx( vx );
+vxpar.setEvx( Evx );
+VertexFit* vtxfit = VertexFit::instance();
+vtxfit -> init();

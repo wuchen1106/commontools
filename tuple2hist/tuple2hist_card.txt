@@ -1,0 +1,57 @@
+Filename: /home/chen/workarea/Analyse/CometPhaseI/GammaStudy_103/ana_tools/Merge/output.root
+Tuplename: t , with 8786 entries inside.
+TH1:   x                        TH1D Double_t   200   -10          10
+TH1:   y                        TH1D Double_t   200   -10          10                     
+TH1:   z                        TH1D Double_t   33    -41.25          41.25
+TH1:   r                        TH1D Double_t   200   0            10         tuple2hist_FUNC 
+TH1:   kpx                       TH1D Double_t   200   -1.01          1.01
+TH1:   kpy                       TH1D Double_t   200   -1.01          1.01
+TH1:   kpz                       TH1D Double_t   200   -1.01          1.01
+TH1:   kpa                       TH1D Double_t   200   0.9         1.01        tuple2hist_FUNC 
+TH1:   kpt                       TH1D Double_t   200   0           1.01        tuple2hist_FUNC 
+TH1:   pos_phi                  TH1D Double_t   200   -3.15        3.15        tuple2hist_FUNC 
+TH1:   mom_phi                  TH1D Double_t   200   -3.15        3.15        tuple2hist_FUNC 
+TH1:   mom_theta                TH1D Double_t   200   0            3.15        tuple2hist_FUNC 
+
+//kpa
+kpx Double_t
+kpy Double_t
+kpz Double_t
+//kpa
+TVector3 v3_pa( kpx, kpy, kpz );
+kpa = v3_pa.Mag();
+//kpa
+
+//kpt
+//
+//kpt
+kpt = v3_pa.Perp();
+//kpt
+
+//mom_phi
+//
+//mom_phi
+mom_phi = v3_pa.Phi();
+//mom_phi
+
+//mom_theta
+//
+//mom_theta
+mom_theta = v3_pa.Theta();
+//mom_theta
+
+//r
+x Double_t
+y Double_t
+//r
+TVector3 v3_pos( x, y, 0 );
+r = v3_pos.Mag();
+//r
+
+//pos_phi
+//
+//pos_phi
+pos_phi = v3_pos.Phi();
+//pos_phi
+
+//Please keep this line at the bottom!

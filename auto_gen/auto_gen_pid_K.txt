@@ -1,0 +1,8 @@
+ParticleID *pid = ParticleID::instance();
+pid->init();
+pid->setMethod(pid->methodProbability());
+pid->setChiMinCut(4);
+pid->setRecTrack( ptr_EvtRecTrack );
+pid->usePidSys(pid->useDedx() | pid->useTof1() | pid->useTof2() | pid->useTofE()); 
+pid->identify(pid->onlyPion() | pid->onlyKaon() );
+pid->calculate();

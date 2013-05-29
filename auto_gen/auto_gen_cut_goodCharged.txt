@@ -1,0 +1,14 @@
+HepVector a = ptr_RecMdcTrack -> helix();
+HepSymMatrix Ea = ptr_RecMdcTrack -> err();
+HepPoint3D point0( 0., 0., 0. );   // the initial point for MDC recosntruction
+VFHelix helixip( point0, a, Ea ); 
+helixip.pivot( h3D_PrimaryVertex );
+HepVector vecipa = helixip.a();
+double ver_xy = fabs( vecipa[0] );  //the nearest distance to h3D_PrimaryVertex in xy plane
+double ver_z = vecipa[3];         //the nearest distance to h3D_PrimaryVertex in z direction
+if( fabs(ver_xy) >= m_ver_xy ){
+  continue;
+}
+if( fabs(ver_z) >= m_ver_z ){
+  continue;
+}

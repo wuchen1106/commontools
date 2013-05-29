@@ -1,0 +1,15 @@
+double emc_energy = ptr_RecEmcShower -> energy();
+double emc_absCosTheta = fabs( cos( ptr_RecEmcShower -> theta() ) );
+if ( emc_absCosTheta > m_cosTheta_endcap_d && emc_absCosTheta < m_cosTheta_endcap_u ){
+  if ( emc_energy < m_energy_endcap ){
+    continue;  
+  }
+}
+else if ( emc_absCosTheta < m_cosTheta_barrel ){
+  if ( emc_energy < m_energy_barrel ){
+    continue;  
+  }
+}
+else{
+  continue;  
+}

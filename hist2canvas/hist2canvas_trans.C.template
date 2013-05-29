@@ -1,0 +1,78 @@
+#include <iostream>
+#include <strstream>
+#include <vector>
+#include <iomanip>
+#include <string>
+#include "TFile.h"
+#include "TH1F.h"
+#include "TH2.h"
+#include "TProfile.h"
+#include "TText.h"
+#include "TList.h"
+#include "TDirectory.h"
+#include "TLegend.h"
+#include "TCanvas.h"
+#include "TKey.h"
+#include "TFolder.h"
+#include "TObject.h"
+#include "TCollection.h"
+#include "TTree.h"
+#include "TStyle.h"
+TFolder* folder2folder( TFolder*, char* );
+TFolder* file2folder( TFile*, char* );
+TObject* folder2obj( TFolder*, char* );
+int ana(){
+  //hist2canvas_part1
+  return 0;
+}
+TFolder* file2folder( TFile* myFile, char* name ){
+  TCollection* myCol = ( TCollection* ) myFile -> GetListOfKeys();
+  TObject* obj_as_key = myCol -> FindObject( name );
+  if ( obj_as_key == 0 ){
+    std::cout<<"TFolder "<<name<<" can not be found in TFile !!!"<<std::endl;
+    exit(EXIT_FAILURE);
+  }
+  TKey* myKey = dynamic_cast<TKey*> ( obj_as_key );
+  if ( myKey == NULL ){
+    std::cout<<"Cannot convert "<<name<<" to TKey!"<<std::endl;
+    exit(EXIT_FAILURE);
+  }
+  TObject* myObj = myKey -> ReadObj();
+  if ( ! myObj -> InheritsFrom("TFolder") ){
+    std::cout<<""<<name<<" in test.root is not a TFolder!"<<std::endl;
+    exit(EXIT_FAILURE);
+  }
+  TFolder* myFolder = dynamic_cast<TFolder*> ( myObj );
+  if ( myFolder == NULL ){
+    std::cout<<"Cannot convert "<<name<<" in test.root to TFolder!"<<std::endl;
+    exit(EXIT_FAILURE);
+  }
+  return ( myFolder );
+}
+TFolder* folder2folder( TFolder* myFolder, char* name ){
+  TCollection* myCol = ( TCollection* ) myFolder -> GetListOfFolders();
+  TObject* myObj = myCol -> FindObject( name );
+  if ( myObj == 0 ){
+    std::cout<<name<<" can not be found!!!"<<std::endl;
+    exit(EXIT_FAILURE);
+  }
+  if ( ! myObj -> InheritsFrom("TFolder") ){
+    std::cout<<name<<" is not a TFolder!"<<std::endl;
+    exit(EXIT_FAILURE);
+  }
+  myFolder = dynamic_cast<TFolder*> ( myObj );
+  if ( myFolder == NULL ){
+    std::cout<<"Cannot convert "<<name<<" to TFolder!"<<std::endl;
+    exit(EXIT_FAILURE);
+  }
+  return ( myFolder );
+}
+TObject* folder2obj( TFolder* myFolder, char* name ){
+  TCollection* myCol = ( TCollection* ) myFolder -> GetListOfFolders();
+  TObject* myObj = myCol -> FindObject( name );
+  if ( myObj == 0 ){
+    std::cout<<"Histogram "<<name<<" not be found!!!"<<std::endl;
+    exit(EXIT_FAILURE);
+  }
+  return ( myObj );
+}

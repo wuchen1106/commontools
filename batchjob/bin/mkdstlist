@@ -1,0 +1,94 @@
+#!/bin/bash
+
+parentpath=""
+dstfilename="dstlist"
+outputtofile="No"
+sortlist="Yes"
+
+THISCMD=$(basename $0)
+
+usages() {
+cat << EOF
+$THISCMD:  Generate dst file list
+Syntax:
+  $THISCMD [-h] [-f filename] [-o] [-a] path
+
+  -h  display this help and exit
+  -f  set file name of output
+  -o  set output to file
+  -a  do not sort file list
+
+Report bugs to <zhaoxh@ihep.ac.cn>.
+EOF
+}
+
+while getopts ':hf:oa' optname
+do
+  case "$optname" in
+    'h')
+      usages
+      exit 1
+      ;;
+    'f')
+      dstfilename="$OPTARG"
+      outputtofile="Yes"
+      ;;
+    'o')
+      outputtofile="Yes"
+      ;;
+    'a')
+      sortlist="No"
+      ;;
+    '?')
+      echo "Unknown option $OPTARG"
+      echo "Try \"$THISCMD -h\" for more infomation"
+      exit -1
+      ;;
+    ':')
+      echo "Need argument value for option $OPTARG"
+      echo "Try \"$THISCMD -h\" for more infomation"
+      exit -1
+      ;;
+    *)
+      # Should not occur
+      echo 'Unknown error while processing options'
+      exit -1
+      ;;
+  esac
+done
+
+# get path parameter
+case "$(($#+1-$OPTIND))" in
+  0)
+    echo 'Please specify a path'
+    exit -1
+    ;;
+  1)
+    parentpath="${@:$OPTIND:1}"
+    ;;
+  *)
+    echo 'Too many jobs. Only 1 job permitted'
+    exit -1
+    ;;
+esac
+
+
+if [ ! -d $parentpath ]; then
+  echo "Path $parentpath does not exist!"
+  exit -2
+fi
+
+
+find $parentpath -name "*.dst" > tmp
+
+if [ $sortlist == "Yes" ]; then
+  sort -o tmp tmp
+#  mv tmp2 tmp
+fi
+if [ $outputtofile == "Yes" ]; then
+  cp tmp $dstfilename
+else
+  cat tmp
+fi
+
+rm tmp
