@@ -23,7 +23,7 @@ void init_args()
 
 /* begin of functions */
 int get_names(const char* line, char** names, int *inames){
-	fprintf(stderr,"This is get_names!\n");
+	fprintf(stderr,"This is get_names! First line is%s\n",line);
 }
 
 int txt_to_root(const char* input_file, const char* output_file){
