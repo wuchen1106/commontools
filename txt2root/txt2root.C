@@ -22,16 +22,31 @@ void init_args()
 /* end of arguments */
 
 /* begin of functions */
+int get_names(const char* line, char** names, int *inames){
+	fprintf(stderr,"This is get_names!\n");
+}
+
 int txt_to_root(const char* input_file, const char* output_file){
 	fprintf(stderr,"This is txt_to_root!\n");
 	FILE* fpi = 0;
-	fpi = fopen(input_file,"r");
+	fpi = fopen(input_file,"r+");
 	if ( !fpi ){
 		fprintf(stderr,"Cannot open file \"%s\"!!!\n",input_file);
 		return -1;
 	}
 	FILE* fpo = 0;
-	fpo = fopen(input_file,"w");
+	fpo = fopen(output_file,"w");
+
+	char* buf = (char *)malloc(124);
+	fgets(buf,2048,fpi); // get the first line, which contains names of these column
+	char** names = (char **) malloc(10000); // up to 100 names with 100 charectors inside
+	int inames = 0;
+	get_names(buf,names,&inames);
+
+	double val1 = 0;
+	while(EOF!=fscanf(fpi,"%s",buf)){
+		fprintf(stderr,"val1 = %s\n",buf);
+	}
 	return 0;
 }
 int bin_to_root(const char* input_file, const char* output_file){
