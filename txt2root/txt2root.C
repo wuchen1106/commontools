@@ -3,6 +3,9 @@
 #include <string.h>
 #include <unistd.h> //getopt
 
+#include "TFile.h"
+#include "TTree.h"
+
 /* arguments */
 enum workmode{
 	txt2root,
@@ -80,19 +83,28 @@ int txt_to_root(const char* input_file, const char* output_file){
 	get_names(buf,names,&inames);
 
 	double* values = (double *) malloc(100);
+	TFile file_output( output_file, "RECREATE" );
+	TTree* d_tree = new TTree( "t", "t" );
+	for ( int i = 0; i < inames; i++ ){
+		d_tree->Branch(names[i],&values[i],"/D");
+	}
+
 	int count = 0;
 	int iline = 1;
-	double value = 0;
 	while(1==fscanf(fpi,"%lf",&values[count])){
 		fprintf(stderr,"values[%d]=%lf\n",count,values[count]);
 		count++;
 		if ( count == inames ){
 			count = 0;
 			iline++;
+			d_tree->Fill();
 		}
 	}
+	d_tree->Write();
+	file_output.Close();
 	return 0;
 }
+
 int bin_to_root(const char* input_file, const char* output_file){
 	fprintf(stderr,"This is bin_to_root!\n");
 	FILE* fpi = 0;
