@@ -1,0 +1,286 @@
+#!/bin/bash
+
+usebossq='No'
+pbsqueue='besq'
+bosscmd='boss'
+bossver="$BOSSVERSION"
+seedstart=2000
+jobname='test'
+jobtype='unknown'
+simparentdir="$MYSIMDATAFILEDIR"
+recparentdir="$MYRECDATAFILEDIR"
+
+nobegin=1
+noend=20
+eventnum=-1
+
+submitjob='Yes'
+checkresult='No'
+
+THISCMD=$(basename $0)
+
+echo $THISCMD $@ >> cmdlog
+
+usages() {
+cat << EOF
+$THISCMD:  Generate simulation/reconstruction jobs and submit to pbs
+Syntax:
+  $THISCMD [-h] [-v bossVersion] [-t jobType] [-x simDir] [-y recDir]
+          [-b beginNo] [-e endNo] [-w noWidth] [-n eventNum] [-s seedStart] [-c] [-q queueName] [-r] jobname
+
+  -h  display this help and exit
+  -v  set BOSS version (if not specified, use environment variable \$BOSSVERSION)
+  -t  specify job type, sim/rec, no other parameter accepted
+  -x  set directory of simulation data file (if not specified, use environment variable \$MYSIMDATAFILEDIR)
+  -y  set directory of reconstruction data file (if not specified, use environment variable \$MYRECDATAFILEDIR)
+  -b  set begin No of job
+  -e  set end No of job
+  -w  set width of No.
+  -n  set event number of each job
+  -s  set random seed start from
+  -c  do not submit jobs to pbs, only generate files
+  -q  the pbs queue to be submitted
+  -r  only test the result
+
+Report bugs to <wuc@ihep.ac.cn>.
+EOF
+}
+
+while getopts ':hv:t:x:y:b:e:w:n:s:cq:r' optname
+do
+  case "$optname" in
+    'h')
+      usages
+      exit 0
+      ;;
+    'v')
+      bossver="$OPTARG"
+      ;;
+    't')
+      jobtype="$OPTARG"
+      ;;
+    'x')
+      simparentdir="$OPTARG"
+      ;;
+    'y')
+      recparentdir="$OPTARG"
+      ;;
+    'b')
+      nobegin="$OPTARG"
+      ;;
+    'e')
+      noend="$OPTARG"
+      ;;
+    'w')
+      nowidth="$OPTARG"
+      ;;
+    'n')
+      eventnum="$OPTARG"
+      ;;
+    's')
+      seedstart="$OPTARG"
+      ;;
+    'c')
+      submitjob='No'
+      ;;
+    'q')
+      pbsqueue="$OPTARG"
+      ;;
+    'r')
+      checkresult='Yes'
+      ;;
+    '?')
+      echo "Unknown option $OPTARG"
+      echo "Try \"$THISCMD -h\" for more infomation"
+      exit -1
+      ;;
+    ':')
+      echo "Need argument value for option $OPTARG"
+      echo "Try \"$THISCMD -h\" for more infomation"
+      exit -1
+      ;;
+    *)
+      # Should not occur
+      echo 'Unknown error while processing options'
+      exit -1
+      ;;
+  esac
+done
+
+# check if right jobtype specified
+case "$jobtype" in
+  sim)
+    ;;
+  rec)
+    ;;
+  unknown)
+    echo 'Please specify a job type'
+    echo "Try \"$THISCMD -h\" for more infomation"
+    exit -1
+    ;;
+  *)
+    echo 'Invalid job type'
+    echo "Try \"$THISCMD -h\" for more infomation"
+    exit -1
+    ;;
+esac
+
+# get jobname parameter
+case "$(($#+1-$OPTIND))" in
+  0)
+    echo 'Please specify a jobname'
+    exit -1
+    ;;
+  1)
+    jobname="${@:$OPTIND:1}"
+    ;;
+  *)
+    echo 'Too many jobs. Only 1 job permitted'
+    exit -1
+    ;;
+esac
+
+
+# convert queue name to boss command name
+case "$pbsqueue" in
+  'besq')
+    bosscmd='boss'
+    ;;
+  'midq')
+    bosscmd='bossmid'
+    ;;
+  'shortq')
+    bosscmd='bossshort'
+    ;;
+  'longq')
+    bosscmd='bosslong'
+    ;;
+  *)
+    bosscmd='boss'
+    ;;
+esac
+
+
+# set proper No. width
+if [ -z $nowidth ]; then
+  nowidth=${#noend}
+fi
+
+simdir=$simparentdir/$jobname
+recdir=$recparentdir/$jobname
+
+# Print parameters
+echo '====================================================================================================================================='
+printf ' %-12s | %-8s | %-16s | %-8s | %-8s | %-12s | %-12s | %-10s | %-6s | %-12s\n' 'BOSS Version' 'Job Type' 'Job Name' 'Begin No' 'End No' 'Event Number' 'Seed Start' 'PBS Queue' 'Submit' 'Check Result'
+echo '-------------------------------------------------------------------------------------------------------------------------------------'
+printf ' %-12s | %-8s | %-16s | %-8d | %-8d | %-12d | %-12d | %-10s | %-6s | %-12s\n' "$bossver" "$jobtype" "$jobname" "$nobegin" "$noend" "$eventnum" "$seedstart" "$pbsqueue" "$submitjob" "$checkresult"
+echo '====================================================================================================================================='
+echo "Simulation data directory: $simdir"
+echo "Reconstruction data directory: $recdir"
+echo ''
+
+if [ $checkresult == 'No' ]; then
+  read -p 'You are going to do the job above, is that right? (Y/n):'
+  if [ ! "$REPLY" = 'Y' ] && [ ! "$REPLY" = 'y' ] && [ ! "$REPLY" = '' ]; then
+    exit 0
+  fi
+fi
+
+
+
+# find directory with the jobname
+if [ ! -d $jobname ]; then
+  echo Directory $jobname does not exist!
+  exit -2
+fi
+
+cd $jobname
+
+case "$jobtype" in
+  sim)
+    # if this simulation need the decay card, then make sure it exists
+    if grep -q 'userDecayTableName' ../jobOptions_sim_some.txt; then
+      decfile="$jobname".dec
+      if [ ! -e $decfile ]; then
+        echo Decay card $decfile does not exist! Please create it first.
+      exit -2
+      fi
+    fi
+
+    # make sure output directory exists
+    if [ ! -d $simdir ]; then
+      mkdir -p $simdir
+    fi
+    ;;
+  rec)
+    # make sure sim directory exists
+    if [ ! -d $simdir ]; then
+      echo Simulation directory $simdir seems not exist!
+      exit -2
+    fi
+
+    # make sure output directory exists
+    if [ ! -d $recdir ]; then
+      mkdir -p $recdir
+    fi
+    ;;
+  *)
+    echo 'Should not run here'
+    exit -1
+    ;;
+esac
+
+# make sure job directory exists and cd to it
+if [ ! -d $jobtype ]; then
+  mkdir $jobtype
+fi
+cd $jobtype
+
+if [ $checkresult == 'Yes' ]; then
+  grep 'Terminated successfully' *.bosslog
+  grep 'Terminated successfully' *.bosslog | wc
+  exit 0
+fi
+
+
+# loop over all job No
+for i in `seq $nobegin $noend`
+do
+  jobno=`printf "%0${nowidth}d" $i`
+  jobfile="$jobtype"_"$jobname"_"$jobno".txt
+  pbsfile="$jobfile".boss
+  outfile="$jobfile".bosslog
+  errfile="$jobfile".bosserr
+
+  sed -e "s/JOBSEED/$(($seedstart+$i))/" ../../jobOptions_"$jobtype"_some.txt > tmp1
+  sed -e "s/JOBNAME/$jobname/g" tmp1 > tmp2
+  sed -e "s#JOBSIMDIR#$simdir#" tmp2 > tmp3
+  sed -e "s#JOBRECDIR#$recdir#" tmp3 > tmp4
+  sed -e "s/JOBNO/$jobno/g" tmp4 > tmp5
+  sed -e "s/JOBEVENTNUM/$eventnum/g" tmp5 > $jobfile
+  rm tmp1 tmp2 tmp3 tmp4 tmp5
+
+  # create job file
+  if [ "$usebossq" == "No" ]; then
+    # create script for qsub
+    echo "#!/bin/tcsh -f" > $pbsfile
+#    echo "#PBS -o $outfile" >> $pbsfile
+#    echo "#PBS -e $errfile" >> $pbsfile
+    echo "source /ihepbatch/bes/wuc/.myenv$bossver" >> $pbsfile
+    echo "cd `pwd`" >> $pbsfile
+    echo "((time boss.exe $jobfile) > $outfile) >& $errfile" >> $pbsfile
+
+    chmod +x $pbsfile
+  fi
+
+  echo Create "$jobtype"_"$jobname"_"$jobno" over!
+
+  # submit the job
+  if [ "$submitjob" == 'Yes' ]; then
+    if [ "$usebossq" == "No" ]; then
+      qsub -j oe -o /dev/null -q "$pbsqueue" "$pbsfile"
+    else
+      "$bosscmd" -q "$jobfile"
+    fi
+  fi
+done

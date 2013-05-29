@@ -1,0 +1,267 @@
+#!/bin/bash
+
+usebossq='No'
+pbsqueue='besq'
+bosscmd='boss'
+bossver="$BOSSVERSION"
+#seedstart=2000
+jobname='test'
+anaparentdir='.'
+dstfilename='dstlist'
+headfilename='jobOptions.head'
+tailfilename='jobOptions.tail'
+
+nobegin=1
+noend=20
+filenum=0
+eventnum=-1
+
+submitjob='Yes'
+checkresult='No'
+
+THISCMD=$(basename $0)
+
+echo $THISCMD $@ >> cmdlog
+
+usages() {
+cat << EOF
+$THISCMD:  Generate batch jobs and submit to pbs
+Syntax:
+  $THISCMD [-h] [-v bossVersion] [-b beginNo] [-e endNo] [-w noWidth] [-f fileNum] [-n eventNum] [-c] [-q queueName] [-r] jobname
+
+  -h  display this help and exit
+  -v  set BOSS version (if not specified, use environment variable \$BOSSVERSION)
+  -b  set begin No. of job
+  -e  set end No. of job
+  -w  set width of No.
+  -f  set file number of each job
+  -n  set event number of each job
+  -c  do not submit jobs to pbs, only generate files
+  -q  the pbs queue to be submitted
+  -r  only test the result
+
+Examples:
+  $THISCMD test
+  $THISCMD -e 30 -q midq test
+  $THISCMD -b 20 -e 50 -c test
+  $THISCMD -f 2 test
+  $THISCMD -r test
+
+Report bugs to <zhaoxh@ihep.ac.cn>.
+EOF
+}
+
+while getopts ':hv:b:e:w:f:n:cq:r' optname
+do
+  case "$optname" in
+    'h')
+      usages
+      exit 1
+      ;;
+    'v')
+      bossver="$OPTARG"
+      ;;
+    'b')
+      nobegin="$OPTARG"
+      ;;
+    'e')
+      noend="$OPTARG"
+      ;;
+    'w')
+      nowidth="$OPTARG"
+      ;;
+    'f')
+      filenum="$OPTARG"
+      ;;
+    'n')
+      eventnum="$OPTARG"
+      ;;
+    'c')
+      submitjob='No'
+      ;;
+    'q')
+      pbsqueue="$OPTARG"
+      ;;
+    'r')
+      checkresult='Yes'
+      ;;
+    '?')
+      echo "Unknown option $OPTARG"
+      echo "Try \"$THISCMD -h\" for more infomation"
+      exit -1
+      ;;
+    ':')
+      echo "Need argument value for option $OPTARG"
+      echo "Try \"$THISCMD -h\" for more infomation"
+      exit -1
+      ;;
+    *)
+      # Should not occur
+      echo 'Unknown error while processing options'
+      exit -1
+      ;;
+  esac
+done
+
+# get jobname parameter
+case "$(($#+1-$OPTIND))" in
+  0)
+    echo 'Please specify a jobname'
+    exit -1
+    ;;
+  1)
+    jobname="${@:$OPTIND:1}"
+    ;;
+  *)
+    echo 'Too many jobs. Only 1 job permitted'
+    exit -1
+    ;;
+esac
+
+
+# convert queue name to boss command name
+case "$pbsqueue" in
+  'besq')
+    bosscmd='boss'
+    ;;
+  'midq')
+    bosscmd='bossmid'
+    ;;
+  'shortq')
+    bosscmd='bossshort'
+    ;;
+  'longq')
+    bosscmd='bosslong'
+    ;;
+  *)
+    bosscmd='boss'
+    ;;
+esac
+
+
+# check if joboption files exsit
+if [ ! -e $headfilename ]; then
+  echo "Head file $headfilename does not exsit!"
+  exit -2
+fi
+if [ ! -e $tailfilename ]; then
+  echo "Tail file $tailfilename does not exsit!"
+  exit -2
+fi
+
+
+# calculation of job number and file number
+dstnum=`wc -l $dstfilename | cut -f 1 -d ' '`
+if [ $filenum == 0 ]; then
+  jobnum=$(($noend-$nobegin+1))
+  filenum=$(($dstnum/$jobnum))
+  if [ ! $(($dstnum%$jobnum)) = 0 ]; then
+    ((filenum++))
+  fi
+fi
+# job file number according to dst number in each job
+jobnum=$(($dstnum/$filenum))
+if [ ! $(($dstnum%$filenum)) = 0 ]; then
+  ((jobnum++))
+fi
+noend=$(($nobegin+$jobnum-1))
+
+
+# set proper No. width
+if [ -z $nowidth ]; then
+  nowidth=${#noend}
+fi
+
+
+# Print parameters
+echo "There are $dstnum dst file(s) totally."
+echo ''
+echo '====================================================================================================================================='
+printf ' %-12s | %-16s | %-8s | %-6s | %-10s | %-12s | %-12s | %-10s | %-6s | %-12s\n' 'BOSS Version' 'Job Name' 'Begin No' 'End No' 'Job Number' 'File Number' 'Event Number' 'PBS Queue' 'Submit' 'Check Result'
+echo '-------------------------------------------------------------------------------------------------------------------------------------'
+printf ' %-12s | %-16s | %-8d | %-6d | %-10d | %-12d | %-12d | %-10s | %-6s | %-12s\n' "$bossver" "$jobname" "$nobegin" "$noend" "$jobnum" "$filenum" "$eventnum" "$pbsqueue" "$submitjob" "$checkresult"
+echo '====================================================================================================================================='
+echo ''
+
+
+if [ $checkresult == 'No' ]; then
+  read -p 'You are going to do the job above, is that right? (Y/n):'
+  if [ ! "$REPLY" = 'Y' ] && [ ! "$REPLY" = 'y' ] && [ ! "$REPLY" = '' ]; then
+    exit 0
+  fi
+fi
+
+if [ $checkresult == 'Yes' ]; then
+  grep 'Terminated successfully' $jobname/*.bosslog
+  grep 'Terminated successfully' $jobname/*.bosslog | wc
+  exit 1
+fi
+
+
+# a directory to hold all generated files
+mkdir -p $jobname
+cd $jobname
+
+
+# main body of batch job
+fileindex=0
+dstindex=0
+# loop over all dst file
+for filename in `cat ../$dstfilename`
+do
+
+  if [ $(($dstindex%$filenum)) == 0 ]; then
+    jobno=`printf "%0${nowidth}d" $(($nobegin+$fileindex))`
+    jobfile="$jobname"_"$jobno".txt
+    pbsfile="$jobfile".boss
+    outfile="$jobfile".bosslog
+    errfile="$jobfile".bosserr
+
+    # head for job option
+    cp ../$headfilename $jobfile
+  fi
+
+  ((dstindex++))
+
+  if (( ($dstindex%$filenum) != 0 )) && (( ($dstindex%$dstnum) != 0 )); then
+    # a new line in the job option
+    echo \"$filename\", >> $jobfile
+  else
+    # last dst file
+    echo \"$filename\" >> $jobfile
+
+    # tail for job option
+    sed -e "s/JOBNAME/$jobname/g" ../$tailfilename > tmp1
+    sed -e "s#JOBANADIR#$anaparentdir#" tmp1 > tmp2
+    sed -e "s/JOBNO/$jobno/g" tmp2 > tmp3
+    sed -e "s/JOBEVENTNUM/$eventnum/g" tmp3 >> $jobfile
+    rm tmp1 tmp2 tmp3
+
+    # create job file
+    if [ "$usebossq" == "No" ]; then
+      # create script for qsub
+      echo "#!/bin/tcsh -f" > $pbsfile
+      echo "source /ihepbatch/bes/$USER/.myenv$bossver" >> $pbsfile
+      echo "cd `pwd`" >> $pbsfile
+      echo "((time boss.exe $jobfile) > $outfile) >& $errfile" >> $pbsfile
+
+      chmod +x $pbsfile
+    fi
+
+    echo Create "$jobname"_"$jobno" over!
+
+    # submit the job
+    if [ "$submitjob" == 'Yes' ]; then
+      if [ "$usebossq" == "No" ]; then
+        qsub -j oe -o /dev/null -q "$pbsqueue" "$pbsfile"
+      else
+        "$bosscmd" -q "$jobfile"
+      fi
+    fi
+
+    ((fileindex++))
+  fi
+
+done
+
+cd ..

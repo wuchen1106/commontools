@@ -1,0 +1,12 @@
+batchjob -h
+batchjob -e 123 -w 5 xixi
+batchjob -e 123 -w 5 xixi
+batchjob -e 123 -w 5 xixi
+batchjob -e 123 -w 5 xixi
+batchjob -e 123 -w 5 xixi
+batchjob -e 123 -w 5 -c xixi
+batchjob -e 123 -c xixi
+batchjob -e 123 -w 0 -c xixi
+batchjob -e 123 -w 1 -c xixi
+batchjob -e 10 xixi
+batchjob -e 10 -q midq xixi

@@ -1,0 +1,50 @@
+//
+//This package is designed by Wu Chen <wuchen@ihep.ac.cn>
+//
+//This is a card aiming to telling auto_gen_factory.sh what to do
+//
+//Here are some notes for you to use this card:
+//1, "auto_gen_factory.sh" will only analyse content within a pair of markers
+//   with a form of "auto_gen_marker_*".
+//2, "auto_gen_factory.sh" will neglect lines starts with "#" and lines with 
+//   nothing but blanks inside. Other lines will be dealed with in a strict way. 
+//   So keep them in correct form, otherwise things unforeseen will happen.
+//3, to be continued...
+//
+
+//
+//auto_gen_marker_card_preset
+
+func_1_tuple: yes
+func_2_svc:   yes
+
+//auto_gen_marker_card_preset
+//
+
+//
+//auto_gen_marker_card_tuple
+
+Tuple  McTruth
+
+Item int nKp
+
+Item int dataType
+
+Item  int      psippDataNum     0 128 size_variable
+Array int      psippMcTopData
+Array uint32_t psippMd5         4     size_fixed     var_as_array
+
+//auto_gen_marker_card_tuple
+//
+
+//
+//auto_gen_marker_card_svc
+
+EventHeader
+EvtRecEvent
+EvtRecTrackCol
+EvtRecPi0Col
+McTopSvc
+
+//auto_gen_marker_card_svc
+//

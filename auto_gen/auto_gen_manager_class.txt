@@ -1,0 +1,1007 @@
+//
+Service: EventHeader
+Container: EventHeader
+  NoValidCheck       norm    int                 eventNumber
+  NoValidCheck       norm    int                 runNumber
+  NoValidCheck       norm    int                 time
+  NoValidCheck       norm    int                 eventTag
+  NoValidCheck       norm    int                 flag1
+  NoValidCheck       norm    int                 flag2
+Service: McParticleCol
+Collector: McParticleCol
+  McParticle
+Container: McParticle
+  NoValidCheck       norm    StdHepId            particleProperty
+  NoValidCheck       norm    int                 statusFlags
+  NoValidCheck       norm    bool                primaryParticle
+  NoValidCheck       norm    bool                leafParticle
+  NoValidCheck       norm    bool                decayFromGenerator
+  NoValidCheck       norm    bool                decayInFlight
+  NoValidCheck       norm    int                 vertexIndex0
+  NoValidCheck       norm    int                 vertexIndex1
+  NoValidCheck       norm    int                 trackIndex
+  NoValidCheck       const   HepLorentzVector&   initialPosition
+  NoValidCheck       const   HepLorentzVector&   finalPosition
+  NoValidCheck       const   HepLorentzVector&   initialFourMomentum
+  NoValidCheck       const   McParticle&         mother
+  NoValidCheck       const   SmartRefVector<McParticle>& daughterList
+Service: EvtRecTrackCol
+Collector: EvtRecTrackCol
+  EvtRecTrack
+Container: EvtRecTrack
+  NoValidCheck       norm    int                 trackId
+  NoValidCheck       norm    int                 partId
+  NoValidCheck       norm    int                 quality
+  NoValidCheck       norm    bool                isElectron
+  NoValidCheck       norm    bool                isMuon
+  NoValidCheck       norm    bool                isPion
+  NoValidCheck       norm    bool                isKaon
+  NoValidCheck       norm    bool                isProton
+  isMdcTrackValid    norm    RecMdcTrack*        mdcTrack
+  isMdcKalTrackValid norm    RecMdcKalTrack*     mdcKalTrack
+  isMdcDedxValid     norm    RecMdcDedx*         mdcDedx
+  isExtTrackValid    norm    RecExtTrack*        extTrack
+  isTofTrackValid    norm    SmartRefVector<RecTofTrack> tofTrack
+  isEmcShowerValid   norm    RecEmcShower*       emcShower
+  isMucTrackValid    norm    RecMucTrack*        mucTrack
+Service: EvtRecEvent
+Container: EvtRecEvent
+  NoValidCheck       norm    int                 totalTracks
+  NoValidCheck       norm    int                 totalCharged
+  NoValidCheck       norm    int                 totalNeutral
+  NoValidCheck       norm    int                 numberOfVee
+  NoValidCheck       norm    int                 numberOfPi0
+  NoValidCheck       norm    int                 numberOfDTag
+Service: EvtRecPi0Col
+Collector: EvtRecPi0Col
+  EvtRecPi0
+Container: EvtRecPi0
+  NoValidCheck       norm    double              unconMass
+  NoValidCheck       norm    double              chisq
+  NoValidCheck       norm    HepLorentzVector    hiPfit
+  NoValidCheck       norm    HepLorentzVector    loPfit
+  NoValidCheck       const   EvtRecTrack*        hiEnGamma
+  NoValidCheck       const   EvtRecTrack*        loEnGamma
+Service: EvtRecPrimaryVertex
+Container: EvtRecPrimaryVertex
+  NoValidCheck       norm    bool                isValid
+  NoValidCheck       norm    int                 nTracks
+  NoValidCheck       const   std::vector<int>&   trackIdList
+  NoValidCheck       norm    double              chi2
+  NoValidCheck       norm    int                 ndof
+  NoValidCheck       norm    int                 fitMethod
+  NoValidCheck       const   HepVector&          vertex
+  NoValidCheck       const   HepSymMatrix&       errorVertex
+Service: EvtRecVeeVertexCol
+Collector: EvtRecVeeVertexCol
+  EvtRecVeeVertex
+Container: EvtRecVeeVertex
+  NoValidCheck       norm    int                 vertexId
+  NoValidCheck       norm    int                 vertexType
+  NoValidCheck       norm    double              chi2
+  NoValidCheck       norm    int                 ndof
+  NoValidCheck       norm    double              mass
+  NoValidCheck       norm    int                 pair             int  //return identification of daughter 1:e   2:mu   3:pion  4:kaon  5:proton
+  NoValidCheck       norm    int                 nCharge
+  NoValidCheck       norm    int                 nTracks
+  NoValidCheck       norm    std::pair<SmartRef<EvtRecTrack>,SmartRef<EvtRecTrack>>& pairDaughters
+  NoValidCheck       const   HepVector&          w
+  NoValidCheck       const   HepSymMatrix&       Ew
+  NoValidCheck       const   std::pair<int, int>& pair
+  NoValidCheck       norm    SmartRef<EvtRecTrack>& daughter      int
+Service: EvtRecDTagCol
+Collector: EvtRecDTagCol
+  EvtRecDTag
+Container: EvtRecDTag
+  NoValidCheck       norm    DecayMode           decayMode
+  NoValidCheck       norm    SelType             type
+  NoValidCheck       norm    double              beamE
+  NoValidCheck       norm    double              mass
+  NoValidCheck       norm    double              mBC
+  NoValidCheck       norm    double              deltaE
+  NoValidCheck       norm    int                 charge
+  NoValidCheck       norm    int                 charm
+  NoValidCheck       norm    int                 numOfChildren
+  NoValidCheck       norm    HepLorentzVector    p4
+Service: EvtRecEtaToGGCol
+Collector: EvtRecEtaToGGCol
+  EvtRecEtaToGG
+Container: EvtRecEtaToGG
+  NoValidCheck       norm    double              unconMass
+  NoValidCheck       norm    double              chisq
+  NoValidCheck       norm    HepLorentzVector    hiPfit
+  NoValidCheck       norm    HepLorentzVector    loPfit
+  NoValidCheck       const   EvtRecTrack*        hiEnGamma
+  NoValidCheck       const   EvtRecTrack*        loEnGamma
+Service: DstMdcTrackCol
+Collector: DstMdcTrackCol
+  DstMdcTrack
+Container: DstMdcTrack
+  NoValidCheck       const   HepVector           helix
+  NoValidCheck       const   HepSymMatrix        err
+  NoValidCheck       const   HepLorentzVector    p4             double
+  NoValidCheck       const   HepPoint3D          poca
+  NoValidCheck       const   Hep3Vector          p3
+  NoValidCheck       const   HepPoint3D          x3
+  NoValidCheck       const   double              helix          int
+  NoValidCheck       const   double              err            int
+  NoValidCheck       const   int                 trackId
+  NoValidCheck       const   int                 charge
+  NoValidCheck       const   double              pxy
+  NoValidCheck       const   double              px
+  NoValidCheck       const   double              py
+  NoValidCheck       const   double              pz
+  NoValidCheck       const   double              p
+  NoValidCheck       const   double              theta
+  NoValidCheck       const   double              phi
+  NoValidCheck       const   double              x
+  NoValidCheck       const   double              y
+  NoValidCheck       const   double              z
+  NoValidCheck       const   double              r
+  NoValidCheck       const   int                 stat
+  NoValidCheck       const   double              chi2
+  NoValidCheck       const   int                 ndof
+  NoValidCheck       const   int                 nster
+  NoValidCheck       const   int                 firstLayer
+  NoValidCheck       const   int                 lastLayer
+Service: DstMdcKalTrackCol
+Collector: DstMdcKalTrackCol
+  DstMdcKalTrack
+Container: DstMdcKalTrack
+  NoValidCheck       norm    PidType          getPidType
+  NoValidCheck       const   int              trackId
+  NoValidCheck       const   double           mass
+  NoValidCheck       const   int              charge
+  NoValidCheck       const   double           pxy
+  NoValidCheck       const   double           px
+  NoValidCheck       const   double           py
+  NoValidCheck       const   double           pz
+  NoValidCheck       const   double           theta
+  NoValidCheck       const   double           phi
+  NoValidCheck       const   double           x
+  NoValidCheck       const   double           y
+  NoValidCheck       const   double           z
+  NoValidCheck       const   double           x     int
+  NoValidCheck       const   double           y     int
+  NoValidCheck       const   double           z     int
+  NoValidCheck       const   double           r
+  NoValidCheck       const   double           p
+  NoValidCheck       const   int              stat
+  NoValidCheck       const   double           chi2
+  NoValidCheck       const   int              ndof
+  NoValidCheck       const   int              nster
+  NoValidCheck       const   int              firstLayer
+  NoValidCheck       const   int              lastLayer
+  NoValidCheck       const   double           dr
+  NoValidCheck       const   double           fi0
+  NoValidCheck       const   double           kappa
+  NoValidCheck       const   double           dz
+  NoValidCheck       const   double           tanl
+  NoValidCheck       const   HepVector&       helix
+  NoValidCheck       const   HepSymMatrix&    err
+  NoValidCheck       const   HepVector&       fhelix
+  NoValidCheck       const   HepSymMatrix&    ferr
+  NoValidCheck       const   HepPoint3D       poca
+  NoValidCheck       const   Hep3Vector       p3
+  NoValidCheck       const   HepPoint3D       x3
+  NoValidCheck       const   HepLorentzVector p4
+  NoValidCheck       const   HepLorentzVector p4    double
+  NoValidCheck       const   int              getTrackId
+  NoValidCheck       const   int              getCharge     int
+  NoValidCheck       const   int              getStat     int
+  NoValidCheck       const   int              getNster     int
+  NoValidCheck       const   double           getChisq     int
+  NoValidCheck       const   int              getNdf     int
+  NoValidCheck       const   int              getFirstLayer     int
+  NoValidCheck       const   int              getLastLayer     int
+  NoValidCheck       const   HepPoint3D&      getPoca     int
+  NoValidCheck       const   HepVector&       getZHelix     int
+  NoValidCheck       const   HepSymMatrix&    getZError     int
+  NoValidCheck       const   HepVector&       getFHelix     int
+  NoValidCheck       const   HepSymMatrix&    getFError     int
+Service: DstMdcDedxCol
+Collector: DstMdcDedxCol
+  DstMdcDedx
+Container: DstMdcDedx
+  NoValidCheck       norm   int               trackId
+  NoValidCheck       norm   int               particleId
+  NoValidCheck       norm   int               status
+  NoValidCheck       norm   int               truncAlg
+  NoValidCheck       norm   double            chi              int
+  NoValidCheck       norm   double            chiE
+  NoValidCheck       norm   double            chiMu
+  NoValidCheck       norm   double            chiPi
+  NoValidCheck       norm   double            chiK
+  NoValidCheck       norm   double            chiP
+  NoValidCheck       norm   int               numGoodHits
+  NoValidCheck       norm   int               numTotalHits
+  NoValidCheck       norm   double            probPH
+  NoValidCheck       norm   double            normPH
+  NoValidCheck       norm   double            errorPH
+  NoValidCheck       norm   double            twentyPH
+Service: DstTofTrackCol
+Collector: DstTofTrackCol
+  DstTofTrack
+Container: DstTofTrack
+  NoValidCheck       norm   int     tofTrackID
+  NoValidCheck       norm   int     trackID
+  NoValidCheck       norm   int     tofID
+  NoValidCheck       norm   int status
+  NoValidCheck       norm   double  path
+  NoValidCheck       norm   double  zrhit
+  NoValidCheck       norm   double  ph
+  NoValidCheck       norm   double  tof
+  NoValidCheck       norm   double  errtof
+  NoValidCheck       norm   double  beta
+  NoValidCheck       norm   double  texp     int
+  NoValidCheck       norm   double  texpElectron
+  NoValidCheck       norm   double  texpMuon
+  NoValidCheck       norm   double  texpPion
+  NoValidCheck       norm   double  texpKaon
+  NoValidCheck       norm   double  texpProton
+  NoValidCheck       norm   double  toffset     int
+  NoValidCheck       norm   double  toffsetElectron
+  NoValidCheck       norm   double  toffsetMuon
+  NoValidCheck       norm   double  toffsetPion
+  NoValidCheck       norm   double  toffsetKaon
+  NoValidCheck       norm   double  toffsetProton
+  NoValidCheck       norm   double  toffsetAntiProton
+  NoValidCheck       norm   double  sigma     int
+  NoValidCheck       norm   double  sigmaElectron
+  NoValidCheck       norm   double  sigmaMuon
+  NoValidCheck       norm   double  sigmaPion
+  NoValidCheck       norm   double  sigmaKaon
+  NoValidCheck       norm   double  sigmaProton
+  NoValidCheck       norm   double  sigmaAntiProton
+  NoValidCheck       norm   int     quality
+  NoValidCheck       norm   double  t0
+  NoValidCheck       norm   double  errt0
+  NoValidCheck       norm   double  errz
+  NoValidCheck       norm   double  phi
+  NoValidCheck       norm   double  errphi
+  NoValidCheck       norm   double  energy
+  NoValidCheck       norm   double  errenergy
+Service: DstEmcShowerCol
+Collector: DstEmcShowerCol
+  DstEmcShower
+Container: DstEmcShower
+  NoValidCheck       norm   int  trackId
+  NoValidCheck       norm   int  numHits
+  NoValidCheck       norm   int  status
+  NoValidCheck       norm   int  cellId
+  NoValidCheck       norm   int  module
+  NoValidCheck       norm   HepPoint3D  position
+  NoValidCheck       norm   double  x
+  NoValidCheck       norm   double  y
+  NoValidCheck       norm   double  z
+  NoValidCheck       norm   double  theta
+  NoValidCheck       norm   double  phi
+  NoValidCheck       norm   double  dx
+  NoValidCheck       norm   double  dy
+  NoValidCheck       norm   double  dz
+  NoValidCheck       norm   double  dtheta
+  NoValidCheck       norm   double  dphi
+  NoValidCheck       norm   double  energy
+  NoValidCheck       norm   double  dE
+  NoValidCheck       norm   double  eSeed
+  NoValidCheck       norm   double  e3x3
+  NoValidCheck       norm   double  e5x5
+  NoValidCheck       norm   double  time
+  NoValidCheck       norm   double  secondMoment
+  NoValidCheck       norm   double  latMoment
+  NoValidCheck       norm   double  a20Moment
+  NoValidCheck       norm   double  a42Moment
+  NoValidCheck       norm   HepSymMatrix  errorMatrix
+Service: DstMucTrackCol
+Collector: DstMucTrackCol
+  DstMucTrack
+Container: DstMucTrack
+  NoValidCheck       norm   int  trackId
+  NoValidCheck       norm   int  id
+  NoValidCheck       norm   int  status
+  NoValidCheck       norm   int  type
+  NoValidCheck       norm   int  startPart
+  NoValidCheck       norm   int  endPart
+  NoValidCheck       norm   int  brLastLayer
+  NoValidCheck       norm   int  ecLastLayer
+  NoValidCheck       norm   int  numHits
+  NoValidCheck       norm   int  numLayers
+  NoValidCheck       norm   int  maxHitsInLayer
+  NoValidCheck       norm   double  depth
+  NoValidCheck       norm   double  chi2
+  NoValidCheck       norm   int  dof
+  NoValidCheck       norm   double  rms
+  NoValidCheck       norm   double  xPos
+  NoValidCheck       norm   double  yPos
+  NoValidCheck       norm   double  zPos
+  NoValidCheck       norm   double  xPosSigma
+  NoValidCheck       norm   double  yPosSigma
+  NoValidCheck       norm   double  zPosSigma
+  NoValidCheck       norm   double  px
+  NoValidCheck       norm   double  py
+  NoValidCheck       norm   double  pz
+  NoValidCheck       norm   double  distance
+  NoValidCheck       norm   double  deltaPhi
+Service: DstExtTrackCol
+Collector: DstExtTrackCol
+  DstExtTrack
+Container: DstExtTrack
+  NoValidCheck       const  int  GetTrackId
+  NoValidCheck       const  int  trackId
+  NoValidCheck       const  Hep3Vector  tof1Position
+  NoValidCheck       const  Hep3Vector  tof1Position     int
+  NoValidCheck       const  Hep3Vector  tof1Momentum
+  NoValidCheck       const  Hep3Vector  tof1Momentum     int
+  NoValidCheck       const  string  tof1VolumeName
+  NoValidCheck       const  string  tof1VolumeName     int
+  NoValidCheck       const  int  tof1VolumeNumber
+  NoValidCheck       const  int  tof1VolumeNumber     int
+  NoValidCheck       const  double  tof1
+  NoValidCheck       const  double  tof1     int
+  NoValidCheck       const  double  tof1Path
+  NoValidCheck       const  double  tof1Path     int
+  NoValidCheck       const  double  tof1PosSigmaAlongZ
+  NoValidCheck       const  double  tof1PosSigmaAlongZ     int
+  NoValidCheck       const  double  tof1PosSigmaAlongT
+  NoValidCheck       const  double  tof1PosSigmaAlongT     int
+  NoValidCheck       const  double  tof1PosSigmaAlongX
+  NoValidCheck       const  double  tof1PosSigmaAlongX     int
+  NoValidCheck       const  double  tof1PosSigmaAlongY
+  NoValidCheck       const  double  tof1PosSigmaAlongY     int
+  NoValidCheck       const  HepSymMatrix  tof1ErrorMatrix
+  NoValidCheck       const  HepSymMatrix  tof1ErrorMatrix     int
+  NoValidCheck       const  Hep3Vector  tof2Position
+  NoValidCheck       const  Hep3Vector  tof2Position     int
+  NoValidCheck       const  Hep3Vector  tof2Momentum
+  NoValidCheck       const  Hep3Vector  tof2Momentum     int
+  NoValidCheck       const  string  tof2VolumeName
+  NoValidCheck       const  string  tof2VolumeName     int
+  NoValidCheck       const  int  tof2VolumeNumber
+  NoValidCheck       const  int  tof2VolumeNumber     int
+  NoValidCheck       const  double  tof2
+  NoValidCheck       const  double  tof2     int
+  NoValidCheck       const  double  tof2Path
+  NoValidCheck       const  double  tof2Path     int
+  NoValidCheck       const  double  tof2PosSigmaAlongZ
+  NoValidCheck       const  double  tof2PosSigmaAlongZ     int
+  NoValidCheck       const  double  tof2PosSigmaAlongT
+  NoValidCheck       const  double  tof2PosSigmaAlongT     int
+  NoValidCheck       const  double  tof2PosSigmaAlongX
+  NoValidCheck       const  double  tof2PosSigmaAlongX     int
+  NoValidCheck       const  double  tof2PosSigmaAlongY
+  NoValidCheck       const  double  tof2PosSigmaAlongY     int
+  NoValidCheck       const  HepSymMatrix  tof2ErrorMatrix
+  NoValidCheck       const  HepSymMatrix  tof2ErrorMatrix     int
+  NoValidCheck       const  Hep3Vector  emcPosition
+  NoValidCheck       const  Hep3Vector  emcPosition     int
+  NoValidCheck       const  Hep3Vector  emcMomentum
+  NoValidCheck       const  Hep3Vector  emcMomentum     int
+  NoValidCheck       const  string  emcVolumeName
+  NoValidCheck       const  string  emcVolumeName     int
+  NoValidCheck       const  int  emcVolumeNumber
+  NoValidCheck       const  int  emcVolumeNumber     int
+  NoValidCheck       const  double  emcPosSigmaAlongTheta
+  NoValidCheck       const  double  emcPosSigmaAlongTheta     int
+  NoValidCheck       const  double  emcPosSigmaAlongPhi
+  NoValidCheck       const  double  emcPosSigmaAlongPhi     int
+  NoValidCheck       const  HepSymMatrix  emcErrorMatrix
+  NoValidCheck       const  HepSymMatrix  emcErrorMatrix     int
+  NoValidCheck       const  double  emcPath
+  NoValidCheck       const  double  emcPath     int
+  NoValidCheck       const  Hep3Vector  mucPosition
+  NoValidCheck       const  Hep3Vector  mucPosition     int
+  NoValidCheck       const  Hep3Vector  mucMomentum
+  NoValidCheck       const  Hep3Vector  mucMomentum     int
+  NoValidCheck       const  string  mucVolumeName
+  NoValidCheck       const  string  mucVolumeName     int
+  NoValidCheck       const  int  mucVolumeNumber
+  NoValidCheck       const  int  mucVolumeNumber     int
+  NoValidCheck       const  double  mucPosSigmaAlongZ
+  NoValidCheck       const  double  mucPosSigmaAlongZ     int
+  NoValidCheck       const  double  mucPosSigmaAlongT
+  NoValidCheck       const  double  mucPosSigmaAlongT     int
+  NoValidCheck       const  double  mucPosSigmaAlongX
+  NoValidCheck       const  double  mucPosSigmaAlongX     int
+  NoValidCheck       const  double  mucPosSigmaAlongY
+  NoValidCheck       const  double  mucPosSigmaAlongY     int
+  NoValidCheck       const  HepSymMatrix  mucErrorMatrix
+  NoValidCheck       const  HepSymMatrix  mucErrorMatrix     int
+Service: RecMdcHitCol
+Collector: RecMdcHitCol
+  RecMdcHit
+Container: RecMdcHit
+  NoValidCheck       norm    bool                isGrouped
+  NoValidCheck       const   int                 getId
+  NoValidCheck       const   int                 getTrkId
+  NoValidCheck       const   double              getDriftDistLeft
+  NoValidCheck       const   double              getDriftDistRight
+  NoValidCheck       const   double              getErrDriftDistLeft
+  NoValidCheck       const   double              getErrDriftDistRight
+  NoValidCheck       const   double              getChisqAdd
+  NoValidCheck       const   int                 getFlagLR
+  NoValidCheck       const   int                 getStat
+  NoValidCheck       const   Identifier          getMdcId
+  NoValidCheck       const   double              getTdc
+  NoValidCheck       const   double              getAdc
+  NoValidCheck       const   double              getDriftT
+  NoValidCheck       const   double              getDoca
+  NoValidCheck       const   double              getEntra
+  NoValidCheck       const   double              getZhit
+  NoValidCheck       const   double              getFltLen
+Service: RecMdcTrackCol
+Collector: RecMdcTrackCol
+  RecMdcTrack
+Container: RecMdcTrack
+  NoValidCheck       const   double              getVX0
+  NoValidCheck       const   double              getVY0
+  NoValidCheck       const   double              getVZ0
+  NoValidCheck       const   int                 getNhits
+  NoValidCheck       const   double              getFiTerm
+  NoValidCheck       const   HepPoint3D&         getPivot
+  NoValidCheck       const   HitRefVec           getVecHits
+Service: MdcHOTCol
+Collector: MdcHOTCol
+  MdcHOT
+Container: MdcHOTCol
+  //Just found MdcHitOnTrack
+Service: RecMdcDedxCol
+Collector: RecMdcDedxCol
+  RecMdcDedx
+Container: RecMdcDedx
+  NoValidCheck       norm    double                getDedxHit
+  NoValidCheck       norm    double                getDedxEsat
+  NoValidCheck       norm    double                getDedxNoRun
+  NoValidCheck       norm    double                getDedxMoment
+  NoValidCheck       norm    double                getDedxExpect     int
+  NoValidCheck       norm    double                getSigmaDedx     int
+  NoValidCheck       norm    double                getPidProb     int
+  NoValidCheck       norm    SmartRef<RecMdcTrack> getTrack
+Service: RecMdcDedxHitCol
+Collector: RecMdcDedxHitCol
+  RecMdcDedxHit
+Container: RecMdcDedxHit
+  NoValidCheck       norm    bool       isGrouped
+  NoValidCheck       const   int        getTrkId
+  NoValidCheck       const   int        getFlagLR
+  NoValidCheck       norm    double     getPathLength
+  NoValidCheck       const   Identifier getMdcId
+Service: RecMdcKalTrackCol
+Collector: RecMdcKalTrackCol
+  RecMdcKalTrack
+Container: RecMdcKalTrack
+  NoValidCheck       norm    HelixSegRefVec        getVecHelixSegs
+  NoValidCheck       norm    int                   getTrackId
+  NoValidCheck       norm    double                getMass      int
+  NoValidCheck       norm    double                getLength      int
+  NoValidCheck       norm    double                getTof      int
+  NoValidCheck       norm    int                   getNhits      int
+  NoValidCheck       norm    int                   getStat      int int
+  NoValidCheck       norm    int                   getNster      int int
+  NoValidCheck       norm    int                   getFirstLayer      int int
+  NoValidCheck       norm    int                   getLastLayer      int int
+  NoValidCheck       norm    double                getChisq      int int
+  NoValidCheck       norm    int                   getNdf      int int
+  NoValidCheck       norm    double                getPathl      int
+  NoValidCheck       norm    double                getPathSM      int
+  NoValidCheck       const   HepVector&            getZHelix
+  NoValidCheck       const   HepSymMatrix&         getZError
+  NoValidCheck       const   HepVector&            getFHelix
+  NoValidCheck       const   HepSymMatrix&         getFError
+  NoValidCheck       const   HepVector&            getLHelix
+  NoValidCheck       const   HepSymMatrix&         getLError
+  NoValidCheck       const   double                getTHelix      int
+  NoValidCheck       const   double                getTError      int
+  NoValidCheck       const   HepVector             getTHelix
+  NoValidCheck       const   HepSymMatrix          getTError
+  NoValidCheck       norm    HepVector&            getZHelixE
+  NoValidCheck       norm    HepSymMatrix&         getZErrorE
+  NoValidCheck       norm    HepVector&            getFHelixE
+  NoValidCheck       norm    HepSymMatrix&         getFErrorE
+  NoValidCheck       norm    HepVector&            getLHelixE
+  NoValidCheck       norm    HepSymMatrix&         getLErrorE
+  NoValidCheck       norm    HepVector&            getZHelixMu
+  NoValidCheck       norm    HepSymMatrix&         getZErrorMu
+  NoValidCheck       norm    HepVector&            getFHelixMu
+  NoValidCheck       norm    HepSymMatrix&         getFErrorMu
+  NoValidCheck       norm    HepVector&            getLHelixMu
+  NoValidCheck       norm    HepSymMatrix&         getLErrorMu
+  NoValidCheck       norm    HepVector&            getZHelixK
+  NoValidCheck       norm    HepSymMatrix&         getZErrorK
+  NoValidCheck       norm    HepVector&            getFHelixK
+  NoValidCheck       norm    HepSymMatrix&         getFErrorK
+  NoValidCheck       norm    HepVector&            getLHelixK
+  NoValidCheck       norm    HepSymMatrix&         getLErrorK
+  NoValidCheck       norm    HepVector&            getZHelixP
+  NoValidCheck       norm    HepSymMatrix&         getZErrorP
+  NoValidCheck       norm    HepVector&            getFHelixP
+  NoValidCheck       norm    HepSymMatrix&         getFErrorP
+  NoValidCheck       norm    HepVector&            getLHelixP
+  NoValidCheck       norm    HepSymMatrix&         getLErrorP
+  NoValidCheck       const   HepPoint3D            getPocaE
+  NoValidCheck       const   HepPoint3D            getPocaMu
+  NoValidCheck       const   HepPoint3D            getPoca
+  NoValidCheck       const   HepPoint3D            getPocaK
+  NoValidCheck       const   HepPoint3D            getPocaP
+  NoValidCheck       const   HepPoint3D&           getLPointE
+  NoValidCheck       const   HepPoint3D&           getLPointMu
+  NoValidCheck       const   HepPoint3D&           getLPoint
+  NoValidCheck       const   HepPoint3D&           getLPointK
+  NoValidCheck       const   HepPoint3D&           getLPointP
+  NoValidCheck       const   HepPoint3D&           getLPivotE
+  NoValidCheck       const   HepPoint3D&           getLPivotMu
+  NoValidCheck       const   HepPoint3D&           getLPivot
+  NoValidCheck       const   HepPoint3D&           getLPivotK
+  NoValidCheck       const   HepPoint3D&           getLPivotP
+  NoValidCheck       const   HepVector&            getLHelix      int
+  NoValidCheck       const   HepSymMatrix&         getLError      int
+  NoValidCheck       const   HepPoint3D&           getPoca      int
+  NoValidCheck       const   HepPoint3D&           getLPoint      int
+  NoValidCheck       const   double                getFiTerm      int
+  NoValidCheck       const   HepPoint3D&           getLPivot      int
+  NoValidCheck       const   double                getZDr
+  NoValidCheck       const   double                getZFi0
+  NoValidCheck       const   double                getZCpa
+  NoValidCheck       const   double                getZDz
+  NoValidCheck       const   double                getZTanl
+  NoValidCheck       const   double                getLDr
+  NoValidCheck       const   double                getLFi0
+  NoValidCheck       const   double                getLCpa
+  NoValidCheck       const   double                getLDz
+  NoValidCheck       const   double                getLTanl
+  NoValidCheck       const   double                getFDr
+  NoValidCheck       const   double                getFFi0
+  NoValidCheck       const   double                getFCpa
+  NoValidCheck       const   double                getFDz
+  NoValidCheck       const   double                getFTanl
+Service: RecMdcKalHelixSegCol
+Collector: RecMdcKalHelixSegCol
+  RecMdcKalHelixSeg
+Container: RecMdcKalHelixSeg
+  NoValidCheck       norm    int                   getTrackId
+  NoValidCheck       norm    Identifier            getMdcId
+  NoValidCheck       norm    int                   getFlagLR
+  NoValidCheck       norm    double                getTdc
+  NoValidCheck       norm    double                getAdc
+  NoValidCheck       norm    double                getZhit
+  NoValidCheck       norm    double                getTof
+  NoValidCheck       norm    double                getDocaIncl
+  NoValidCheck       norm    double                getDocaExcl
+  NoValidCheck       norm    double                getDD
+  NoValidCheck       norm    double                getEntra
+  NoValidCheck       norm    double                getDT
+  NoValidCheck       norm    int                   getLayerId
+  NoValidCheck       norm    double                getDrIncl  
+  NoValidCheck       norm    double                getFi0Incl 
+  NoValidCheck       norm    double                getCpaIncl 
+  NoValidCheck       norm    double                getDzIncl  
+  NoValidCheck       norm    double                getTanlIncl
+  NoValidCheck       norm    double                getDrExcl  
+  NoValidCheck       norm    double                getFi0Excl 
+  NoValidCheck       norm    double                getCpaExcl 
+  NoValidCheck       norm    double                getDzExcl  
+  NoValidCheck       norm    double                getTanlExcl
+  NoValidCheck       norm    HepVector&            getHelixIncl
+  NoValidCheck       norm    HepVector&            getHelixExcl
+  NoValidCheck       norm    HepSymMatrix&         getErrorIncl
+  NoValidCheck       norm    HepSymMatrix&         getErrorExcl
+  NoValidCheck       norm    double                getResIncl
+  NoValidCheck       norm    double                getResExcl
+Service: RecEsTimeCol
+Collector: RecEsTimeCol
+  RecEsTime
+Container: RecEsTime
+  NoValidCheck       norm    double                getTest
+  NoValidCheck       norm    int                   getStat
+  NoValidCheck       norm    double                getQuality
+Service: RecExtTrackCol
+Collector: RecExtTrackCol
+  RecExtTrack
+Container: RecExtTrack
+  NoValidCheck       const   ExtMucHitVec          getExtMucHitVec
+  NoValidCheck       const   ExtMucHitVec          getExtMucHitVec     int
+  NoValidCheck       const   ExtMucHitVec          GetExtMucHitVec
+  NoValidCheck       const   ExtMucHitVec          GetExtMucHitVec     int
+  NoValidCheck       const   vector<double>        pathInTof1
+  NoValidCheck       const   vector<double>        pathInTof1     int
+  NoValidCheck       const   vector<double>        pathInTof2
+  NoValidCheck       const   vector<double>        pathInTof2     int
+Service: RecBTofHitCol
+Collector: RecBTofHitCol
+  RecBTofHit
+Container: RecBTofHit
+  NoValidCheck       norm    int                   getId
+  NoValidCheck       norm    int                   getTrk
+  NoValidCheck       norm    Identifier            getTofID
+  NoValidCheck       norm    int                   getMod
+  NoValidCheck       norm    int                   getQual
+  NoValidCheck       norm    double                getZHit
+  NoValidCheck       norm    double                getdZHit
+  NoValidCheck       norm    double                getZTDC
+  NoValidCheck       norm    double                getZADC
+  NoValidCheck       norm    double                getPhHit
+  NoValidCheck       norm    double                getThTrk
+  NoValidCheck       norm    double                getPhTrk
+  NoValidCheck       norm    double                getPh
+  NoValidCheck       norm    double                getP
+  NoValidCheck       norm    double                getPath
+  NoValidCheck       norm    double                getTime
+  NoValidCheck       norm    double                getTof
+  NoValidCheck       norm    double                getETof
+  NoValidCheck       norm    double                getExpTof    int
+  NoValidCheck       norm    double                getTt1
+  NoValidCheck       norm    double                getTt2
+  NoValidCheck       norm    double                getETt1
+  NoValidCheck       norm    double                getETt2
+  NoValidCheck       norm    double                getTm1
+  NoValidCheck       norm    double                getTm2
+  NoValidCheck       norm    double                getETm1
+  NoValidCheck       norm    double                getETm2
+  NoValidCheck       norm    double                getTr1
+  NoValidCheck       norm    double                getTr2
+  NoValidCheck       norm    double                getEtr1
+  NoValidCheck       norm    double                getEtr2
+  NoValidCheck       norm    double                getQ1
+  NoValidCheck       norm    double                getQ2
+  NoValidCheck       norm    double                getEQ1
+  NoValidCheck       norm    double                getEQ2
+Service: RecETofHitCol
+Collector: RecETofHitCol
+  RecETofHit
+Container: RecETofHit
+  NoValidCheck       norm    int                   getId
+  NoValidCheck       norm    int                   getTrk
+  NoValidCheck       norm    Identifier            getTofId
+  NoValidCheck       norm    int                   getMod
+  NoValidCheck       norm    int                   getQual
+  NoValidCheck       norm    double                getRHit
+  NoValidCheck       norm    double                getdRHit
+  NoValidCheck       norm    double                getPhHit
+  NoValidCheck       norm    double                getThTrk
+  NoValidCheck       norm    double                getPhTrk
+  NoValidCheck       norm    double                getPh
+  NoValidCheck       norm    double                getP
+  NoValidCheck       norm    double                getPath
+  NoValidCheck       norm    double                getTime
+  NoValidCheck       norm    double                getTof
+  NoValidCheck       norm    double                getETof
+  NoValidCheck       norm    double                getExpTof   int
+  NoValidCheck       norm    double                getTt
+  NoValidCheck       norm    double                getETt
+  NoValidCheck       norm    double                getTm
+  NoValidCheck       norm    double                getETm
+  NoValidCheck       norm    double                getTr
+  NoValidCheck       norm    double                getEtr
+  NoValidCheck       norm    double                getQ
+  NoValidCheck       norm    double                getEQ
+  NoValidCheck       norm    double                getZTDC
+  NoValidCheck       norm    double                getZADC
+Service: RecTofTrackCol
+Collector: RecTofTrackCol
+  RecTofTrack
+Container: RecTofTrack
+Service: RecBTofCalHitCol
+Collector: RecBTofCalHitCol
+  RecBTofCalHit
+Container: RecBTofCalHit
+  NoValidCheck       norm    int                   run
+  NoValidCheck       norm    int                   event
+  NoValidCheck       norm    int                   mod
+  NoValidCheck       norm    int                   qual
+  NoValidCheck       norm    double                tpred
+  NoValidCheck       norm    double                tdc1
+  NoValidCheck       norm    double                tdc2
+  NoValidCheck       norm    double                adc1
+  NoValidCheck       norm    double                adc2
+  NoValidCheck       norm    double                zHit
+  NoValidCheck       norm    double                dzHit
+  NoValidCheck       norm    double                deltaPhi
+  NoValidCheck       norm    double                sinTheta
+  NoValidCheck       norm    double                p
+  NoValidCheck       norm    double                Q
+  NoValidCheck       norm    double                path
+  NoValidCheck       norm    double                tpred   int
+Service: RecETofCalHitCol
+Collector: RecETofCalHitCol
+  RecETofCalHit
+Container: RecETofCalHit
+  NoValidCheck       norm    int                   run
+  NoValidCheck       norm    int                   event
+  NoValidCheck       norm    int                   mod
+  NoValidCheck       norm    int                   qual
+  NoValidCheck       norm    double                tpred
+  NoValidCheck       norm    double                tdc
+  NoValidCheck       norm    double                adc
+  NoValidCheck       norm    double                rHit
+  NoValidCheck       norm    double                drHit
+  NoValidCheck       norm    double                deltaPhi
+  NoValidCheck       norm    double                cosTheta
+  NoValidCheck       norm    double                p
+  NoValidCheck       norm    double                Q
+  NoValidCheck       norm    double                path
+  NoValidCheck       norm    double                tpred   int
+Service: RecEmcHitCol
+Collector: RecEmcHitCol
+  RecEmcHit
+Container: RecEmcHit
+  NoValidCheck       norm    RecEmcID              getCellId
+  NoValidCheck       norm    RecEmcEnergy          getEnergy
+  NoValidCheck       norm    RecEmcTime            getTime
+  NoValidCheck       norm    HepPoint3D            getCenter
+  NoValidCheck       norm    HepPoint3D            getFrontCenter
+Service: RecEmcClusterCol
+Collector: RecEmcClusterCol
+  RecEmcCluster
+Container: RecEmcCluster
+  NoValidCheck       norm    RecEmcID                     getClusterId
+  NoValidCheck       norm    RecEmcEnergy                 getEnergy
+  NoValidCheck       norm    HepPoint3D                   getPosition
+  NoValidCheck       norm    double                       getSecondMoment
+  NoValidCheck       norm    RecEmcHitMap::const_iterator Begin
+  NoValidCheck       norm    RecEmcHitMap::const_iterator End
+  NoValidCheck       norm    RecEmcHitMap::const_iterator Find    RecEmcID&
+  NoValidCheck       norm    RecEmcHitMap::const_iterator BeginSeed
+  NoValidCheck       norm    RecEmcHitMap::const_iterator EndSeed
+  NoValidCheck       norm    RecEmcHitMap::const_iterator FindSeed  RecEmcID&
+  NoValidCheck       norm    int                          getSeedSize
+  NoValidCheck       norm    int                          getShowerSize
+  NoValidCheck       norm    vector<RecEmcID>             getShowerIdVec
+Service: RecEmcShowerCol
+Collector: RecEmcShowerCol
+  RecEmcShower
+Container: RecEmcShower
+  NoValidCheck       norm    bool                              TofShower
+  NoValidCheck       norm    RecEmcID                          getShowerId
+  NoValidCheck       norm    RecEmcID                          getClusterId
+  NoValidCheck       norm    RecEmcCluster*                    getCluster
+  NoValidCheck       norm    RecEmcIDVector                    getCellId3x3
+  NoValidCheck       norm    RecEmcIDVector                    getCellId5x5
+  NoValidCheck       norm    RecEmcFractionMap::const_iterator Begin
+  NoValidCheck       norm    RecEmcFractionMap::const_iterator End
+  NoValidCheck       norm    RecEmcFractionMap::const_iterator Find                  RecEmcID&
+  NoValidCheck       norm    int                               getSize
+  NoValidCheck       norm    RecEmcFractionMap                 getFractionMap
+  NoValidCheck       norm    RecEmcFractionMap                 getFractionMap3x3
+  NoValidCheck       norm    RecEmcFractionMap                 getFractionMap5x5
+  NoValidCheck       norm    RecEmcEnergy                      getEAll
+  NoValidCheck       norm    RecEmcEnergy                      getELepton
+  NoValidCheck       norm    RecEmcEnergy                      getETof2x1
+  NoValidCheck       norm    RecEmcEnergy                      getETof2x3
+  NoValidCheck       norm    RecEmcID                          NearestSeed
+  NoValidCheck       norm    int                               ThetaGap
+  NoValidCheck       norm    int                               PhiGap
+Service: MucRecHitCol
+Collector: MucRecHitCol
+  MucRecHit
+Container: MucRecHit
+  NoValidCheck       norm    Identifier                        GetID
+  NoValidCheck       norm    int                               Part
+  NoValidCheck       norm    int                               Seg
+  NoValidCheck       norm    int                               Gap
+  NoValidCheck       norm    int                               Strip
+  NoValidCheck       norm    MucGeoGap*                        GetGap
+  NoValidCheck       norm    MucGeoStrip*                      GetStrip
+  NoValidCheck       norm    Hep3Vector                        GetCenterPos
+  NoValidCheck       norm    Hep3Vector                        GetCenterSigma
+  NoValidCheck       norm    int                               GetHitMode
+  NoValidCheck       norm    int                               HitIsSeed
+  NoValidCheck       norm    int                               GetPadID
+  NoValidCheck       norm    float                             GetIntersectX
+  NoValidCheck       norm    float                             GetIntersectY
+  NoValidCheck       norm    float                             GetIntersectZ
+Service: RecMucTrackCol
+Collector: RecMucTrackCol
+  RecMucTrack
+Container: RecMucTrack
+//
+//  totally no idea...
+//
+//  void SetDefault();
+//  /// set the index for this track.
+//  void setTrackId(const int trackId);
+//  /// set start position of the track in Mdc.
+//  void SetMdcPos(const float x,
+//		 const float y,
+//		 const float z);
+//  /// set start moment of the track in Mdc.
+//  void SetMdcMomentum(const float px,
+//		      const float py,
+//		      const float pz);
+//  /// set start position of ext track in Muc. (compute from MdcPos MdcMomentum or get from ExtTrack)
+//  void SetExtMucPos(const float x,
+//		    const float y,
+//		    const float z);
+//  /// set start moment of ext track in Muc.
+//  void SetExtMucMomentum(const float px,
+//			 const float py,
+//			 const float pz);
+//  /// set start position of the track in Muc. (after line fit and correction)
+//  void SetMucPos(const float x,
+//		 const float y,
+//		 const float z);
+//  void SetMucPosSigma(const float sigmax,
+//      const float sigmay,
+//      const float sigmaz);
+//  /// set start moment of the track in Muc.
+//  void SetMucMomentum(const float px,
+//		      const float py,
+//		      const float pz);
+//  /// set current position of the trajectory.
+//  void SetCurrentPos(const float x,
+//		     const float y,
+//		     const float z);
+//  /// set current direction of the trajectory.
+//  void SetCurrentDir(const float x,
+//		     const float y,
+//		     const float z);
+//  /// set current intersection of the trajectory with strip plane.
+//  void SetCurrentInsct(const float x,
+//		       const float y,
+//		       const float z);
+//  /// set Ext track point.
+//  void SetExtTrack(RecExtTrack* extTrack);
+//  /// set Ext track id. for compute from mdc myself
+//  void SetExtTrackID(int id) { m_ExtTrackID = id; }
+//  /// compute ext track myself from mdc.
+//  void GetMdcExtTrack(Hep3Vector  mdcStartPos, Hep3Vector  mdcStartMomentum, int charge,
+//		      Hep3Vector& mucStartPos, Hep3Vector& mucStartMomentum);
+//  bool IsInsideSuperConductor(Hep3Vector pos);
+//  /// set corresponding monte carlo track pointer.
+//  //void SetMCTrack(const BesPersTrack* mcTrack);
+//  /// Attach the given hit to this track.
+//  void AttachHit(MucRecHit* hit);
+//  /// Where does the trajectory of this track intersect a specific gap?
+//  void Project(const int& part, const int& gap,
+//	       float& x, float& y, float& z,
+//	       int& seg);
+//  /// Calculate the distance of the hit to the intersection in read direction.
+//  float GetHitDistance(const MucRecHit* hit);
+//  /// no abs value
+//  float GetHitDistance2(const MucRecHit* hit);
+//  /// Calculate intersection from all hits attached on this gap.
+//  Hep3Vector CalculateInsct(const int part,
+//			    const int seg,
+//			    const int gap);
+//  /// Attach the intersection to this trajectory.
+//  void AttachInsct(Hep3Vector insct);
+//  /// Attach the direction to this trajectory.
+//  void AttachDirection(Hep3Vector dir);
+//  /// Correct direction of this trajectory.
+//  void CorrectDir();
+//  /// Correct current position of this trajectory.
+//  void CorrectPos();
+//  /// Where does the trajectory of this track intersect the reference plane?
+//  //void ProjectToReference(float& x, float& y, float& z);
+//  /// Where does the trajectory of this track intersect a z=const plane?
+//  //void ProjectToZ(float& x, float& y, float& zplane);
+//  /// Transform the Phi, ZR cord. to ZX, ZY cord.
+//  //void TransformPhiRToXY(const float& vk, const float& vr,
+//  //		 const float& k0, const float& r0,
+//  //		 float& vx, float& vy, 
+//  //		 float& x0, float& y0) const;
+//  /// The identifier of the Ext track as seed.
+//  int getExtTrackID() const { return m_ExtTrackID; }
+//  /// start position of the Ext track in Muc.
+//  Hep3Vector getExtMucPos() const { return m_ExtMucPos/10; }
+//  /// Start momentum of the Ext track in Muc.
+//  Hep3Vector getExtMucMomentum() const { return m_ExtMucMomentum/1000; }
+//  /// start position of this track in Muc.
+//  Hep3Vector getMucPos() const { return m_MucPos/10; }
+//  Hep3Vector getMucPosSigma() const { return m_MucPosSigma/10; }
+//  /// Start momentum of this track in Muc.
+//  Hep3Vector getMucMomentum() const { return m_MucMomentum/1000; }
+//  /// momentum of this track in Mdc
+//  Hep3Vector getMdcMomentum() const { return m_MdcMomentum/1000; }
+//  /// Current position.
+//  Hep3Vector GetCurrentPos() const { return m_CurrentPos/10; }  
+//  /// Current direction.
+//  Hep3Vector GetCurrentDir() const { return m_CurrentDir/1000; }  
+//  /// Current intersection.
+//  Hep3Vector GetCurrentInsct() const { return m_CurrentInsct; } //internal  
+//  /// Comute last gap in barrel and endcap.
+//  void ComputeLastGap();
+//  /// Which gap on Barrel is the first one with hits attached to this track?
+//  int brFirstLayer() const { return m_brFirstLayer; }
+//  /// Which gap on EndCap is the first one with hits attached to this track?
+//  int ecFirstLayer() const { return m_ecFirstLayer; }
+//  /// Line fit with hits on a seg with max hits.
+//  void LineFit(int fittingMethod);
+//  /// chi2 of line fit
+//  //float GetChi2() const { return m_Chi2; }
+//  /// degree of freedom in line fit
+//  //float GetDof() const { return m_Dof; }
+//  /// rms of distance from hit to track
+//  //float GetRms() const { return m_Rms; }
+//  /// Compute depth.
+//  void ComputeDepth();
+//  /// Compute depth.
+//  int ComputeDepth(int method);
+//  /// Compute distance match //2006.11.08
+//  void ComputeDistanceMatch();
+//  /// Extend mucpos and extmucpos to first layer of muc
+//  void Extend();
+//  /// Length of the track penetrating in iron absorber.
+//  float GetDepth3() const { return m_depth_3/10; }
+//  void  SetRecMode(int recmode) {m_recmode = recmode;}
+//  int   GetRecMode() const {return m_recmode;}
+//  /// Distance match of the ext track with muc track in first layer
+//  Hep3Vector  GetExtMucDistance() const { return m_Dist_muc_ext;}
+//  Hep3Vector  GetMucStripPos() const { return m_StripPhi;}
+//  /// ComputeNGapsWithHits;
+//  void ComputeNGapsWithHits(); 
+//  /// How many gaps provide hits attached to this track?
+//  int GetNGapsWithHits() const { return m_numLayers; }
+//  /// How many hits in all does this track contain?
+//  int GetTotalHits() const;
+//  /// How many hits per gap does this track contain?
+//  int GetHitInGap(const int part, const int gap) const;
+//  /// How many hits does a segment contains.
+//  int GetHitInSeg(const int part, const int seg) const;
+//  /// How many hits does a segment contains in one orient.
+//  int GetHitInSegOrient(const int part, const int seg, const int orient) const;
+//  /// Find the segment which contains most hits, return max hits number.
+//  int FindSegWithMaxHits(int &part, int &seg);
+//  /// ComputeMaxHitsInGap;
+//  void ComputeMaxHitsInGap();
+//  /// How many hits were attached in the gap with the most attached hits?
+//  //int GetMaxHitsInGap() const { return m_MaxHitsInLayer; }
+//  /// Does this track contains an assigned hit?
+//  bool HasHit(const int part, const int seg, const int gap, const int strip) const;
+//  /// Does this track contain any hits in the given gap?
+//  bool HasHitInGap(const int part, const int gap) const;
+//  /// How many hits do two tracks share?
+//  int GetNSharedHits(const RecMucTrack* track) const;
+//  /// Get a pointer to the first hit attached in a particular gap.
+//  MucRecHit* GetHit(const int part, const int gap) const;
+//  /// Get all hits on this track
+//  vector<MucRecHit*> GetHits() const;
+//  vector<int> getVecHits() const { return  m_vecHits ;}
+//  vector<MucRecHit*> GetExpectedHits() const;
+//  vector<int> getExpHits() const { return  m_expHits ;}
+//  vector<float> getDistHits() const { return  m_distHits ;}
+//  vector<float> getQuadDistHits() const { return  m_distHits_quad ;}
+//  vector<float> getExtDistHits() const { return  m_distHits_ext ;} 
+//  /// Get indices of all hits in the track.
+//  vector<long> GetHitIndices() const;
+//  /// Get corresponding monte carlo track pointer.
+//  //BesPersTrack* GetMCTrack() const { return m_MCTrack; }
+//  /// Compute all infomation of this track;
+//  void ComputeTrackInfo(int fittingmethod);
+//  /// Print Hits Infomation.
+//  void PrintHitsInfo() const;
+//  /// change unit
+//  void OutputUnitChange();
+//  /// reload setVecHits
+//  void setVecHits(vector<MucRecHit*>& pHits);
+//  void setExpHits(vector<MucRecHit*>& pHits);
+//  void setVecHits(vector<int>& vechits){ m_vecHits = vechits;}
+//  void setExpHits(vector<int>& exphits){ m_expHits = exphits;}  
+//  void setDistHits(vector<float>& disthits){ m_distHits = disthits;}
+//  void setQuadDistHits(vector<float>& disthits){ m_distHits_quad = disthits;}
+//  void setExtDistHits(vector<float>& disthits){ m_distHits_ext = disthits;}
+//  void pushExtDistHits(float dist){m_distHits_ext.push_back(dist);}
+Service: EventNavigator
+Container: EventNavigator
+  // Methods to retrieve objPtr via id
+  NoValidCheck       const   McParticle*         getMcParticle       int
+  // MDC
+  NoValidCheck       const   RecMdcTrack*        getMdcTrack         int
+  // return MdcMcHits corresponding given detector Id
+  NoValidCheck       norm    MdcMcHitVector      getMdcMcHits        int
+  NoValidCheck       const   RecMdcHit*          getMdcRecHit        int
+  NoValidCheck       const   MdcDigi*            getMdcDigi          int
+  // EMC
+  NoValidCheck       norm    RecEmcShowerVector  getEmcRecShowers    int
+  NoValidCheck       norm    EmcMcHitVector      getEmcMcHits        int
+  // Methods to retrieve relations
+  // MDC
+  NoValidCheck       norm    McParticleVector&   getMcParticles      RecMdcTrack*
+  NoValidCheck       norm    RecMdcTrackVector&  getMdcTracks        McParticle*
+  NoValidCheck       norm    RecMdcHitVector&    getMdcRecHits       McParticle*
+  NoValidCheck       norm    MdcMcHitVector&     getMdcMcHits        RecMdcTrack*  
+  NoValidCheck       norm    RecMdcHitVector&    getMdcRecHits       MdcMcHit*  
+  NoValidCheck       norm    MdcMcHitVector&     getMdcMcHits        RecMdcHit* 
+  // EMC
+  NoValidCheck       norm    McParticleVector&   getMcParticles      RecEmcShower*
+  NoValidCheck       norm    RecEmcShowerVector& getEmcRecShowers    EmcMcHit*   
+  NoValidCheck       norm    RecEmcShowerVector& getEmcRecShowers    McParticle*
+  NoValidCheck       norm    EmcMcHitVector&     getEmcMcHits        RecEmcShower*

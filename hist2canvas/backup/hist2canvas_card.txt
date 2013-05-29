@@ -1,0 +1,19 @@
+//
+//hist2canvas_list
+canvas: C1 2 2 300 200
+pad: 1
+TH1D test.root vxyz vxyz_vx0 Black
+pad: 2
+TH1D test.root vxyz vxyz_vy0 Black
+pad: 3
+TH1D test.root vxyz vxyz_vz0 Black
+pad: 4
+TH1D test.root vxyz vxyz_theta Black
+TH1D test.root vxyz vxyz_vr0 Red
+canvas: C2 1 2 300 200
+pad: 1
+TH1D test.root D0tokpi D0tokpi_pkme Black
+pad: 2
+TH1D test.root D0tokpi_af1C D0tokpi_af1C_pkme Black
+//hist2canvas_list
+//

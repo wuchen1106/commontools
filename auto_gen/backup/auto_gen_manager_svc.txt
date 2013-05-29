@@ -1,0 +1,101 @@
+//
+//auto_gen_svcTable
+classI: other //other kind of svc
+    Null McTop StatusControl:!McTopSvcStatus.isSuccess() || 0 == m_mcTopSvc
+classI: SmartDataPtr
+  classII: pSer_path //IDataProviderSvc* pService, string& path
+    Null    EventNavigator          eventSvc Event/Navigator
+
+  classII: pSer_pDir //IDataProviderSvc* pService, PATH
+    Null    Navigator               eventSvc EventModel
+    Event   EventHeader             eventSvc EventModel
+    //EvtRec
+    Null    EvtRecEvent             eventSvc EventModel::EvtRec
+    Null    EvtRecTrackCol          eventSvc EventModel::EvtRec
+    Null    EvtRecPi0Col            eventSvc EventModel::EvtRec
+    Null    EvtRecPrimaryVertex     eventSvc EventModel::EvtRec
+    Null    EvtRecVeeVertexCol      eventSvc EventModel::EvtRec
+    Null    EvtRecDTagCol           eventSvc EventModel::EvtRec
+    Null    EvtRecEtaToGGCol        eventSvc EventModel::EvtRec
+    //Recon event
+    Null    RecMdcHitCol            eventSvc EventModel::Recon
+    Null    RecMdcTrackCol          eventSvc EventModel::Recon
+    Null    MdcHOTCol               eventSvc EventModel::Recon
+    Null    RecMdcDedxCol           eventSvc EventModel::Recon
+    Null    RecMdcDedxHitCol        eventSvc EventModel::Recon
+    Null    RecMdcKalTrackCol       eventSvc EventModel::Recon
+    Null    RecMdcKalHelixSegCol    eventSvc EventModel::Recon
+    Null    RecEsTimeCol            eventSvc EventModel::Recon
+    Null    RecExtTrackCol          eventSvc EventModel::Recon
+    Null    RecBTofHitCol           eventSvc EventModel::Recon
+    Null    RecETofHitCol           eventSvc EventModel::Recon
+    Null    RecTofTrackCol          eventSvc EventModel::Recon
+    Null    RecBTofCalHitCol        eventSvc EventModel::Recon
+    Null    RecETofCalHitCol        eventSvc EventModel::Recon
+    Null    RecEmcHitCol            eventSvc EventModel::Recon
+    Null    RecEmcClusterCol        eventSvc EventModel::Recon
+    Null    RecEmcShowerCol         eventSvc EventModel::Recon
+    Null    MucRecHitCol            eventSvc EventModel::Recon
+    Null    RecMucTrackCol          eventSvc EventModel::Recon
+    //Simulation 
+    Event   McParticleCol           eventSvc EventModel::MC
+    Null    MdcMcHitCol             eventSvc EventModel::MC
+    Null    TofMcHitCol             eventSvc EventModel::MC
+    Null    EmcMcHitCol             eventSvc EventModel::MC
+    Null    MucMcHitCol             eventSvc EventModel::MC
+    Null    McPrimaryParticleCol    eventSvc EventModel::MC
+    Null    McPartToMdcHitTab       eventSvc EventModel::MC
+    Null    McPartToTofHitTab       eventSvc EventModel::MC
+    Null    McPartToEmcHitTab       eventSvc EventModel::MC
+    Null    McPartToMucHitTab       eventSvc EventModel::MC
+     //Analysis Event
+    Null    BParticleCol            eventSvc EventModel::Anal
+    Null    BParticleIDCol          eventSvc EventModel::Anal
+    Null    BVertexCol              eventSvc EventModel::Anal
+    Null    BPhotonCol              eventSvc EventModel::Anal
+    Null    BElectronCol            eventSvc EventModel::Anal
+    Null    BMuonCol                eventSvc EventModel::Anal
+    Null    BPionCol                eventSvc EventModel::Anal
+    Null    BKaonCol                eventSvc EventModel::Anal
+    Null    BProtonCol              eventSvc EventModel::Anal
+    Null    BTrackCol               eventSvc EventModel::Anal
+    Null    BPi0Col                 eventSvc EventModel::Anal
+    Null    BEtaCol                 eventSvc EventModel::Anal
+    Null    BKShortCol              eventSvc EventModel::Anal
+    Null    BLambdaCol              eventSvc EventModel::Anal
+    //Physics Event
+    Null    BCharmMesonCol          eventSvc EventModel::Phys
+    Null    BJPsiCol                eventSvc EventModel::Phys
+    //for test wsp 20050513
+    Null    DstMdcTrackCol          eventSvc EventModel::Dst
+    Null    DstMdcKalTrackCol       eventSvc EventModel::Dst
+    Null    DstMdcDedxCol           eventSvc EventModel::Dst
+    Null    DstTofTrackCol          eventSvc EventModel::Dst
+    Null    DstEmcShowerCol         eventSvc EventModel::Dst
+    Null    DstMucTrackCol          eventSvc EventModel::Dst
+    Null    DstExtTrackCol          eventSvc EventModel::Dst
+    Null    DstTrkListCol           eventSvc EventModel::Dst
+    Null    EventList               eventSvc EventModel::Dst
+    // Digi event
+    Null    MdcDigiCol              eventSvc EventModel::Digi
+    Null    EmcDigiCol              eventSvc EventModel::Digi
+    Null    TofDigiCol              eventSvc EventModel::Digi
+    Null    MucDigiCol              eventSvc EventModel::Digi
+    Null    LumiDigiCol             eventSvc EventModel::Digi
+    // Trigger info
+    Null    TrigGTDCol              eventSvc EventModel::Trig
+    Null    TrigData                eventSvc EventModel::Trig
+    // EventFilter info
+    Null    HltRawCol               eventSvc EventModel::Hlt
+    Null    HltInf                  eventSvc EventModel::Hlt
+    Null    DstHltInf               eventSvc EventModel::Hlt
+
+//auto_gen_svcTable
+//
+
+//
+//auto_gen_svcDescribe_McTop
+static const bool CREATEIFNOTTHERE(true);
+StatusCode McTopSvcStatus = service("McTopSvc", m_mcTopSvc, CREATEIFNOTTHERE);
+//auto_gen_svcDescribe_McTop
+//
