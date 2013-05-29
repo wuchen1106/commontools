@@ -31,7 +31,7 @@ PROGRAM = txt2root
 OBJ = 
 
 $(PROGRAM): $(OBJ) $(PROGRAM).C
-	$(CXX) $(CXXFLAGS) $(INCDIR) $(LIBDIR) $(LIBS) $(PROGRAM).C $(OBJ) -o $(PROGRAM)
+	$(CXX) $(CXXFLAGS) $(INCDIR) $(LIBDIR) $(LIBS) $(PROGRAM).C $(OBJ) -o $(MYBIN)/$(PROGRAM)
 
 #--------------------------PART 4: about make options-------------------------------------------
 # You can create new options to realise special functions
@@ -39,7 +39,7 @@ $(PROGRAM): $(OBJ) $(PROGRAM).C
 .PHONY: clean
 clean:
 	$(RM) $(OBJ)
-	$(RM) $(PROGRAM)
+	$(RM) $(MYBIN)/$(PROGRAM)
 
 .PHONY: all
 all: $(PROGRAM)
