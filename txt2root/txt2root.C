@@ -24,16 +24,17 @@ void init_args()
 /* begin of functions */
 int get_names(const char* line, char** names, int *inames){
 	fprintf(stderr,"This is get_names! First line is:\n%s\n",line);
-	int ic = 0;
 	*inames = 0;
 	int count = 0;
 	bool isC = false;
-	while(ic<10000){
+	int ic = -1;
+	while(ic++<100){
 		char c = line[ic];
 		fprintf(stderr,"c[%d]=%c\n",ic,c);
 		if ( c == ' ' || c == '\t' ){
 			if ( isC ){
 				(*inames)++;
+				count = 0;
 				isC = false;
 			}
 			continue;
@@ -41,6 +42,7 @@ int get_names(const char* line, char** names, int *inames){
 		else if ( c == '\n' ){
 			if ( isC ){
 				(*inames)++;
+				count = 0;
 				isC = false;
 			}
 			break;
@@ -50,10 +52,9 @@ int get_names(const char* line, char** names, int *inames){
 			names[*inames][count] = c;
 			count++;
 		}
-		ic++;
 	}
 	for ( int i = 0; i < *inames; i++ ){
-		fprintf(stderr,"name[%d]:%s\n",*inames,names[i]);
+		fprintf(stderr,"name[%d]:%s\n",i,names[i]);
 	}
 	return 0;
 }
