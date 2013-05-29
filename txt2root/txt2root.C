@@ -23,7 +23,39 @@ void init_args()
 
 /* begin of functions */
 int get_names(const char* line, char** names, int *inames){
-	fprintf(stderr,"This is get_names! First line is%s\n",line);
+	fprintf(stderr,"This is get_names! First line is:\n%s\n",line);
+	int ic = 0;
+	*inames = 0;
+	int count = 0;
+	bool isC = false;
+	while(ic<10000){
+		char c = line[ic];
+		fprintf(stderr,"c[%d]=%c\n",ic,c);
+		if ( c == ' ' || c == '\t' ){
+			if ( isC ){
+				(*inames)++;
+				isC = false;
+			}
+			continue;
+		}
+		else if ( c == '\n' ){
+			if ( isC ){
+				(*inames)++;
+				isC = false;
+			}
+			break;
+		}
+		else{
+			isC = true;
+			names[*inames][count] = c;
+			count++;
+		}
+		ic++;
+	}
+	for ( int i = 0; i < *inames; i++ ){
+		fprintf(stderr,"name[%d]:%s\n",*inames,names[i]);
+	}
+	return 0;
 }
 
 int txt_to_root(const char* input_file, const char* output_file){
@@ -39,7 +71,10 @@ int txt_to_root(const char* input_file, const char* output_file){
 
 	char* buf = (char *)malloc(124);
 	fgets(buf,2048,fpi); // get the first line, which contains names of these column
-	char** names = (char **) malloc(10000); // up to 100 names with 100 charectors inside
+	char* names[100];
+	for ( int i = 0; i < 100; i++ ){
+		names[i] = (char *) malloc(100); // up to 100 names with 100 charectors inside
+	}
 	int inames = 0;
 	get_names(buf,names,&inames);
 
