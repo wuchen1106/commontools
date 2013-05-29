@@ -60,7 +60,7 @@ int get_names(const char* line, char** names, int *inames){
 }
 
 int txt_to_root(const char* input_file, const char* output_file){
-	fprintf(stderr,"This is txt_to_root!\n");
+//	fprintf(stderr,"This is txt_to_root!\n");
 	FILE* fpi = 0;
 	fpi = fopen(input_file,"r+");
 	if ( !fpi ){
@@ -79,9 +79,17 @@ int txt_to_root(const char* input_file, const char* output_file){
 	int inames = 0;
 	get_names(buf,names,&inames);
 
-	double val1 = 0;
-	while(EOF!=fscanf(fpi,"%s",buf)){
-		fprintf(stderr,"val1 = %s\n",buf);
+	double* values = (double *) malloc(100);
+	int count = 0;
+	int iline = 1;
+	double value = 0;
+	while(1==fscanf(fpi,"%lf",&values[count])){
+		fprintf(stderr,"values[%d]=%lf\n",count,values[count]);
+		count++;
+		if ( count == inames ){
+			count = 0;
+			iline++;
+		}
 	}
 	return 0;
 }
