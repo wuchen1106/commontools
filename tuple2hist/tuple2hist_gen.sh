@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #*********************************read the card *********************************************
+RM="rm -rf"
 
 card_name="tuple2hist_card.txt"
 

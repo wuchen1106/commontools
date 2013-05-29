@@ -20,7 +20,7 @@
 #include "TBranch.h"
 #include "TLeaf.h"
 
-void ana(std::string name_file = "/home/chen/workarea/Analyse/common_tools/tuple2hist/input.root"){
+void tuple2hist_scan(std::string name_file = "/home/chen/MyWorkArea/MyStudies/AntiProton/Simulate/configure/data/spectrum.root"){
 
   //std::string name_file = "/home/chen/workarea/Analyse/common_tools/tuple2hist/input.root";
   Int_t myBin = 200;
