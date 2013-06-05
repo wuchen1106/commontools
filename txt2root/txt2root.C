@@ -13,13 +13,13 @@ enum workmode{
 	txt2bin,
 	bin2txt
 } m_workmode;
-char m_intput_file[128];
+char m_input_file[128];
 char m_output_file[128];
 
 void init_args()
 {
 	m_workmode = txt2root;
-	strcpy(m_intput_file, "input.txt");
+	strcpy(m_input_file, "input.txt");
 	strcpy(m_output_file, "output.root");
 }
 /* end of arguments */
@@ -145,7 +145,7 @@ int bin_to_txt(const char* input_file, const char* output_file){
 
 void print_usage(char* prog_name)
 {
-	fprintf(stderr,"Usage %s [options] InputFile [OutputFile]\n",prog_name);
+	fprintf(stderr,"Usage %s [options] [args]\n",prog_name);
 	fprintf(stderr,"[options]\n");
 	fprintf(stderr,"\t -i\n");
 	fprintf(stderr,"\t\t specify the input file.\n");
@@ -180,7 +180,7 @@ int main(int argc, char** argv){
 	init_args();
 
 	int result;
-	while((result=getopt(argc,argv,"tbTBi:o:"))!=-1){
+	while((result=getopt(argc,argv,"htbTBi:o:"))!=-1){
 		switch(result){
 			/* INPUTS */
 			case 't':
@@ -200,8 +200,8 @@ int main(int argc, char** argv){
 				printf("WorkMode: binary to text\n");
 				break;
 			case 'i':
-				strcpy(m_intput_file,optarg);
-				printf("input file: %s\n",m_intput_file);
+				strcpy(m_input_file,optarg);
+				printf("input file: %s\n",m_input_file);
 				break;
 			case 'o':
 				strcpy(m_output_file,optarg);
@@ -219,38 +219,38 @@ int main(int argc, char** argv){
 
 	switch(m_workmode){
 		case txt2root:
-			if (!txt_to_root(m_intput_file,m_output_file)){
-				fprintf(stderr,"Successfully translated \"%s\" from text type to root file \"%s\"!\n",m_intput_file,m_output_file);
+			if (!txt_to_root(m_input_file,m_output_file)){
+				fprintf(stderr,"Successfully translated \"%s\" from text type to root file \"%s\"!\n",m_input_file,m_output_file);
 			}
 			else{
-				fprintf(stderr,"Error when translating \"%s\" from text type to root file \"%s\"!\n",m_intput_file,m_output_file);
+				fprintf(stderr,"Error when translating \"%s\" from text type to root file \"%s\"!\n",m_input_file,m_output_file);
 				return -1;
 			}
 			break;
 		case bin2root:
-			if (!bin_to_root(m_intput_file,m_output_file)){
-				fprintf(stderr,"Successfully translated \"%s\" from binary type to root file \"%s\"!\n",m_intput_file,m_output_file);
+			if (!bin_to_root(m_input_file,m_output_file)){
+				fprintf(stderr,"Successfully translated \"%s\" from binary type to root file \"%s\"!\n",m_input_file,m_output_file);
 			}
 			else{
-				fprintf(stderr,"Error when translating \"%s\" from binary type to root file \"%s\"!\n",m_intput_file,m_output_file);
+				fprintf(stderr,"Error when translating \"%s\" from binary type to root file \"%s\"!\n",m_input_file,m_output_file);
 				return -1;
 			}
 			break;
 		case txt2bin:
-			if (!txt_to_bin(m_intput_file,m_output_file)){
-				fprintf(stderr,"Successfully translated \"%s\" from text type to binary file \"%s\"!\n",m_intput_file,m_output_file);
+			if (!txt_to_bin(m_input_file,m_output_file)){
+				fprintf(stderr,"Successfully translated \"%s\" from text type to binary file \"%s\"!\n",m_input_file,m_output_file);
 			}
 			else{
-				fprintf(stderr,"Error when translating \"%s\" from text type to binary file \"%s\"!\n",m_intput_file,m_output_file);
+				fprintf(stderr,"Error when translating \"%s\" from text type to binary file \"%s\"!\n",m_input_file,m_output_file);
 				return -1;
 			}
 			break;
 		case bin2txt:
-			if (!bin_to_txt(m_intput_file,m_output_file)){
-				fprintf(stderr,"Successfully translated \"%s\" from binary type to text file \"%s\"!\n",m_intput_file,m_output_file);
+			if (!bin_to_txt(m_input_file,m_output_file)){
+				fprintf(stderr,"Successfully translated \"%s\" from binary type to text file \"%s\"!\n",m_input_file,m_output_file);
 			}
 			else{
-				fprintf(stderr,"Error when translating \"%s\" from binary type to text file \"%s\"!\n",m_intput_file,m_output_file);
+				fprintf(stderr,"Error when translating \"%s\" from binary type to text file \"%s\"!\n",m_input_file,m_output_file);
 				return -1;
 			}
 			break;
