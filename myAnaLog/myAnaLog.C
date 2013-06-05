@@ -273,7 +273,7 @@ int main(int argc, char** argv){
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(15)<<m_date
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(15)<<total_work_time
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(15)<<total_rest_time
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(5)<<rest_num
+		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<rest_num
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(5)<<m_code_nlines
 		  <<std::endl;
 	buf_log.str("");
