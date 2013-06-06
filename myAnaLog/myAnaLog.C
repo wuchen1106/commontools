@@ -14,6 +14,7 @@
 
 /* constant */
 double aDay = 24;
+double inTime = 9;
 double offTime = 22;
 
 /* arguments */
@@ -164,6 +165,8 @@ int main(int argc, char** argv){
 	TH1D *h1d2 = new TH1D("ActiveChart","ActiveChart",nbin2,left2,right2);
 
 	// Read the file
+	double late_time = 0;
+	double early_time = 0;
 	int rest_num = 0;
 	bool workOvernight = false;
 	double total_work_time = 0;
@@ -183,7 +186,10 @@ int main(int argc, char** argv){
 			//printf("cur_time = %lf\n",cur_time);
 			int status = check_status(buf);
 			if ( status == 1 ){ // Start of work
-				if (total_work_time>0) total_rest_time += (cur_time-get_time(ibin));
+				if (total_work_time>0){ // Checkin point
+					total_rest_time += (cur_time-get_time(ibin));
+					late_time = cur_time - inTime;
+				}
 				//printf("Start at %lf\n",cur_time);
 				for ( ; get_time(ibin) < cur_time && ibin <= nbin2; ibin++ ){
 					if (get_time(ibin) > offTime){
@@ -196,6 +202,7 @@ int main(int argc, char** argv){
 			else if ( status == 0 ){ // End of work
 				rest_num++;
 				total_work_time += (cur_time-get_time(ibin));
+				early_time = offTime - cur_time;
 				//printf("Stop at %lf\n",cur_time);
 				for ( ; get_time(ibin) < cur_time && ibin <= nbin2; ibin++ ){
 					if (get_time(ibin) > offTime){
@@ -273,6 +280,8 @@ int main(int argc, char** argv){
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(15)<<m_date
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(15)<<total_work_time
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(15)<<total_rest_time
+		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(15)<<late_time
+		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(15)<<early_time
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<rest_num
 		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(5)<<m_code_nlines
 		  <<std::endl;
