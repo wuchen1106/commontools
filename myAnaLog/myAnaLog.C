@@ -11,6 +11,9 @@
 #include "TH1D.h"
 #include "TCanvas.h"
 #include "TStyle.h"
+#include "TArrow.h"
+#include "TAxis.h"
+#include "TFile.h"
 
 /* constant */
 double aDay = 24;
@@ -20,6 +23,7 @@ double offTime = 22;
 /* arguments */
 char m_input_file[128];
 char m_output_file[128];
+char m_output_root[128];
 char m_logbook[128];
 char m_date[128];
 int m_code_nlines=0;
@@ -28,7 +32,8 @@ int m_verbose=0;
 void init_args()
 {
 	strcpy(m_input_file, "input.txt");
-	strcpy(m_output_file, "output.root");
+	strcpy(m_output_file, "output.pdf");
+	strcpy(m_output_root, "output.root");
 }
 /* end of arguments */
 
@@ -41,7 +46,7 @@ int get_number(char c){
 	int i = c - '0';
 	return i;
 }
-int check_status(const char* content){
+int check_status(const char* content, std::string &log){
 	std::string str = content;
 	if ( str.find("Check in") < str.length() ||
 			 str.find("Back to work") < str.length() ){
@@ -51,7 +56,13 @@ int check_status(const char* content){
 			 str.find("Take a rest") < str.length() ){
 		return 0;
 	}
-	else return -1;
+	else if (content[9]=='\t'&&content[10]=='\t'&&content[11]!='\t'){
+		log=str.substr(11,std::string::npos);
+		return 2;
+	}
+	else{
+		return -1;
+	}
 }
 bool has_time(const char* content){
 	if(m_verbose>=20) printf("%c%c%c%c%c%c\n",content[0],content[1],content[3],content[4],content[6],content[7]);
@@ -94,6 +105,8 @@ void print_usage(char* prog_name)
 	fprintf(stderr,"\t\t specify the output file.\n");
 	fprintf(stderr,"\t -l\n");
 	fprintf(stderr,"\t\t specify the logbook.\n");
+	fprintf(stderr,"\t -r\n");
+	fprintf(stderr,"\t\t specify the output root file.\n");
 	fprintf(stderr,"\t -d\n");
 	fprintf(stderr,"\t\t specify the date.\n");
 	fprintf(stderr,"\t -n\n");
@@ -116,7 +129,7 @@ int main(int argc, char** argv){
 	}
 	init_args();
 	int result;
-	while((result=getopt(argc,argv,"hi:o:l:d:n:v:"))!=-1){
+	while((result=getopt(argc,argv,"hi:o:l:r:d:n:v:"))!=-1){
 		switch(result){
 			/* INPUTS */
 			case 'i':
@@ -130,6 +143,10 @@ int main(int argc, char** argv){
 			case 'l':
 				strcpy(m_logbook,optarg);
 				printf("logbook: %s\n",m_logbook);
+				break;
+			case 'r':
+				strcpy(m_output_root,optarg);
+				printf("output root file: %s\n",m_output_root);
 				break;
 			case 'd':
 				strcpy(m_date,optarg);
@@ -181,8 +198,8 @@ int main(int argc, char** argv){
 	bool workOvernight = false;
 	double total_work_time = 0;
 	double total_rest_time = 0;
-	std::vector<double> work_time;
-	std::vector<double> rest_time;
+	std::vector<double> log_time;
+	std::vector<std::string> log_cont;
 	char* buf = (char *)malloc(2048);
 	double cur_time = 0; // in hour
 	int ibin = 1;
@@ -194,7 +211,8 @@ int main(int argc, char** argv){
 			cur_time = get_time(buf);
 			if (cur_time < get_time(ibin)) cur_time += aDay;
 			if(m_verbose>=15) printf("cur_time = %lf\n",cur_time);
-			int status = check_status(buf);
+			std::string log;
+			int status = check_status(buf,log);
 			if ( status == 1 ){ // Start of work
 				if (total_work_time>0){
 					total_rest_time += (cur_time-get_time(ibin));
@@ -226,6 +244,10 @@ int main(int argc, char** argv){
 					h1d_temp->SetBinContent(ibin,1);
 				}
 			}
+			else if (status == 2){
+				log_time.push_back(cur_time);
+				log_cont.push_back(log);
+			}
 			else{
 				if(m_verbose>=15) printf("cannot recognize \"%s\"\n",buf);
 			}
@@ -240,10 +262,15 @@ int main(int argc, char** argv){
 	// Print the histogram
 	gStyle->SetOptStat(0);
 	TCanvas *canv = new TCanvas("c","c");
+	canv->SetBottomMargin(0.5);
 	h1d1->SetLineColor(kBlue);
 	h1d1->SetFillColor(kBlue);
 	h1d2->SetLineColor(kRed);
 	h1d2->SetFillColor(kRed);
+	for ( int i = 0; i < log_cont.size(); i++ ){
+		int ibin = h1d2->FindBin(log_time[i]);
+		h1d2->GetXaxis()->SetBinLabel(ibin,log_cont[i].c_str());
+	}
 	if (workOvernight){
 		if(m_verbose>=10) printf("You checked out too late man, %lf\n",cur_time);
 		h1d2->GetXaxis()->SetRangeUser(0,cur_time);
@@ -251,10 +278,28 @@ int main(int argc, char** argv){
 		h1d1->Draw("LF2SAME");
 	}
 	else{
+		for ( int i = 0; i < log_cont.size(); i++ ){
+			int ibin = h1d1->FindBin(log_time[i]);
+			h1d1->GetXaxis()->SetBinLabel(ibin,log_cont[i].c_str());
+		}
 		if(m_verbose>=10) printf("You checked out too early man, %lf\n",cur_time);
 		h1d1->Draw("LF2");
 	}
+	for ( int i = 0; i < log_time.size(); i++ ){
+		double x1 = log_time[i];
+		double x2 = log_time[i];
+		double y1 = 0;
+		double y2 = 1;
+		TArrow *arrow = new TArrow(x1,y1,x2,y2,0.01,"<|");
+		arrow->Draw("SAME");
+	}
 	canv->Print(m_output_file);
+
+	// Save histograms
+	TFile *file = new TFile(m_output_root,"RECREATE");
+	h1d1->Write();
+	h1d2->Write();
+	file->Close();
 
 	// Record main info to logbook
   bool isOK = ( access( m_logbook, 0 ) == 0 );
