@@ -23,6 +23,7 @@ char m_output_file[128];
 char m_logbook[128];
 char m_date[128];
 int m_code_nlines=0;
+int m_verbose=0;
 
 void init_args()
 {
@@ -53,7 +54,7 @@ int check_status(const char* content){
 	else return -1;
 }
 bool has_time(const char* content){
-	//printf("%c%c%c%c%c%c\n",content[0],content[1],content[3],content[4],content[6],content[7]);
+	if(m_verbose>=10) printf("%c%c%c%c%c%c\n",content[0],content[1],content[3],content[4],content[6],content[7]);
 	if ( is_number(content[0]) &&
 			 is_number(content[1]) &&
 			 content[2] == ':' &&
@@ -80,7 +81,7 @@ double get_time(const char* content){
 	int s2 = get_number(content[7]);
 	int nsec = (h1*10+h2)*3600 + (m1*10+m2)*60 + s1*10 + s2;
 	double time = (double) nsec/3600.;
-	//printf("%s: %d, %lf\n",content,nsec,time);
+	if(m_verbose>=10) printf("%s: %d, %lf\n",content,nsec,time);
 	return time;
 }
 void print_usage(char* prog_name)
@@ -97,6 +98,8 @@ void print_usage(char* prog_name)
 	fprintf(stderr,"\t\t specify the date.\n");
 	fprintf(stderr,"\t -n\n");
 	fprintf(stderr,"\t\t specify how many lines have been modified.\n");
+	fprintf(stderr,"\t -v\n");
+	fprintf(stderr,"\t\t specify verbose.\n");
 	fprintf(stderr,"\t -h\n");
 	fprintf(stderr,"\t\t Usage message.\n");
 	fprintf(stderr,"[example]\n");
@@ -113,7 +116,7 @@ int main(int argc, char** argv){
 	}
 	init_args();
 	int result;
-	while((result=getopt(argc,argv,"hi:o:l:d:n:"))!=-1){
+	while((result=getopt(argc,argv,"hi:o:l:d:n:v:"))!=-1){
 		switch(result){
 			/* INPUTS */
 			case 'i':
@@ -135,6 +138,10 @@ int main(int argc, char** argv){
 			case 'n':
 				m_code_nlines = atoi(optarg);
 				printf("nlines: %d\n",m_code_nlines);
+				break;
+			case 'v':
+				m_verbose = atoi(optarg);
+				printf("verbose: %d\n",m_verbose);
 				break;
 			case '?':
 				printf("Wrong option! optopt=%c, optarg=%s\n", optopt, optarg);
@@ -178,19 +185,19 @@ int main(int argc, char** argv){
 	int ibin = 1;
 	TH1D *h1d_temp = h1d1;
 	while(fgets(buf,2048,fpi)){
-		//printf("Got Line: %s\n",buf);
+		if(m_verbose>=10) printf("Got Line: %s\n",buf);
 		if (has_time(buf)){
-			//printf("Has time!\n");
+			if(m_verbose>=10) printf("Has time!\n");
 			cur_time = get_time(buf);
 			if (cur_time < get_time(ibin)) cur_time += aDay;
-			//printf("cur_time = %lf\n",cur_time);
+			if(m_verbose>=10) printf("cur_time = %lf\n",cur_time);
 			int status = check_status(buf);
 			if ( status == 1 ){ // Start of work
 				if (total_work_time>0){ // Checkin point
 					total_rest_time += (cur_time-get_time(ibin));
 					late_time = cur_time - inTime;
 				}
-				//printf("Start at %lf\n",cur_time);
+				if(m_verbose>=10) printf("Start at %lf\n",cur_time);
 				for ( ; get_time(ibin) < cur_time && ibin <= nbin2; ibin++ ){
 					if (get_time(ibin) > offTime){
 						workOvernight = true;
@@ -203,7 +210,7 @@ int main(int argc, char** argv){
 				rest_num++;
 				total_work_time += (cur_time-get_time(ibin));
 				early_time = offTime - cur_time;
-				//printf("Stop at %lf\n",cur_time);
+				if(m_verbose>=10) printf("Stop at %lf\n",cur_time);
 				for ( ; get_time(ibin) < cur_time && ibin <= nbin2; ibin++ ){
 					if (get_time(ibin) > offTime){
 						workOvernight = true;
@@ -213,7 +220,7 @@ int main(int argc, char** argv){
 				}
 			}
 			else{
-				//printf("cannot recognize \"%s\"\n",buf);
+				if(m_verbose>=10) printf("cannot recognize \"%s\"\n",buf);
 			}
 		}
 		else{
@@ -229,7 +236,7 @@ int main(int argc, char** argv){
 	h1d2->SetLineColor(kRed);
 	h1d2->SetFillColor(kRed);
 	if (workOvernight){
-		//printf("cur_time = %lf, ibin = %d\n",cur_time,ibin);
+		if(m_verbose>=10) printf("cur_time = %lf, ibin = %d\n",cur_time,ibin);
 		h1d2->GetXaxis()->SetRangeUser(0,cur_time);
 		h1d2->Draw("LF2");
 		h1d1->Draw("LF2SAME");
