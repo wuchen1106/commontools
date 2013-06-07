@@ -46,19 +46,25 @@ int get_number(char c){
 	int i = c - '0';
 	return i;
 }
-int check_status(const char* content, std::string &log){
+int check_status(const char* content, std::string &log, int &mark){
 	std::string str = content;
-	if ( str.find("Check in") < str.length() ||
+	if (is_number(content[9])&&is_number(content[10])){
+		log=str.substr(12,std::string::npos);
+		int ten=get_number(content[9]);
+		int one=get_number(content[10]);
+		mark = ten*10+one;
+		return 2;
+	}
+	else if (content[9]=='\t'&&content[10]=='\t'&&content[11]=='\t'){
+		return -1;
+	}
+	else if ( str.find("Check in") < str.length() ||
 			 str.find("Back to work") < str.length() ){
 		return 1;
 	}
 	else if ( str.find("Check out") < str.length() ||
 			 str.find("Take a rest") < str.length() ){
 		return 0;
-	}
-	else if (content[9]=='\t'&&content[10]=='\t'&&content[11]!='\t'){
-		log=str.substr(11,std::string::npos);
-		return 2;
 	}
 	else{
 		return -1;
@@ -187,6 +193,7 @@ int main(int argc, char** argv){
 	int left2 = 0;
 	int right2 = 48;
 	TH1D *h1d2 = new TH1D("ActiveChart","ActiveChart",nbin2,left2,right2);
+	TH1D *h1d3 = new TH1D("ActiveChart","ActiveChart",nbin2,left2,right2);
 
 	// Read the file
 	double late_time = 0;
@@ -200,6 +207,7 @@ int main(int argc, char** argv){
 	double total_rest_time = 0;
 	std::vector<double> log_time;
 	std::vector<std::string> log_cont;
+	std::vector<int> log_mark;
 	char* buf = (char *)malloc(2048);
 	double cur_time = 0; // in hour
 	int ibin = 1;
@@ -212,7 +220,8 @@ int main(int argc, char** argv){
 			if (cur_time < get_time(ibin)) cur_time += aDay;
 			if(m_verbose>=15) printf("cur_time = %lf\n",cur_time);
 			std::string log;
-			int status = check_status(buf,log);
+			int mark;
+			int status = check_status(buf,log,mark);
 			if ( status == 1 ){ // Start of work
 				if (total_work_time>0){
 					total_rest_time += (cur_time-get_time(ibin));
@@ -247,6 +256,7 @@ int main(int argc, char** argv){
 			else if (status == 2){
 				log_time.push_back(cur_time);
 				log_cont.push_back(log);
+				log_mark.push_back(mark);
 			}
 			else{
 				if(m_verbose>=15) printf("cannot recognize \"%s\"\n",buf);
@@ -259,7 +269,29 @@ int main(int argc, char** argv){
 	duration = checkout_time - checkin_time;
 	rest_num--; // Checkout is not a rest
 
+	// Fill h1d3
+	for ( int i = 0; i < log_time.size(); i++ ){
+		double startTime=log_time[i];
+		double endTime;
+		if ( i == log_time.size() -1 ){
+			endTime=checkout_time;
+		}
+		else{
+			endTime=log_time[i+1];
+		}
+		int startBin = h1d3->FindBin(startTime);
+		int endBin = h1d3->FindBin(endTime);
+		double mark = log_mark[i]/100.;
+		//std::cout<<"log_mark["<<i<<"] = "<<log_mark[i]<<", mark = "<<mark
+		//	<<", ["<<startBin<<","<<endBin<<"]"
+		//	<<", ["<<startTime<<","<<endTime<<"]"<<std::endl;
+		for ( int ibin = startBin; ibin < endBin; ibin++ ){
+			h1d3->SetBinContent(ibin,mark);
+		}
+	}
+
 	// Print the histogram
+	std::stringstream buf_label;
 	gStyle->SetOptStat(0);
 	TCanvas *canv = new TCanvas("c","c");
 	canv->SetBottomMargin(0.5);
@@ -267,92 +299,132 @@ int main(int argc, char** argv){
 	h1d1->SetFillColor(kBlue);
 	h1d2->SetLineColor(kRed);
 	h1d2->SetFillColor(kRed);
+	h1d3->SetLineColor(kGreen);
+	h1d3->SetFillColor(kGreen);
+	h1d1->GetXaxis()->SetLabelSize(0.02);
+	h1d2->GetXaxis()->SetLabelSize(0.02);
+	h1d1->SetTickLength(0,"X");
+	h1d2->SetTickLength(0,"X");
 	for ( int i = 0; i < log_cont.size(); i++ ){
 		int ibin = h1d2->FindBin(log_time[i]);
 		h1d2->GetXaxis()->SetBinLabel(ibin,log_cont[i].c_str());
 	}
+	for ( int i = 0; i < 48; i++ ){
+		buf_label.clear();
+		buf_label.str("");
+		buf_label<<i;
+		int ibin = h1d2->FindBin(i);
+		h1d2->GetXaxis()->SetBinLabel(ibin,buf_label.str().c_str());
+	}
+	// if work overnight, draw two of them
 	if (workOvernight){
-		if(m_verbose>=10) printf("You checked out too late man, %lf\n",cur_time);
+		if(m_verbose>=0) printf("You checked out too late man, %lf\n",cur_time);
 		h1d2->GetXaxis()->SetRangeUser(0,cur_time);
+		h1d1->GetXaxis()->SetNdivisions(-101,kFALSE);
+		h1d2->GetXaxis()->SetNdivisions(-101,kFALSE);
 		h1d2->Draw("LF2");
 		h1d1->Draw("LF2SAME");
 	}
+	// if not, only draw h1d1
 	else{
 		for ( int i = 0; i < log_cont.size(); i++ ){
 			int ibin = h1d1->FindBin(log_time[i]);
 			h1d1->GetXaxis()->SetBinLabel(ibin,log_cont[i].c_str());
 		}
-		if(m_verbose>=10) printf("You checked out too early man, %lf\n",cur_time);
+		for ( int i = 0; i < 24; i++ ){
+			buf_label.clear();
+			buf_label.str("");
+			buf_label<<i;
+			int ibin = h1d1->FindBin(i);
+			h1d1->GetXaxis()->SetBinLabel(ibin,buf_label.str().c_str());
+		}
+		if(m_verbose>=0) printf("You checked out too early man, %lf\n",cur_time);
+		h1d1->GetXaxis()->SetNdivisions(-101,kFALSE);
 		h1d1->Draw("LF2");
 	}
+	h1d3->Draw("SAME");
+	// Draw some arrows
+	double x1 = inTime;
+	double x2 = inTime;
+	double y1 = 0;
+	double y2 = 1;
+	TArrow *arrow = new TArrow(x1,y1,x2,y2,0.01,"<|");
+	arrow->SetFillColor(kRed);
+	arrow->SetLineColor(kRed);
+	arrow->Draw("SAME");
 	for ( int i = 0; i < log_time.size(); i++ ){
-		double x1 = log_time[i];
-		double x2 = log_time[i];
-		double y1 = 0;
-		double y2 = 1;
-		TArrow *arrow = new TArrow(x1,y1,x2,y2,0.01,"<|");
+		x1 = log_time[i];
+		x2 = log_time[i];
+		y1 = 0;
+		y2 = 1;
+		arrow = new TArrow(x1,y1,x2,y2,0.01,"<|");
 		arrow->Draw("SAME");
 	}
+	// Print
 	canv->Print(m_output_file);
 
 	// Save histograms
 	TFile *file = new TFile(m_output_root,"RECREATE");
 	h1d1->Write();
 	h1d2->Write();
+	h1d3->Write();
 	file->Close();
 
 	// Record main info to logbook
-  bool isOK = ( access( m_logbook, 0 ) == 0 );
-  if (!isOK){
-  	std::cout<<"File "<<m_logbook<<" dose not exist!!!"<<std::endl;
-		return -1;
+	std::string logbook = m_logbook;
+	if ( logbook != "NONE" ){
+		bool isOK = ( access( m_logbook, 0 ) == 0 );
+		if (!isOK){
+			std::cout<<"File "<<m_logbook<<" dose not exist!!!"<<std::endl;
+			return -1;
+		}
+		int fd = 0;
+		if (fd = open(m_logbook, O_RDWR|O_CREAT) < 0){
+			std::cout<<"Cannnot open file "<<m_logbook<<std::endl;
+			return -1;
+		}
+		std::ifstream fin_log(m_logbook);
+		if(!fin_log){
+			std::cout<<"Cannot open "<<m_logbook<<" in ifstream format"<<std::endl;
+			return -1;
+		}
+		std::stringstream buf_log;
+		std::stringstream buf_log_temp;
+		buf_log.clear();
+		buf_log.str("");
+		std::string s_log;
+		while(getline(fin_log,s_log)){
+			buf_log_temp.clear();
+			buf_log_temp.str("");
+			buf_log_temp<<s_log;
+			buf_log<<s_log<<"\n";
+		}
+		int log_num;
+		buf_log_temp >> log_num;
+		log_num++;
+		std::ofstream fout;
+		fout.open(m_logbook);
+		if(!fout){
+			std::cout<<"Cannot open "<<m_logbook<<" in ofstream format"<<std::endl;
+			return -1;
+		}
+		fout<<buf_log.str();
+		fout<<std::setiosflags(std::ios::left)<<std::setw(5)<<log_num
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<m_date
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<checkin_time
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<checkout_time
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<duration
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<total_work_time
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<total_rest_time
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<late_time
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<early_time
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<rest_num
+				<<" "<<std::setiosflags(std::ios::left)<<std::setw(5)<<m_code_nlines
+				<<std::endl;
+		buf_log.str("");
+		buf_log.clear();
+		fout.close();
 	}
-  int fd = 0;
-  if (fd = open(m_logbook, O_RDWR|O_CREAT) < 0){
-  	std::cout<<"Cannnot open file "<<m_logbook<<std::endl;
-		return -1;
-	}
-	std::ifstream fin_log(m_logbook);
-	if(!fin_log){
-		std::cout<<"Cannot open "<<m_logbook<<" in ifstream format"<<std::endl;
-		return -1;
-	}
-	std::stringstream buf_log;
-	std::stringstream buf_log_temp;
-	buf_log.clear();
-	buf_log.str("");
-	std::string s_log;
-	while(getline(fin_log,s_log)){
-		buf_log_temp.clear();
-		buf_log_temp.str("");
-		buf_log_temp<<s_log;
-		buf_log<<s_log<<"\n";
-	}
-	int log_num;
-	buf_log_temp >> log_num;
-	log_num++;
-	std::ofstream fout;
-	fout.open(m_logbook);
-	if(!fout){
-		std::cout<<"Cannot open "<<m_logbook<<" in ofstream format"<<std::endl;
-		return -1;
-	}
-	fout<<buf_log.str();
-	fout<<std::setiosflags(std::ios::left)<<std::setw(5)<<log_num
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<m_date
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<checkin_time
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<checkout_time
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<duration
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<total_work_time
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<total_rest_time
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<late_time
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<early_time
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(10)<<rest_num
-		  <<" "<<std::setiosflags(std::ios::left)<<std::setw(5)<<m_code_nlines
-		  <<std::endl;
-	buf_log.str("");
-	buf_log.clear();
-	fout.close();
 
 	return 0;
 }
