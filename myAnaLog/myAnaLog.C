@@ -461,7 +461,7 @@ int main(int argc, char** argv){
 			buf_log_temp<<s_log;
 			buf_log<<s_log<<"\n";
 			if ( nDays > 0 ){
-				buf_log_temp>>buffer>>t_lb_date>>t_lb_weekday>>buffer>>buffer>>t_lb_duration>>t_lb_work>>t_lb_rest>>t_lb_mark>>t_lb_Karma>>t_lb_late>>t_lb_early>>t_lb_nlines;
+				buf_log_temp>>buffer>>t_lb_date>>t_lb_weekday>>buffer>>buffer>>t_lb_duration>>t_lb_work>>t_lb_rest>>t_lb_mark>>t_lb_Karma>>t_lb_late>>t_lb_early>>buffer>>t_lb_nlines;
 				lb_nlines.push_back(t_lb_nlines);
 				lb_date.push_back(t_lb_date);
 				lb_weekday.push_back(t_lb_weekday);
@@ -543,6 +543,22 @@ int main(int argc, char** argv){
 			h1d_rest->SetBinContent(i,lb_rest[i-1]);
 		}
 		// Save them
+//		h1d_nlines->GetYaxis()->SetNdivisions(512);
+//		h1d_Karma->GetYaxis()->SetNdivisions(512);
+//		h1d_mark->GetYaxis()->SetNdivisions(512);
+//		h1d_late->GetYaxis()->SetNdivisions(512);
+//		h1d_early->GetYaxis()->SetNdivisions(512);
+//		h1d_duration->GetYaxis()->SetNdivisions(512);
+//		h1d_work->GetYaxis()->SetNdivisions(512);
+//		h1d_rest->GetYaxis()->SetNdivisions(512);
+//		h1d_nlines->GetXaxis()->SetNdivisions(nDays);
+//		h1d_Karma->GetXaxis()->SetNdivisions(nDays);
+//		h1d_mark->GetXaxis()->SetNdivisions(nDays);
+//		h1d_late->GetXaxis()->SetNdivisions(nDays);
+//		h1d_early->GetXaxis()->SetNdivisions(nDays);
+//		h1d_duration->GetXaxis()->SetNdivisions(nDays);
+//		h1d_work->GetXaxis()->SetNdivisions(nDays);
+//		h1d_rest->GetXaxis()->SetNdivisions(nDays);
 		h1d_nlines->SetMarkerStyle(3);
 		h1d_Karma->SetMarkerStyle(3);
 		h1d_mark->SetMarkerStyle(3);
@@ -566,6 +582,8 @@ int main(int argc, char** argv){
 		TFile file_output( logbook_root.c_str(), "RECREATE" );
 		TCanvas *lb_canv = new TCanvas("c2","c2");
 		lb_canv->Divide(2,2);
+//		gStyle->SetPadGridX(kTRUE);
+//		gStyle->SetPadGridY(kTRUE);
 		lb_canv->cd(1);
 		double time_max = -48;
 		double time_min = 48;
