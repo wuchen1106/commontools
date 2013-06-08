@@ -616,10 +616,16 @@ int main(int argc, char** argv){
 		h1d_work->Draw("SAMECP");
 		h1d_rest->Draw("SAMECP");
 		lb_canv->cd(2);
+		double mark_max = h1d_mark->GetMaximum()*1.1;
+		h1d_mark->GetYaxis()->SetRangeUser(0,mark_max);
 		h1d_mark->Draw("CP");
 		lb_canv->cd(3);
+		double Karma_max = h1d_Karma->GetMaximum()*1.1;
+		h1d_Karma->GetYaxis()->SetRangeUser(0,Karma_max);
 		h1d_Karma->Draw("CP");
 		lb_canv->cd(4);
+		double nlines_max = h1d_nlines->GetMaximum()*1.1;
+		h1d_nlines->GetYaxis()->SetRangeUser(0,nlines_max);
 		h1d_nlines->Draw("CP");
 		lb_canv->Print(logbook_pic.c_str());
 		h1d_nlines->Write();
