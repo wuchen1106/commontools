@@ -31,7 +31,7 @@ int get_names(const char* line, char** names, int *inames){
 	int count = 0;
 	bool isC = false;
 	int ic = -1;
-	while(ic++<100){
+	while(ic++<1000){
 		char c = line[ic];
 //		fprintf(stderr,"c[%d]=%c\n",ic,c);
 		if ( c == ' ' || c == '\t' ){
@@ -73,16 +73,16 @@ int txt_to_root(const char* input_file, const char* output_file){
 	FILE* fpo = 0;
 	fpo = fopen(output_file,"w");
 
-	char* buf = (char *)malloc(124);
+	char* buf = (char *)malloc(2048);
 	fgets(buf,2048,fpi); // get the first line, which contains names of these column
-	char* names[100];
-	for ( int i = 0; i < 100; i++ ){
-		names[i] = (char *) malloc(100); // up to 100 names with 100 charectors inside
+	char* names[1000];
+	for ( int i = 0; i < 1000; i++ ){
+		names[i] = (char *) malloc(1000); // up to 100 names with 100 charectors inside
 	}
 	int inames = 0;
 	get_names(buf,names,&inames);
 
-	double* values = (double *) malloc(100);
+	double* values = (double *) malloc(1000);
 	TFile file_output( output_file, "RECREATE" );
 	TTree* d_tree = new TTree( "t", "t" );
 	for ( int i = 0; i < inames; i++ ){

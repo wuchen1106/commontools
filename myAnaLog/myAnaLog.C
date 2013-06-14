@@ -287,6 +287,11 @@ int main(int argc, char** argv){
 			total_work_time += delta_time;
 			Karma += delta_time * prev_mark;
 		}
+		else if ( prev_type == 1 && cur_type == 2 ){ // start - tag
+			val1 = 1;
+			val2 = 0;
+			total_work_time += delta_time;
+		}
 		else{
 			if(m_verbose>=20) printf("[%d,%lf], [%d,%lf] does not match any type!\n",prev_type,prev_time,cur_type,cur_time);
 		}
