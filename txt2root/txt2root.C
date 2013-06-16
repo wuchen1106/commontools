@@ -70,8 +70,6 @@ int txt_to_root(const char* input_file, const char* output_file){
 		fprintf(stderr,"Cannot open file \"%s\"!!!\n",input_file);
 		return -1;
 	}
-	FILE* fpo = 0;
-	fpo = fopen(output_file,"w");
 
 	char* buf = (char *)malloc(2048);
 	fgets(buf,2048,fpi); // get the first line, which contains names of these column
