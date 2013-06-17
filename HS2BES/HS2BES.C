@@ -169,7 +169,7 @@ int main(int argc, char** argv){
 		if (wire_tofg[0] > hits_abs_tofg[0]) continue; // hit trigger after chamber
 
 		// for EVHEAD
-		int runNo = -1;
+		int runNo = -30000;
 		int eventNo = nEvent_pass;
 		// for TRACKTRUTH
 		int nTracks = 1;
@@ -216,29 +216,27 @@ int main(int argc, char** argv){
 			// for MDCDIGI
 			double driftTime = driftD; //x=t
 
-			buf_MDCTRUTH<<"  "<<"0 "<<i<<" "<<" "<<layerNo<<" "<<cellNo<<" "<<edep<<" "<<driftD<<" "<<posX<<" "<<posY<<" "<<posZ<<" "<<posFlag<<"\n";
-			buf_MDCDIGI<<"  "<<"0 "<<i<<" "<<layerNo<<" "<<cellNo<<" "<<edep<<" "<<driftTime<<"\n";
+			buf_MDCTRUTH<<"  "<<"0 "<<" "<<layerNo<<" "<<cellNo<<" "<<edep<<" "<<driftD<<" "<<posX<<" "<<posY<<" "<<posZ<<" "<<posFlag<<"\n";
+			buf_MDCDIGI<<"  "<<"0 "<<layerNo<<" "<<cellNo<<" "<<edep<<" "<<driftTime<<"\n";
 		}
 
 		fout<<"\n{ EVENT\n";
 		fout<<"\n{ EVHEAD\n "<<runNo<<" "<<eventNo<<"\n} EVHEAD\n";
 		fout<<"\n{ DECAYMODE\n 10 0 0 0 0 0 0 0 0 0 0\n} DECAYMODE\n";
-		fout<<"\n{ TRACKTRUTH\n "<<nTracks<<"  "<<trackIndex<<" "<<PDGCode<<" "<<PDGCharge<<" 0 -99 "<<px<<" "<<py<<" "<<pz<<" "<<E<<" -99 -99\n";
+		fout<<"\n{ TRACKTRUTH\n "<<nTracks<<"  "<<trackIndex<<" "<<PDGCode<<" "<<PDGCharge<<" 0 -99 "<<px<<" "<<py<<" "<<pz<<" "<<E<<" -99 -99\n\n} TRACKTRUTH\n";
 		fout<<"\n{ VERTEXTRUTH\n 1  0 -99 "<<posX<<" "<<posY<<" "<<posZ<<" "<<time<<"\n\n} VERTEXTRUTH\n";
 		fout<<"\n{ MDCTRUTH\n"<<buf_MDCTRUTH.str()<<"\n} MDCTRUTH\n";
 		fout<<"\n{ MDCDIGI\n"<<buf_MDCDIGI.str()<<"\n} MDCDIGI\n";
-		fout<<"\n{ TOFTRUTH\n\n}\n";
-		fout<<"\n{ TOFDIGI\n\n}\n";
-		fout<<"\n{ EMCTRUTH\n\n}\n";
-		fout<<"\n{ EMCDIGI\n\n}\n";
-		fout<<"\n{ MUCTRUTH\n\n}\n";
-		fout<<"\n{ MUCDIGI\n\n}\n";
+		fout<<"\n{ TOFTRUTH\n\n} TOFTRUTH\n";
+		fout<<"\n{ TOFDIGI\n\n} TOFDIGI\n";
+		fout<<"\n{ EMCTRUTH\n\n} EMCTRUTH\n";
+		fout<<"\n{ EMCDIGI\n\n} EMCDIGI\n";
+		fout<<"\n{ MUCTRUTH\n\n} MUCTRUTH\n";
+		fout<<"\n{ MUCDIGI\n\n} MUCDIGI\n";
+		fout<<"\n} EVENT";
 
 		nEvent_pass++;
 	}
-
-	// output tail
-	fout<<"\n} EVENT";
 
 	// output statistics
 	std::cout<<"Total event pass: "<<nEvent_pass<<std::endl;
