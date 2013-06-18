@@ -8,6 +8,7 @@
 #include <fstream>
 #include <fcntl.h>
 #include <math.h>
+#include <vector>
 
 #include "TChain.h"
 #include "TH1D.h"
@@ -27,7 +28,7 @@ double M_U = 0.931494061; //atomic mass unit in GeV
 
 /* arguments */
 char m_workMode[128];
-char m_input_file[1024];
+std::vector<std::string> m_input_files;
 char m_output_file[1024];
 int m_nEventsLimit = 0;
 
@@ -41,20 +42,18 @@ void init_args()
 /* begin of functions */
 void print_usage(char* prog_name)
 {
-	fprintf(stderr,"Usage %s [options] [args]\n",prog_name);
+	fprintf(stderr,"Usage %s [options (args)] [input files]\n",prog_name);
 	fprintf(stderr,"[options]\n");
 	fprintf(stderr,"\t -m\n");
 	fprintf(stderr,"\t\t choose work mode: [normal(default)]\n");
 	fprintf(stderr,"\t -n\n");
 	fprintf(stderr,"\t\t nEvent limit\n");
-	fprintf(stderr,"\t -i\n");
-	fprintf(stderr,"\t\t specify the input file.\n");
 	fprintf(stderr,"\t -o\n");
 	fprintf(stderr,"\t\t specify the output file.\n");
 	fprintf(stderr,"\t -h\n");
 	fprintf(stderr,"\t\t Usage message.\n");
 	fprintf(stderr,"[example]\n");
-	fprintf(stderr,"\t\t%s -m normal -i input.root -o output.txt\n",prog_name);
+	fprintf(stderr,"\t\t%s -m normal input.root -o output.txt input1.root input2.root\n",prog_name);
 }
 /* end of functions */
 
@@ -66,7 +65,7 @@ int main(int argc, char** argv){
 	}
 	init_args();
 	int result;
-	while((result=getopt(argc,argv,"hm:n:i:o:"))!=-1){
+	while((result=getopt(argc,argv,"hm:n:o:"))!=-1){
 		switch(result){
 			/* INPUTS */
 			case 'm':
@@ -76,10 +75,6 @@ int main(int argc, char** argv){
 			case 'n':
 				m_nEventsLimit = atoi(optarg);
 				printf("nEvent limit: %d\n",m_nEventsLimit);
-				break;
-			case 'i':
-				strcpy(m_input_file,optarg);
-				printf("input file: %s\n",m_input_file);
 				break;
 			case 'o':
 				strcpy(m_output_file,optarg);
@@ -95,9 +90,15 @@ int main(int argc, char** argv){
 		}
 	}
 
+	for (;optind<argc;optind++){
+		m_input_files.push_back(argv[optind]);
+	}
+
 	// Open input file
 	TChain *m_TChain = new TChain("t");
-	m_TChain->Add(m_input_file);
+	for ( int i = 0; i < m_input_files.size(); i++ ){
+		m_TChain->Add(m_input_files[i].c_str());
+	}
 
 	// Open output file
 	std::ofstream fout;
