@@ -56,9 +56,9 @@ int get_names(const char* line, char** names, int *inames){
 			count++;
 		}
 	}
-	for ( int i = 0; i < *inames; i++ ){
+//	for ( int i = 0; i < *inames; i++ ){
 //		fprintf(stderr,"name[%d]:%s\n",i,names[i]);
-	}
+//	}
 	return 0;
 }
 
@@ -71,14 +71,18 @@ int txt_to_root(const char* input_file, const char* output_file){
 		return -1;
 	}
 
-	char* buf = (char *)malloc(2048);
-	fgets(buf,2048,fpi); // get the first line, which contains names of these column
+	char* buf = (char *)malloc(20480);
+	fgets(buf,20480,fpi); // get the first line, which contains names of these column
 	char* names[1000];
 	for ( int i = 0; i < 1000; i++ ){
-		names[i] = (char *) malloc(1000); // up to 100 names with 100 charectors inside
+		names[i] = (char *) malloc(1000); // up to 1000 names with 1000 charectors inside
 	}
 	int inames = 0;
 	get_names(buf,names,&inames);
+	if ( inames > 1000 ){
+		fprintf(stderr,"More than 1000 names!\n");
+		return -1;
+	}
 
 	double* values = (double *) malloc(1000);
 	TFile file_output( output_file, "RECREATE" );
@@ -87,16 +91,20 @@ int txt_to_root(const char* input_file, const char* output_file){
 		d_tree->Branch(names[i],&values[i],"/D");
 	}
 
-	int count = 0;
-	int iline = 1;
-	while(1==fscanf(fpi,"%lf",&values[count])){
-//		fprintf(stderr,"values[%d]=%lf\n",count,values[count]);
-		count++;
-		if ( count == inames ){
-			count = 0;
-			iline++;
-			d_tree->Fill();
+	fprintf(stdout,"Hi!\n");
+	int iline = 0;
+	while(fgets(buf,20480,fpi)){
+		iline++;
+		int count = 0;
+		get_names(buf,names,&count);
+		if ( count != inames ){
+			fprintf(stderr,"There are %d values in line %d, different from %d names in the first line!\n",count,iline,inames);
+			return -1;
 		}
+		for ( int ival = 0; ival < count; ival++ ){
+			values[ival] = atol(names[ival]);
+		}
+		d_tree->Fill();
 	}
 	d_tree->Write();
 	file_output.Close();
