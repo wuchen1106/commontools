@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
 #include <unistd.h> //getopt
 
 #include "TFile.h"
@@ -36,6 +37,7 @@ int get_names(const char* line, char** names, int *inames){
 //		fprintf(stderr,"c[%d]=%c\n",ic,c);
 		if ( c == ' ' || c == '\t' ){
 			if ( isC ){
+				names[*inames][count] = '\0';
 				(*inames)++;
 				count = 0;
 				isC = false;
@@ -44,6 +46,7 @@ int get_names(const char* line, char** names, int *inames){
 		}
 		else if ( c == '\n' ){
 			if ( isC ){
+				names[*inames][count] = '\0';
 				(*inames)++;
 				count = 0;
 				isC = false;
@@ -64,6 +67,7 @@ int get_names(const char* line, char** names, int *inames){
 
 int txt_to_root(const char* input_file, const char* output_file){
 //	fprintf(stderr,"This is txt_to_root!\n");
+	std::stringstream buffer;
 	FILE* fpi = 0;
 	fpi = fopen(input_file,"r+");
 	if ( !fpi ){
@@ -101,9 +105,18 @@ int txt_to_root(const char* input_file, const char* output_file){
 			fprintf(stderr,"There are %d values in line %d, different from %d names in the first line!\n",count,iline,inames);
 			return -1;
 		}
+		printf("\n");
 		for ( int ival = 0; ival < count; ival++ ){
-			values[ival] = atol(names[ival]);
+			double aval;
+			std::string astr = names[ival];
+			buffer.str("");
+			buffer.clear();
+			buffer<<astr;
+			buffer>>aval;
+			values[ival] = aval;
+			printf("(%s)->(%lf)",names[ival],values[ival]);
 		}
+		printf("\n");
 		d_tree->Fill();
 	}
 	d_tree->Write();
