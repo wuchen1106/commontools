@@ -14,6 +14,7 @@ class TH2D;
 class TGraph;
 class TVector3;
 class TGenPhaseSpace;
+class TBranch;
 
 class MyRootInterface{
 
@@ -25,11 +26,13 @@ class MyRootInterface{
 	public:
 
 		int init(std::string file);
+		int GetEntry(Long64_t iEvent);
 		int dump();
 
 		int get_TH2D_index(std::string name);
 		int get_TH1D_index(std::string name);
 		int get_TGraph_index(std::string name);
+		int get_TBranch_index(std::string name);
 
 		int add_TH1D(std::string name,
 					 std::string title,
@@ -118,6 +121,13 @@ class MyRootInterface{
 		std::string get_yNameForGraph(int i){if (i>=yNameForGraph.size()) return NULL; return yNameForGraph[i];}
 		std::vector<double>  get_xForGraph(int i){std::vector<double> null; if (i>=xForGraph.size()) return null; return xForGraph[i];}
 		std::vector<double>  get_yForGraph(int i){std::vector<double> null; if (i>=yForGraph.size()) return null; return yForGraph[i];}
+
+		double get_vec_double(int i){if (i>=vec_double.size()) return NULL; return vec_double[i];}
+		int get_vec_int(int i){if (i>=vec_int.size()) return NULL; return vec_int[i];}
+		std::string get_vec_string(int i){if (i>=vec_string.size()) return NULL; return vec_string[i];}
+		std::vector<double>*  get_vec_vecdouble(int i){if (i>=vec_vecdouble.size()) return NULL; return vec_vecdouble[i];}
+		std::vector<int>*  get_vec_vecint(int i){if (i>=vec_vecint.size()) return NULL; return vec_vecint[i];}
+		std::vector<std::string>*  get_vec_vecstring(int i){if (i>=vec_vecstring.size()) return NULL; return vec_vecstring[i];}
 
 		//*****************************************************************************
 		// to set
@@ -246,9 +256,23 @@ class MyRootInterface{
 		std::vector<std::vector<double> > xForGraph;
 		std::vector<std::vector<double> > yForGraph;
 
+		// for output
 		TTree *d_tree;
+
+		// for input
 		TChain *m_TChain;
 		std::string TreeName;
+		std::vector<TBranch*> vec_TBranch;
+		std::vector<std::string> vec_TBranchName;
+		std::vector<int> vec_TBranchType;
+		std::vector<int> vec_TBranchIsVec;
+		std::vector<double> vec_double;
+		std::vector<int> vec_int;
+		std::vector<std::string> vec_string;
+		std::vector<std::vector<double>* > vec_vecdouble;
+		std::vector<std::vector<int>* > vec_vecint;
+		std::vector<std::vector<std::string>* > vec_vecstring;
+
 };
 
 #endif

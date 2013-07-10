@@ -2,26 +2,18 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-//#include <math.h>
 #include <vector>
 #include <algorithm> // for max_element
 
-//#include <cstdlib>
-
 #include "TChain.h"
 #include "TTree.h"
+#include "TBranch.h"
 #include "TStyle.h"
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TH1D.h"
 #include "TH2D.h"
 #include "TGraph.h"
-//#include "Math/DistFunc.h"
-//#include "TVector3.h"
-//#include "TGenPhaseSpace.h"
-
-//#include "globals.hh"
-//#include "Randomize.hh"
 
 #include "MyRootInterface.hxx"
 
@@ -46,6 +38,13 @@ int MyRootInterface::init(std::string file){
 	if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Initializing from \""<<file<<"\""<<std::endl;
 	std::stringstream buff;
 	int index_temp = 0;
+	vec_TBranch.clear();
+	vec_TBranchName.clear();
+	vec_TBranchType.clear();
+	vec_TBranchIsVec.clear();
+	vec_double.clear();
+	vec_int.clear();
+	vec_string.clear();
 
 	//=>Read file
 	std::ifstream fin_card(file.c_str());
@@ -135,6 +134,21 @@ int MyRootInterface::init(std::string file){
 		else if (segments[0] == "oFILE"){
 			if(iterator<segments.size()) oFileName.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 		}
+		else if (segments[0] == "TBranch"){
+			if(iterator<segments.size()) vec_TBranchName.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) vec_TBranchType.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) vec_TBranchIsVec.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			vec_TBranch.push_back(0);
+			vec_TBranchName.push_back(0);
+			vec_TBranchType.push_back(0);
+			vec_TBranchIsVec.push_back(0);
+			vec_double.push_back(0);
+			vec_int.push_back(0);
+			vec_string.push_back("");
+			vec_vecdouble.push_back(0);
+			vec_vecint.push_back(0);
+			vec_vecstring.push_back(0);
+		}
 		else{
 			std::cout<<"Cannot recogonize this line: "<<s_card<<std::endl;
 			continue;
@@ -171,7 +185,51 @@ int MyRootInterface::init(std::string file){
 
 	//=> Get Tree in
 	m_TChain = new TChain(TreeName.c_str());
+	int iStart = 0;
+	int nBit = 2;
+	for ( int iFile = 0; iFile < DirNames.size(); iFile++ ){
+		int nCPU = NCPU[iFile];
+		int njob = NJob[iFile];
+		if ( m_verbose >= Verbose_FileInfo) std::cout<<prefix_FileInfo<<"FileList \""<<DirNames[iFile]<<"\" with runname = \""<<RunNames[iFile]<<"\" has "<<NJob[iFile]<<" jobs on "<<NCPU[iFile]<<" CPUs"<<std::endl;
+		for (int i = iStart; i < iStart + nCPU; i ++){
+			for (int j = iStart; j < iStart + njob; j ++){
+				buff.str("");
+				buff.clear();
+				buff<<DirNames[iFile]<<"/"<<i<<"_job"<<j<<RunNames[iFile]<<".raw";
+				m_TChain->Add(buff.str().c_str());
+			}
+		}
+	}
+	for ( int iFile = 0; iFile < oFileName.size(); iFile++ ){
+		m_TChain->Add(oFileName[iFile].c_str());
+	}
+
+	//=> Set tree for input
+	for ( int i_TB = 0; i_TB < vec_TBranchName.size(); i_TB++ ){
+		int isvec = vec_TBranchIsVec[i_TB];
+		int type = vec_TBranchType[i_TB];
+		if (isvec){
+			if (type == 0) m_TChain->SetBranchAddress(vec_TBranchName[i_TB].c_str(), &vec_vecdouble[i_TB], &vec_TBranch[i_TB]);
+			else if (type == 1) m_TChain->SetBranchAddress(vec_TBranchName[i_TB].c_str(), &vec_vecint[i_TB], &vec_TBranch[i_TB]);
+			else if (type == 2) m_TChain->SetBranchAddress(vec_TBranchName[i_TB].c_str(), &vec_vecstring[i_TB], &vec_TBranch[i_TB]);
+		}
+		else{
+			if (type == 0) m_TChain->SetBranchAddress(vec_TBranchName[i_TB].c_str(), &vec_double[i_TB]);
+			else if (type == 1) m_TChain->SetBranchAddress(vec_TBranchName[i_TB].c_str(), &vec_int[i_TB]);
+			else if (type == 2) m_TChain->SetBranchAddress(vec_TBranchName[i_TB].c_str(), &vec_string[i_TB]);
+		}
+	}
+
+	//=> Set tree for output
 	d_tree = new TTree( "t", "t" );
+}
+
+int MyRootInterface::GetEntry(Long64_t iEvent){
+	Long64_t tentry = m_TChain->LoadTree(iEvent);
+	for ( int i_TB = 0; i_TB < vec_TBranchName.size(); i_TB++ ){
+		if (vec_TBranch[i_TB]) vec_TBranch[i_TB]->GetEntry(tentry);
+	}
+	m_TChain->GetEntry(iEvent);
 }
 
 int MyRootInterface::dump(){
@@ -380,6 +438,14 @@ int MyRootInterface::get_TGraph_index(std::string name){
 		if ( nameForGraph[i] == name ) return i;
 	}
 	std::cout<<"###!!!In get_TGraph_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	return -1;
+}
+
+int MyRootInterface::get_TBranch_index(std::string name){
+	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
+		if ( vec_TBranchName[i] == name ) return i;
+	}
+	std::cout<<"###!!!In get_TBranch_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
