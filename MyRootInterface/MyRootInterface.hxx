@@ -26,14 +26,17 @@ class MyRootInterface{
 
 	public:
 
-		int init(std::string file);
+		int read(std::string file);
+		int init();
 		int GetEntry(Long64_t iEvent);
 		int dump();
+		int Fill(){d_tree->Fill();}
 
 		int get_TH2D_index(std::string name);
 		int get_TH1D_index(std::string name);
 		int get_TGraph_index(std::string name);
 		int get_TBranch_index(std::string name);
+		int get_oTBranch_index(std::string name);
 
 		int add_TH1D(std::string name,
 					 std::string title,
@@ -77,6 +80,7 @@ class MyRootInterface{
 		int get_TH1D_size(){return vecH1D.size();}
 		int get_TGraph_size(){return nameForGraph.size();}
 		int get_TBranch_size(){return vec_TBranchName.size();}
+		int get_oTBranch_size(){return vec_oTBranchName.size();}
 		Long64_t get_Entries(){return (m_TChain?m_TChain->GetEntries():0);}
 
 		std::string get_nameForH2D(int i){if (i>=nameForH2D.size()) return NULL; return nameForH2D[i];}
@@ -132,16 +136,28 @@ class MyRootInterface{
 		std::vector<int>*  get_vec_vecint(int i){if (i>=vec_vecint.size()) return NULL; return vec_vecint[i];}
 		std::vector<std::string>*  get_vec_vecstring(int i){if (i>=vec_vecstring.size()) return NULL; return vec_vecstring[i];}
 
+		double get_ovec_double(int i){if (i>=ovec_double.size()) return NULL; return ovec_double[i];}
+		int get_ovec_int(int i){if (i>=ovec_int.size()) return NULL; return ovec_int[i];}
+		std::string get_ovec_string(int i){if (i>=ovec_string.size()) return NULL; return ovec_string[i];}
+
 		//*****************************************************************************
 		// to set
 		int set_OutputDir(std::string dir){
 			OutputDir = dir;
 			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing OutputDir to \""<<OutputDir<<"\""<<std::endl;
 		}
+		int set_OutputName(std::string name){
+			OutputName = name + "output";
+			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing OutputName to \""<<OutputName<<"\""<<std::endl;
+		}
 		int set_backup(bool backup){m_backup=backup;}
 		int set_TreeName(std::string name){
 			TreeName = name;
 			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing TreeName to \""<<TreeName<<"\""<<std::endl;
+		}
+		int set_oTreeName(std::string name){
+			oTreeName = name;
+			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing oTreeName to \""<<oTreeName<<"\""<<std::endl;
 		}
 
 		int set_nameForH2D(int i, std::string val){if (i>=nameForH2D.size()) return -1; nameForH2D[i] = val; return 0;}
@@ -188,6 +204,10 @@ class MyRootInterface{
 		int set_xForGraph(int i, std::vector<double>  val){if (i>=xForGraph.size()) return -1; xForGraph[i] = val; return 0;}
 		int set_yForGraph(int i, std::vector<double>  val){if (i>=yForGraph.size()) return -1; yForGraph[i] = val; return 0;}
 
+		int set_ovec_double(int i, double val){if (i>=ovec_double.size()) return -1; ovec_double[i] = val; return 0;}
+		int set_ovec_int(int i, int val){if (i>=ovec_int.size()) return -1; ovec_int[i] = val; return 0;}
+		int set_ovec_string(int i, std::string val){if (i>=ovec_string.size()) return -1; ovec_string[i] = val; return 0;}
+
 	private:
 
 		bool ISEMPTY(std::string content);
@@ -211,6 +231,7 @@ class MyRootInterface{
 		std::string prefix_BranchInfo;
 
 		std::string OutputDir;
+		std::string OutputName;
 
 		std::vector<std::string> oFileName;
 
@@ -263,8 +284,17 @@ class MyRootInterface{
 		std::vector<std::vector<double> > xForGraph;
 		std::vector<std::vector<double> > yForGraph;
 
+		// for files
+		std::vector<std::string> DirNames; 
+		std::vector<std::string> RunNames; 
+		std::vector<int> NCPU;
+		std::vector<int> NJob;
+
 		// for output
 		TTree *d_tree;
+		std::vector<double> ovec_double;
+		std::vector<int> ovec_int;
+		std::vector<std::string> ovec_string;
 
 		// for input
 		TChain *m_TChain;
@@ -273,6 +303,11 @@ class MyRootInterface{
 		std::vector<std::string> vec_TBranchName;
 		std::vector<int> vec_TBranchType;
 		std::vector<int> vec_TBranchIsVec;
+		std::string oTreeName;
+		std::vector<TBranch*> vec_oTBranch;
+		std::vector<std::string> vec_oTBranchName;
+		std::vector<int> vec_oTBranchType;
+		std::vector<int> vec_oTBranchIsVec;
 		std::vector<double> vec_double;
 		std::vector<int> vec_int;
 		std::vector<std::string> vec_string;

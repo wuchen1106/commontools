@@ -105,7 +105,7 @@ int txt_to_root(const char* input_file, const char* output_file){
 			fprintf(stderr,"There are %d values in line %d, different from %d names in the first line!\n",count,iline,inames);
 			return -1;
 		}
-		printf("\n");
+		//printf("\n");
 		for ( int ival = 0; ival < count; ival++ ){
 			double aval;
 			std::string astr = names[ival];
@@ -114,9 +114,9 @@ int txt_to_root(const char* input_file, const char* output_file){
 			buffer<<astr;
 			buffer>>aval;
 			values[ival] = aval;
-			printf("(%s)->(%lf)",names[ival],values[ival]);
+			//printf("(%s)->(%lf)",names[ival],values[ival]);
 		}
-		printf("\n");
+		//printf("\n");
 		d_tree->Fill();
 	}
 	d_tree->Write();

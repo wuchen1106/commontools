@@ -1,0 +1,45 @@
+#	kWhite =0,   kBlack =1,   kGray=920,
+#	kRed   =632, kGreen =416, kBlue=600, kYellow=400, kMagenta=616, kCyan=432,
+#	kOrange=800, kSpring=820, kTeal=840, kAzure =860, kViolet =880, kPink=900
+###########################################################################################################################
+
+#	TYPE     | Name
+	TreeName | t
+
+#	TYPE    | Directory                                                       | runname | #CPU | #job
+#	FILE    | /home/chen/MyWorkArea/Data/raw/g4sim/RMC_ph2e                   |         | 8    | 1
+
+#	TYPE    | Path
+#	oFILE   | /home/chen/MyWorkArea/MyStudies/Beam/result/g60cm6mm/Andy/ts2_0.electron.root
+
+#	TYPE    | Name                         | Type      | Vector?
+#	                                0:double;1:int;string:2
+	TBranch | x                            | 0         | 0
+	TBranch | y                            | 0         | 0
+	TBranch | z                            | 0         | 0
+	TBranch | px                           | 0         | 0
+	TBranch | py                           | 0         | 0
+	TBranch | pz                           | 0         | 0
+	TBranch | t                            | 0         | 0
+
+#	TYPE     | Name                         | Type      | Vector?
+#	                                0:double;1:int;string:2
+	oTBranch | x                            | 0         | 0
+	oTBranch | y                            | 0         | 0
+	oTBranch | z                            | 0         | 0
+	oTBranch | px                           | 0         | 0
+	oTBranch | py                           | 0         | 0
+	oTBranch | pz                           | 0         | 0
+	oTBranch | t                            | 0         | 0
+
+#	TYPE    | Directory                                                                               | histoName
+#	refTH1D | /home/chen/MyWorkArea/MyStudies/AntiProton/4BodyPhaseSpace/result/12p5GeV/output.root   | 4PS_theta
+
+#	TYPE    | NAME            | TITLE              | xAxisName    | yAxisName     | BIN | LEFT  | RIGHT | minX | minY  |COL|COM|LOGX|LOGY|Marker|Norm   |DrawOption
+#	TH1D    | A_e_ts20_pa     | e^{-} at ts2_0 | p_{a}(MeV/c) | probability   | 120 | 0     | 150   | 0    | 1e-7  | 1 | 0 | 0  | 1  | 20   | 1e6   | 
+
+#	TYPE    | NAME           | TITLE                                                | xAxisName         | yAxisName     | BIN | LEFT  | RIGHT | BIN | LEFT | RIGHT
+#	TH2D    | costheta_VS_r  | anti-proton (incident proton @12.5GeV/c on Graphite) | cos#theta         | r(cm)         | 120 | -1    | 1     | 120 | 0    | 0.6
+
+#	TYPE    | NAME           | TITLE                         | xAxisName          | yAxisName     | COL | COM | minX | maxX |minY | LOGX | LOGY | Marker | DrawOption
+#	TGraph  | rate_vs_pa     | PassingRate                   | p_{a}(MeV/c)       | rate          | 1   | 1   | 94   | 99   | 1   | 0    | 1    | 3      | LP
