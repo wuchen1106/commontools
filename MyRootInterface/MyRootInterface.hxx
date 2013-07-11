@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 
-class TChain;
+#include "TChain.h"
+
 class TTree;
 class TStyle;
 class TCanvas;
@@ -75,6 +76,8 @@ class MyRootInterface{
 		int get_TH2D_size(){return vecH2D.size();}
 		int get_TH1D_size(){return vecH1D.size();}
 		int get_TGraph_size(){return nameForGraph.size();}
+		int get_TBranch_size(){return vec_TBranchName.size();}
+		Long64_t get_Entries(){return (m_TChain?m_TChain->GetEntries():0);}
 
 		std::string get_nameForH2D(int i){if (i>=nameForH2D.size()) return NULL; return nameForH2D[i];}
 		std::string get_titleForH2D(int i){if (i>=titleForH2D.size()) return NULL; return titleForH2D[i];}
@@ -202,6 +205,10 @@ class MyRootInterface{
 		std::string prefix_HistInfo;
 		int Verbose_FileInfo; //有哪些FileList,都有多少file
 		std::string prefix_FileInfo;
+		int Verbose_InputInfo; //有哪些Input
+		std::string prefix_InputInfo;
+		int Verbose_BranchInfo; //有哪些Branch
+		std::string prefix_BranchInfo;
 
 		std::string OutputDir;
 

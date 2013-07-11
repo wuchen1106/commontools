@@ -26,6 +26,10 @@ MyRootInterface::MyRootInterface(int verbose,bool backup)
 	prefix_HistInfo= "  [Histograms] ";
 	Verbose_FileInfo = 10; //有哪些FileList,都有多少file
 	prefix_FileInfo="  [FileInfo] ";
+	Verbose_InputInfo = 10; //有哪些Input
+	prefix_InputInfo="  [InputInfo] ";
+	Verbose_BranchInfo = 20; //有哪些Branch
+	prefix_BranchInfo="  [BranchInfo] ";
 	// by default output files would be put into current directory
 	OutputDir = ".";
 	TreeName = "tree";
@@ -60,6 +64,7 @@ int MyRootInterface::init(std::string file){
 	// read file
 	while(getline(fin_card,s_card)){
 		if ( ISEMPTY(s_card) ) continue;
+		//if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<": \""<<s_card<<"\""<<std::endl;
 		std::vector<std::string> segments;
 		seperate_string(s_card,segments,'|');
 		int iterator = 1;
@@ -80,6 +85,8 @@ int MyRootInterface::init(std::string file){
 			if(iterator<segments.size()) markerForH1D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) normForH1D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) drawOptForH1D.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			int i = nameForH1D.size() - 1;
+			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
 		}
 		else if ( segments[0] == "TH2D" ){
 			if(iterator<segments.size()) nameForH2D.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
@@ -92,6 +99,8 @@ int MyRootInterface::init(std::string file){
 			if(iterator<segments.size()) bin2ForH2D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) left2ForH2D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) right2ForH2D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			int i = nameForH2D.size() - 1;
+			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
 		}
 		else if ( segments[0] == "FILE" ){
 			if(iterator<segments.size()) DirNames.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
@@ -105,6 +114,8 @@ int MyRootInterface::init(std::string file){
 			}
 			if(iterator<segments.size()) NCPU.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) NJob.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			int i = DirNames.size() - 1;
+			if ( m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input FILE["<<i<<"]: "<<DirNames[i]<<"\" with runname = \""<<RunNames[i]<<"\" has "<<NJob[i]<<" jobs on "<<NCPU[i]<<" CPUs"<<std::endl;
 		}
 		else if ( segments[0] == "TGraph" ){
 			if(iterator<segments.size()) nameForGraph.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
@@ -125,29 +136,36 @@ int MyRootInterface::init(std::string file){
 			if(iterator<segments.size()) markerForGraph.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) drawOptForGraph.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			int i = nameForGraph.size() - 1;
-			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Input vecGraph["<<i<<"]: "<<nameForGraph[i]<<", "<<titleForGraph[i]<<", "<<xNameForGraph[i]<<", "<<yNameForGraph[i]<<", Color="<<colorForGraph[i]<<", xlogSyle="<<xlogForGraph[i]<<", ylogSyle="<<ylogForGraph[i]<<", nCompare="<<compareForGraph[i]<<", markerStyle="<<markerForGraph[i]<<", drawOpt=\""<<drawOptForGraph[i]<<"\""<<std::endl;
+			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input vecGraph["<<i<<"]: "<<nameForGraph[i]<<", "<<titleForGraph[i]<<", "<<xNameForGraph[i]<<", "<<yNameForGraph[i]<<", Color="<<colorForGraph[i]<<", xlogSyle="<<xlogForGraph[i]<<", ylogSyle="<<ylogForGraph[i]<<", nCompare="<<compareForGraph[i]<<", markerStyle="<<markerForGraph[i]<<", drawOpt=\""<<drawOptForGraph[i]<<"\""<<std::endl;
 		}
 		else if (segments[0] == "refTH1D"){
 			if(iterator<segments.size()) refFileName.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) refHistName.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			int i = refFileName.size() - 1;
+			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input refTH1D["<<i<<"]: "<<refFileName[i]<<", "<<refHistName[i]<<std::endl;
 		}
 		else if (segments[0] == "oFILE"){
 			if(iterator<segments.size()) oFileName.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			int i = oFileName.size() - 1;
+			if ( m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input oFILE["<<i<<"]: "<<oFileName[i]<<std::endl;
+		}
+		else if (segments[0] == "TreeName"){
+			if(iterator<segments.size()) TreeName = (segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if ( m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Set TreeName to \""<<TreeName<<"\""<<std::endl;
 		}
 		else if (segments[0] == "TBranch"){
 			if(iterator<segments.size()) vec_TBranchName.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) vec_TBranchType.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) vec_TBranchIsVec.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			vec_TBranch.push_back(0);
-			vec_TBranchName.push_back(0);
-			vec_TBranchType.push_back(0);
-			vec_TBranchIsVec.push_back(0);
 			vec_double.push_back(0);
 			vec_int.push_back(0);
 			vec_string.push_back("");
 			vec_vecdouble.push_back(0);
 			vec_vecint.push_back(0);
 			vec_vecstring.push_back(0);
+			int i = vec_TBranchName.size() - 1;
+			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input TBranch["<<i<<"]: "<<vec_TBranchName[i]<<", "<<vec_TBranchType[i]<<", "<<vec_TBranchIsVec[i]<<std::endl;
 		}
 		else{
 			std::cout<<"Cannot recogonize this line: "<<s_card<<std::endl;
@@ -227,6 +245,11 @@ int MyRootInterface::init(std::string file){
 int MyRootInterface::GetEntry(Long64_t iEvent){
 	Long64_t tentry = m_TChain->LoadTree(iEvent);
 	for ( int i_TB = 0; i_TB < vec_TBranchName.size(); i_TB++ ){
+		if ( m_verbose >= Verbose_BranchInfo)
+			std::cout<<prefix_BranchInfo<<"Setting Branch["<<i_TB<<"]: "
+			                            <<vec_TBranchName[i_TB]<<", @("
+			                            <<(void *)&vec_TBranch[i_TB]<<") "
+			                            <<std::endl;
 		if (vec_TBranch[i_TB]) vec_TBranch[i_TB]->GetEntry(tentry);
 	}
 	m_TChain->GetEntry(iEvent);
@@ -255,14 +278,14 @@ int MyRootInterface::dump(){
 		if ( nCompare ) if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<nCompare<<" histograms to be compared"<<std::endl;
 		if (normForH1D[i]){
 			if (normForH1D[i] == 1) vecH1D[i]->Scale(1./vecH1D[i]->Integral());
-			else vecH1D[i]->Scale(1./normForH1D[i]);
+			else vecH1D[i]->Scale(normForH1D[i]/vecH1D[i]->Integral());
 		}
 		double currentMaximum = vecH1D[i]->GetMaximum();
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    currentMaximum y value is ("<<currentMaximum<<")"<<std::endl;
 		for ( int j = 1; j <= nCompare; j++ ){
 			if (normForH1D[i+j]){
 				if (normForH1D[i+j] == 1) vecH1D[i+j]->Scale(1./vecH1D[i+j]->Integral());
-				else vecH1D[i+j]->Scale(1./normForH1D[i+j]);
+				else vecH1D[i+j]->Scale(normForH1D[i+j]/vecH1D[i]->Integral());
 			}
 			double maximum = vecH1D[i+j]->GetMaximum();
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Maximum y for "<<nameForH1D[i+j]<<" is ("<<maximum<<")"<<std::endl;
@@ -300,7 +323,7 @@ int MyRootInterface::dump(){
 		vecH1D[i]->GetYaxis()->SetTitle(yNameForH1D[i].c_str());
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Integral of ("<<nameForH1D[i]<<"): "<<vecH1D[i]->Integral()<<std::endl;
 		vecH1D[i]->Draw(drawOptForH1D[i].c_str());
-		vecH1D[i]->Write();
+		if (!vecH1D[i]->Write()) std::cout<<"Wrong!!!";
 		for ( int j = 0; j < nCompare; j++ ){
 			i++;
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<" ->"<<j<<", vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
@@ -311,6 +334,7 @@ int MyRootInterface::dump(){
 			std::string drawOpt = drawOptForH1D[i]+"SAME";
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Integral of ("<<nameForH1D[i]<<"): "<<vecH1D[i]->Integral()<<std::endl;
 			vecH1D[i]->Draw(drawOpt.c_str());
+			vecH1D[i]->Write();
 		}
 		std::string fileName = OutputDir + "/" + name + ".pdf";
 		c->Print(fileName.c_str());
@@ -404,8 +428,8 @@ int MyRootInterface::dump(){
 	//m_TTree->Write();
 	//file->Write();
 	file->Close();
-	std::string backupFileName = OutputDir + "backup.root";
 
+	std::string backupFileName = OutputDir + "backup.root";
 	if (m_backup){
 		TFile *file2 = new TFile(backupFileName.c_str(),"RECREATE");
 		m_TChain->CloneTree(-1,"fast");
@@ -421,7 +445,7 @@ int MyRootInterface::get_TH2D_index(std::string name){
 	for ( int i = 0; i < vecH2D.size(); i++ ){
 		if ( nameForH2D[i] == name ) return i;
 	}
-	std::cout<<"###!!!In get_TH2D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	//std::cout<<"###!!!In get_TH2D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
@@ -429,7 +453,7 @@ int MyRootInterface::get_TH1D_index(std::string name){
 	for ( int i = 0; i < vecH1D.size(); i++ ){
 		if ( nameForH1D[i] == name ) return i;
 	}
-	std::cout<<"###!!!In get_TH1D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	//std::cout<<"###!!!In get_TH1D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
@@ -437,7 +461,7 @@ int MyRootInterface::get_TGraph_index(std::string name){
 	for ( int i = 0; i < nameForGraph.size(); i++ ){
 		if ( nameForGraph[i] == name ) return i;
 	}
-	std::cout<<"###!!!In get_TGraph_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	//std::cout<<"###!!!In get_TGraph_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
@@ -445,7 +469,7 @@ int MyRootInterface::get_TBranch_index(std::string name){
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ) return i;
 	}
-	std::cout<<"###!!!In get_TBranch_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	//std::cout<<"###!!!In get_TBranch_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
