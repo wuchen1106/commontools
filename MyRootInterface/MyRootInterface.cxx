@@ -186,8 +186,8 @@ int MyRootInterface::read(std::string file){
 			vec_oTBranch.push_back(0);
 			ovec_double.push_back(0);
 			ovec_int.push_back(0);
-			ovec_string.push_back("");
 			int i = vec_oTBranchName.size() - 1;
+			ovec_string.resize(i+1);
 			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input oTBranch["<<i<<"]: "<<vec_oTBranchName[i]<<", "<<vec_oTBranchType[i]<<", "<<vec_oTBranchIsVec[i]<<std::endl;
 		}
 		else{
@@ -275,6 +275,7 @@ int MyRootInterface::init(){
 		else{
 			if (type == 0) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_double[i_TB], (vec_oTBranchName[i_TB]+"/D").c_str());
 			else if (type == 1) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_int[i_TB], (vec_oTBranchName[i_TB]+"/I").c_str());
+			else if (type == 2) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), ovec_string[i_TB], (vec_oTBranchName[i_TB]+"[124]/C").c_str());
 		}
 	}
 }
@@ -466,7 +467,7 @@ int MyRootInterface::dump(){
 	//file->Write();
 	file->Close();
 
-	std::string backupFileName = OutputDir + "backup.root";
+	std::string backupFileName = OutputDir + "/backup.root";
 	if (m_backup){
 		TFile *file2 = new TFile(backupFileName.c_str(),"RECREATE");
 		m_TChain->CloneTree(-1,"fast");

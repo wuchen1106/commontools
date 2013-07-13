@@ -38,7 +38,7 @@ class MyRootInterface{
 		int get_TBranch_index(std::string name);
 		int get_oTBranch_index(std::string name);
 
-		int add_TH1D(std::string name,
+		TH1D* add_TH1D(std::string name,
 					 std::string title,
 					 std::string xName,
 					 std::string yName,
@@ -71,7 +71,9 @@ class MyRootInterface{
 			normForH1D.push_back(norm);
 			drawOptForH1D.push_back(drawOpt);
 			int i = nameForH1D.size()-1;
-			vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
+			TH1D *h = new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]);
+			vecH1D.push_back(h);
+			return h;
 		}
 
 		//*****************************************************************************
@@ -206,7 +208,7 @@ class MyRootInterface{
 
 		int set_ovec_double(int i, double val){if (i>=ovec_double.size()) return -1; ovec_double[i] = val; return 0;}
 		int set_ovec_int(int i, int val){if (i>=ovec_int.size()) return -1; ovec_int[i] = val; return 0;}
-		int set_ovec_string(int i, std::string val){if (i>=ovec_string.size()) return -1; ovec_string[i] = val; return 0;}
+		int set_ovec_string(int i, std::string val){if (i>=ovec_string.size()) return -1; strcpy(ovec_string[i],val.c_str()); return 0;}
 
 	private:
 
@@ -294,7 +296,7 @@ class MyRootInterface{
 		TTree *d_tree;
 		std::vector<double> ovec_double;
 		std::vector<int> ovec_int;
-		std::vector<std::string> ovec_string;
+		std::vector<char *> ovec_string;
 
 		// for input
 		TChain *m_TChain;
