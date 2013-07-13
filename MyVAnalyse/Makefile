@@ -43,6 +43,7 @@ $(PROGRAM): $(PROGRAM).cxx
 # Here is an example showing how to make clean and make a specified user defined package
 .PHONY: clean
 clean:
+	$(RM) $(OBJ)
 	$(RM) $(PROGRAM)
 
 .PHONY: all
