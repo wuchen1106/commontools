@@ -142,6 +142,10 @@ class MyRootInterface{
 		int get_ovec_int(int i){if (i>=ovec_int.size()) return NULL; return ovec_int[i];}
 		std::string get_ovec_string(int i){if (i>=ovec_string.size()) return NULL; return ovec_string[i];}
 
+		std::vector<double>  get_ovec_vecdouble(int i){if (i>=ovec_vecdouble.size()){std::vector<double> dum; return dum;} return ovec_vecdouble[i];}
+		std::vector<int>  get_ovec_vecint(int i){if (i>=ovec_vecint.size()){std::vector<int> dum; return dum;} return ovec_vecint[i];}
+		std::vector<std::string>  get_ovec_vecstring(int i){if (i>=ovec_vecstring.size()) {std::vector<std::string> dum; return dum;} return ovec_vecstring[i];}
+
 		//*****************************************************************************
 		// to set
 		int set_OutputDir(std::string dir){
@@ -208,7 +212,11 @@ class MyRootInterface{
 
 		int set_ovec_double(int i, double val){if (i>=ovec_double.size()) return -1; ovec_double[i] = val; return 0;}
 		int set_ovec_int(int i, int val){if (i>=ovec_int.size()) return -1; ovec_int[i] = val; return 0;}
-		int set_ovec_string(int i, std::string val){if (i>=ovec_string.size()) return -1; strcpy(ovec_string[i],val.c_str()); return 0;}
+		int set_ovec_string(int i, std::string val){if (i>=ovec_string.size()) return -1; ovec_string[i] = val; return 0;}
+
+		int set_ovec_vecdouble(int i, std::vector<double> val){if (i>=ovec_vecdouble.size()) return -1; ovec_vecdouble[i] = val; return 0;}
+		int set_ovec_vecint(int i, std::vector<int> val){if (i>=ovec_vecint.size()) return -1; ovec_vecint[i] = val; return 0;}
+		int set_ovec_vecstring(int i, std::vector<std::string> val){if (i>=ovec_vecstring.size()) return -1; ovec_vecstring[i] = val; return 0;}
 
 	private:
 
@@ -296,7 +304,10 @@ class MyRootInterface{
 		TTree *d_tree;
 		std::vector<double> ovec_double;
 		std::vector<int> ovec_int;
-		std::vector<char *> ovec_string;
+		std::vector<std::string> ovec_string;
+		std::vector<std::vector<double> > ovec_vecdouble;
+		std::vector<std::vector<int> > ovec_vecint;
+		std::vector<std::vector<std::string> > ovec_vecstring;
 
 		// for input
 		TChain *m_TChain;

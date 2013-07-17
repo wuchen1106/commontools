@@ -61,6 +61,9 @@ int MyRootInterface::read(std::string file){
 	ovec_double.clear();
 	ovec_int.clear();
 	ovec_string.clear();
+	ovec_vecdouble.clear();
+	ovec_vecint.clear();
+	ovec_vecstring.clear();
 
 	//=>Read file
 	std::ifstream fin_card(file.c_str());
@@ -188,6 +191,9 @@ int MyRootInterface::read(std::string file){
 			ovec_int.push_back(0);
 			int i = vec_oTBranchName.size() - 1;
 			ovec_string.resize(i+1);
+			ovec_vecdouble.resize(i+1);
+			ovec_vecint.resize(i+1);
+			ovec_vecstring.resize(i+1);
 			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input oTBranch["<<i<<"]: "<<vec_oTBranchName[i]<<", "<<vec_oTBranchType[i]<<", "<<vec_oTBranchIsVec[i]<<std::endl;
 		}
 		else{
@@ -271,11 +277,14 @@ int MyRootInterface::init(){
 		int isvec = vec_oTBranchIsVec[i_TB];
 		int type = vec_oTBranchType[i_TB];
 		if (isvec){
+			if (type == 0) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_vecdouble[i_TB]);
+			else if (type == 1) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_vecint[i_TB]);
+			else if (type == 2) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_vecstring[i_TB]);
 		}
 		else{
-			if (type == 0) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_double[i_TB], (vec_oTBranchName[i_TB]+"/D").c_str());
-			else if (type == 1) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_int[i_TB], (vec_oTBranchName[i_TB]+"/I").c_str());
-			else if (type == 2) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), ovec_string[i_TB], (vec_oTBranchName[i_TB]+"[124]/C").c_str());
+			if (type == 0) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_double[i_TB]);
+			else if (type == 1) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_int[i_TB]);
+			else if (type == 2) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_string[i_TB]);
 		}
 	}
 }
@@ -462,9 +471,6 @@ int MyRootInterface::dump(){
 	}
 
 	d_tree->Write();
-	//TTree *m_TTree = m_TChain->CloneTree();
-	//m_TTree->Write();
-	//file->Write();
 	file->Close();
 
 	std::string backupFileName = OutputDir + "/backup.root";
@@ -483,7 +489,7 @@ int MyRootInterface::get_TH2D_index(std::string name){
 	for ( int i = 0; i < vecH2D.size(); i++ ){
 		if ( nameForH2D[i] == name ) return i;
 	}
-	//std::cout<<"###!!!In get_TH2D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	if (m_verbose>=5) std::cout<<"###!!!In get_TH2D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
@@ -491,7 +497,7 @@ int MyRootInterface::get_TH1D_index(std::string name){
 	for ( int i = 0; i < vecH1D.size(); i++ ){
 		if ( nameForH1D[i] == name ) return i;
 	}
-	//std::cout<<"###!!!In get_TH1D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	if (m_verbose>=5) std::cout<<"###!!!In get_TH1D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
@@ -499,7 +505,7 @@ int MyRootInterface::get_TGraph_index(std::string name){
 	for ( int i = 0; i < nameForGraph.size(); i++ ){
 		if ( nameForGraph[i] == name ) return i;
 	}
-	//std::cout<<"###!!!In get_TGraph_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	if (m_verbose>=5) std::cout<<"###!!!In get_TGraph_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
@@ -507,7 +513,7 @@ int MyRootInterface::get_TBranch_index(std::string name){
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ) return i;
 	}
-	//std::cout<<"###!!!In get_TBranch_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
@@ -515,7 +521,7 @@ int MyRootInterface::get_oTBranch_index(std::string name){
 	for ( int i = 0; i < vec_oTBranchName.size(); i++ ){
 		if ( vec_oTBranchName[i] == name ) return i;
 	}
-	//std::cout<<"###!!!In get_oTBranch_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
+	if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
 	return -1;
 }
 
