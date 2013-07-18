@@ -138,6 +138,13 @@ class MyRootInterface{
 		std::vector<int>*  get_vec_vecint(int i){if (i>=vec_vecint.size()) return NULL; return vec_vecint[i];}
 		std::vector<std::string>*  get_vec_vecstring(int i){if (i>=vec_vecstring.size()) return NULL; return vec_vecstring[i];}
 
+		int get_value(std::string name, double &val);
+		int get_value(std::string name, int &val);
+		int get_value(std::string name, std::string &val);
+		int get_value(std::string name, std::vector<double> &val);
+		int get_value(std::string name, std::vector<int> &val);
+		int get_value(std::string name, std::vector<std::string> &val);
+
 		double get_ovec_double(int i){if (i>=ovec_double.size()) return NULL; return ovec_double[i];}
 		int get_ovec_int(int i){if (i>=ovec_int.size()) return NULL; return ovec_int[i];}
 		std::string get_ovec_string(int i){if (i>=ovec_string.size()) return NULL; return ovec_string[i];}
@@ -218,7 +225,12 @@ class MyRootInterface{
 		int set_ovec_vecint(int i, std::vector<int> val){if (i>=ovec_vecint.size()) return -1; ovec_vecint[i] = val; return 0;}
 		int set_ovec_vecstring(int i, std::vector<std::string> val){if (i>=ovec_vecstring.size()) return -1; ovec_vecstring[i] = val; return 0;}
 
-	private:
+		int set_ovalue(std::string name, double val);
+		int set_ovalue(std::string name, int val);
+		int set_ovalue(std::string name, std::string val);
+		int set_ovalue(std::string name, std::vector<double> val);
+		int set_ovalue(std::string name, std::vector<int> val);
+		int set_ovalue(std::string name, std::vector<std::string> val);
 
 		bool ISEMPTY(std::string content);
 		void seperate_string(std::string line, std::vector<std::string> &strs, const char sep );
