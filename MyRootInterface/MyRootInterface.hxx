@@ -78,8 +78,8 @@ class MyRootInterface{
 
 		//*****************************************************************************
 		// to get
-		int get_TH2D_size(){return vecH2D.size();}
-		int get_TH1D_size(){return vecH1D.size();}
+		int get_TH2D_size(){return nameForH2D.size();}
+		int get_TH1D_size(){return nameForH1D.size();}
 		int get_TGraph_size(){return nameForGraph.size();}
 		int get_TBranch_size(){return vec_TBranchName.size();}
 		int get_oTBranch_size(){return vec_oTBranchName.size();}
@@ -138,11 +138,11 @@ class MyRootInterface{
 		std::vector<int>*  get_vec_vecint(int i){if (i>=vec_vecint.size()) return NULL; return vec_vecint[i];}
 		std::vector<std::string>*  get_vec_vecstring(int i){if (i>=vec_vecstring.size()) return NULL; return vec_vecstring[i];}
 
-		int get_value(std::string name, double &val);
-		int get_value(std::string name, int &val);
+		int get_value(std::string name, double &val, double scale = 1);
+		int get_value(std::string name, int &val, double scale = 1);
 		int get_value(std::string name, std::string &val);
-		int get_value(std::string name, std::vector<double> &val);
-		int get_value(std::string name, std::vector<int> &val);
+		int get_value(std::string name, std::vector<double> &val, double scale = 1);
+		int get_value(std::string name, std::vector<int> &val, double scale = 1);
 		int get_value(std::string name, std::vector<std::string> &val);
 
 		double get_ovec_double(int i){if (i>=ovec_double.size()) return NULL; return ovec_double[i];}
@@ -155,6 +155,7 @@ class MyRootInterface{
 
 		//*****************************************************************************
 		// to set
+		int add_oFileName(std::string name){oFileName.push_back(name);}
 		int set_OutputDir(std::string dir){
 			OutputDir = dir;
 			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing OutputDir to \""<<OutputDir<<"\""<<std::endl;
@@ -232,6 +233,7 @@ class MyRootInterface{
 		int set_ovalue(std::string name, std::vector<int> val);
 		int set_ovalue(std::string name, std::vector<std::string> val);
 
+		// functions
 		bool ISEMPTY(std::string content);
 		void seperate_string(std::string line, std::vector<std::string> &strs, const char sep );
 		double string2double(std::string str);
@@ -249,6 +251,8 @@ class MyRootInterface{
 		std::string prefix_FileInfo;
 		int Verbose_InputInfo; //有哪些Input
 		std::string prefix_InputInfo;
+		int Verbose_InitInfo; //有哪些Init
+		std::string prefix_InitInfo;
 		int Verbose_BranchInfo; //有哪些Branch
 		std::string prefix_BranchInfo;
 

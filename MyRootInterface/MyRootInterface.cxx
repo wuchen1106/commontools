@@ -28,6 +28,8 @@ MyRootInterface::MyRootInterface(int verbose,bool backup)
 	prefix_FileInfo="  [FileInfo] ";
 	Verbose_InputInfo = 10; //有哪些Input
 	prefix_InputInfo="  [InputInfo] ";
+	Verbose_InitInfo = 10; //有哪些Init
+	prefix_InitInfo="  [InitInfo] ";
 	Verbose_BranchInfo = 20; //有哪些Branch
 	prefix_BranchInfo="  [BranchInfo] ";
 	// by default output files would be put into current directory
@@ -208,29 +210,33 @@ int MyRootInterface::init(){
 	int index_temp = 0;
 	//=> Get histograms in
 	for ( int i = 0; i < nameForH2D.size(); i++ ){
+		if (m_verbose >= Verbose_InitInfo) std::cout<<prefix_InitInfo<<"Init vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
 		vecH2D.push_back(new TH2D(nameForH2D[i].c_str(),titleForH2D[i].c_str(),bin1ForH2D[i],left1ForH2D[i],right1ForH2D[i],bin2ForH2D[i],left2ForH2D[i],right2ForH2D[i]) );
 	}
 	for ( int i = 0; i < nameForH1D.size(); i++ ){
+		if (m_verbose >= Verbose_InitInfo) std::cout<<prefix_InitInfo<<"Init vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
 		vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
 	}
 	for ( int i = 0; i < refFileName.size(); i++ ){
 		TFile * fp_ref = new TFile(refFileName[i].c_str());
 		if (fp_ref==NULL) {
 			std::cout<<"ERROR: Can not find file: "<<refFileName[i]<<"!!!"<<std::endl;
-			return -1;
+			continue;
 		}
 		TH1D* h1_ref = (TH1D*)fp_ref->Get(refHistName[i].c_str());
 		if(h1_ref==NULL){
 			std::cout<<"ERROR: Can not find histogram \""<<refHistName[i]<<"\"in file : "<<refFileName[i]<<"!!!"<<std::endl;
-			return -1;
+			continue;
 		}
 		if ( (index_temp = get_TH1D_index(refHistName[i])) != -1 ){
-			h1_ref->SetTitle(titleForH1D[index_temp].c_str());
+			if (!ISEMPTY(titleForH1D[index_temp])) h1_ref->SetTitle(titleForH1D[index_temp].c_str());
+			if (!ISEMPTY(xNameForH1D[index_temp])) h1_ref->GetXaxis()->SetTitle(xNameForH1D[index_temp].c_str());
+			if (!ISEMPTY(yNameForH1D[index_temp])) h1_ref->GetYaxis()->SetTitle(yNameForH1D[index_temp].c_str());
 			vecH1D[index_temp]=h1_ref;
 		}
 		else{
 			std::cout<<"ERROR: Can not find histogram \""<<refHistName[i]<<"\"in vecH1D!!!"<<std::endl;
-			return -1;
+			continue;
 		}
 	}
 
@@ -241,7 +247,7 @@ int MyRootInterface::init(){
 	for ( int iFile = 0; iFile < DirNames.size(); iFile++ ){
 		int nCPU = NCPU[iFile];
 		int njob = NJob[iFile];
-		if ( m_verbose >= Verbose_FileInfo) std::cout<<prefix_FileInfo<<"FileList \""<<DirNames[iFile]<<"\" with runname = \""<<RunNames[iFile]<<"\" has "<<NJob[iFile]<<" jobs on "<<NCPU[iFile]<<" CPUs"<<std::endl;
+		if ( m_verbose >= Verbose_FileInfo) std::cout<<prefix_FileInfo<<"Adding FileList \""<<DirNames[iFile]<<"\" with runname = \""<<RunNames[iFile]<<"\" has "<<NJob[iFile]<<" jobs on "<<NCPU[iFile]<<" CPUs"<<std::endl;
 		for (int i = iStart; i < iStart + nCPU; i ++){
 			for (int j = iStart; j < iStart + njob; j ++){
 				buff.str("");
@@ -252,6 +258,7 @@ int MyRootInterface::init(){
 		}
 	}
 	for ( int iFile = 0; iFile < oFileName.size(); iFile++ ){
+		if ( m_verbose >= Verbose_FileInfo) std::cout<<prefix_FileInfo<<"Adding oFile \""<<oFileName[iFile]<<std::endl;
 		m_TChain->Add(oFileName[iFile].c_str());
 	}
 
@@ -326,16 +333,15 @@ int MyRootInterface::dump(){
 	//Output these histograms
 	for ( int i = 0; i < vecH1D.size(); i++ ){
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Output vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
-		vecH1D[i]->Write();
+		if (normForH1D[i]){
+			if (normForH1D[i] == 1) vecH1D[i]->Scale(1./vecH1D[i]->Integral());
+			else vecH1D[i]->Scale(1./normForH1D[i]);
+		}
 		vecH1D[i]->SetLineColor(colorForH1D[i]);
 		std::string name = vecH1D[i]->GetName();
 		TCanvas* c = new TCanvas(name.c_str());
 		int nCompare = compareForH1D[i];
 		if ( nCompare ) if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<nCompare<<" histograms to be compared"<<std::endl;
-		if (normForH1D[i]){
-			if (normForH1D[i] == 1) vecH1D[i]->Scale(1./vecH1D[i]->Integral());
-			else vecH1D[i]->Scale(1./normForH1D[i]);
-		}
 		double currentMaximum = vecH1D[i]->GetMaximum();
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    currentMaximum y value is ("<<currentMaximum<<")"<<std::endl;
 		for ( int j = 1; j <= nCompare; j++ ){
@@ -375,14 +381,14 @@ int MyRootInterface::dump(){
 		vecH1D[i]->SetMarkerStyle(markerForH1D[i]);
 		vecH1D[i]->SetMarkerColor(colorForH1D[i]);
 		vecH1D[i]->SetLineColor(colorForH1D[i]);
-		vecH1D[i]->GetXaxis()->SetTitle(xNameForH1D[i].c_str());
-		vecH1D[i]->GetYaxis()->SetTitle(yNameForH1D[i].c_str());
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Integral of ("<<nameForH1D[i]<<"): "<<vecH1D[i]->Integral()<<std::endl;
 		vecH1D[i]->Draw(drawOptForH1D[i].c_str());
+		int write_result = vecH1D[i]->Write();
+		if (!write_result)
+			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Cannot wirte vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
 		for ( int j = 0; j < nCompare; j++ ){
 			i++;
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<" ->"<<j<<", vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
-			vecH1D[i]->Write();
 			vecH1D[i]->SetLineColor(colorForH1D[i]);
 			vecH1D[i]->SetMarkerStyle(markerForH1D[i]);
 			vecH1D[i]->SetMarkerColor(colorForH1D[i]);
@@ -390,6 +396,9 @@ int MyRootInterface::dump(){
 			std::string drawOpt = drawOptForH1D[i]+"SAME";
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Integral of ("<<nameForH1D[i]<<"): "<<vecH1D[i]->Integral()<<std::endl;
 			vecH1D[i]->Draw(drawOpt.c_str());
+			int write_result = vecH1D[i]->Write();
+			if (!write_result)
+				if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Cannot write vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
 		}
 		std::string fileName = OutputDir + "/" + name + ".pdf";
 		c->Print(fileName.c_str());
@@ -397,14 +406,15 @@ int MyRootInterface::dump(){
 	gStyle->SetOptStat(0);
 	for ( int i = 0; i < vecH2D.size(); i++ ){
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Output vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
-		vecH2D[i]->Write();
+		int write_result = vecH2D[i]->Write();
+		if (!write_result)
+			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Cannot write vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
 		std::string name = vecH2D[i]->GetName();
 		TCanvas* c = new TCanvas(name.c_str());
 		gPad->SetGridx(1);
 		gPad->SetGridy(1);
-		vecH2D[i]->GetXaxis()->SetTitle(xNameForH2D[i].c_str());
-		vecH2D[i]->GetYaxis()->SetTitle(yNameForH2D[i].c_str());
 		vecH2D[i]->Draw("COLZ");
+		vecH2D[i]->Write();
 		std::string fileName = OutputDir + "/"+ name + ".pdf";
 		c->Print(fileName.c_str());
 	}
@@ -452,7 +462,7 @@ int MyRootInterface::dump(){
 		aTGraph->SetLineColor(colorForGraph[i]);
 		std::string drawOpt = "A"+drawOptForGraph[i];
 		aTGraph->Draw(drawOpt.c_str());
-		aTGraph->Write();
+		//aTGraph->Write();
 		for ( int j = 0; j < nCompare; j++ ){
 			i++;
 			int sizeOfThisGraph = xForGraph[i].size();
@@ -472,7 +482,7 @@ int MyRootInterface::dump(){
 			bTGraph->SetMarkerColor(colorForGraph[i]);
 			bTGraph->SetLineColor(colorForGraph[i]);
 			bTGraph->Draw(drawOptForGraph[i].c_str());
-			bTGraph->Write();
+			//bTGraph->Write();
 		}
 		std::string fileName = OutputDir + "/" + name + ".pdf";
 		c->Print(fileName.c_str());
@@ -533,7 +543,7 @@ int MyRootInterface::get_oTBranch_index(std::string name){
 	return -1;
 }
 
-int MyRootInterface::get_value(std::string name, double &val){
+int MyRootInterface::get_value(std::string name, double &val, double scale){
 	int index = -1;
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ){
@@ -549,11 +559,11 @@ int MyRootInterface::get_value(std::string name, double &val){
 		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"double"<<std::endl;
 		return -1;
 	}
-	val = vec_double[index];
+	val = vec_double[index]*scale;
 	return 0;
 }
 
-int MyRootInterface::get_value(std::string name, int &val){
+int MyRootInterface::get_value(std::string name, int &val, double scale){
 	int index = -1;
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ){
@@ -569,7 +579,7 @@ int MyRootInterface::get_value(std::string name, int &val){
 		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"int"<<std::endl;
 		return -1;
 	}
-	val = vec_int[index];
+	val = vec_int[index]*scale;
 	return 0;
 }
 
@@ -593,7 +603,7 @@ int MyRootInterface::get_value(std::string name, std::string &val){
 	return 0;
 }
 
-int MyRootInterface::get_value(std::string name, std::vector<double> &val){
+int MyRootInterface::get_value(std::string name, std::vector<double> &val, double scale){
 	int index = -1;
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ){
@@ -610,10 +620,13 @@ int MyRootInterface::get_value(std::string name, std::vector<double> &val){
 		return -1;
 	}
 	val = *vec_vecdouble[index];
+	for (int i = 0; i < val.size(); i++){
+		val[i] *= scale;
+	}
 	return 0;
 }
 
-int MyRootInterface::get_value(std::string name, std::vector<int> &val){
+int MyRootInterface::get_value(std::string name, std::vector<int> &val, double scale){
 	int index = -1;
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ){
@@ -630,6 +643,9 @@ int MyRootInterface::get_value(std::string name, std::vector<int> &val){
 		return -1;
 	}
 	val = *vec_vecint[index];
+	for (int i = 0; i < val.size(); i++){
+		val[i] *= scale;
+	}
 	return 0;
 }
 

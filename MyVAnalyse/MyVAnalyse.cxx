@@ -168,6 +168,29 @@ int main(int argc, char** argv){
 	ylog_temp = 1;
 	TH1D* h_MisMeas = fMyRootInterface->add_TH1D(name_temp,title_temp,xName_temp,yName_temp,bin1_temp,left1_temp,right1_temp,minx_temp,miny_temp,color_temp,compare_temp,xlog_temp,ylog_temp,marker_temp,norm_temp,drawOpt_temp);
 
+	// if you have to read a branch
+	double x;
+	double y;
+	double z;
+	double px;
+	double py;
+	double pz;
+	double t;
+	double ox;
+	double oy;
+	double oz;
+
+	fMyRootInterface->get_value("x",x,mm);
+	fMyRootInterface->get_value("y",y,mm);
+	fMyRootInterface->get_value("z",z,mm);
+	fMyRootInterface->get_value("px",px,MeV);
+	fMyRootInterface->get_value("py",py,MeV);
+	fMyRootInterface->get_value("pz",pz,MeV);
+	fMyRootInterface->get_value("t",t,ns);
+	fMyRootInterface->get_value("ox",ox,mm);
+	fMyRootInterface->get_value("oy",oy,mm);
+	fMyRootInterface->get_value("oz",oz,mm);
+
 	//=======================================================================================================
 	//************DO THE DIRTY WORK*******************
 	if (verbose >= Verbose_SectorInfo ) std::cout<<prefix_SectorInfo<<"In DO THE DIRTY WORK###"<<std::endl;
