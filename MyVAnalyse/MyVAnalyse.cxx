@@ -145,8 +145,13 @@ int main(int argc, char** argv){
 
 	//********If you have to create a histogram**********************
 	int num_bin = h_SPEC->GetNbinsX(); //How many bins do you want
+	//name_temp = fMyRootInterface->get_nameForH1D(iHist);
+	//title_temp = fMyRootInterface->get_titleForH1D(iHist);
 	xName_temp = fMyRootInterface->get_xNameForH1D(ihist_SPEC);
 	yName_temp = fMyRootInterface->get_yNameForH1D(ihist_SPEC);
+	//bin1_temp = fMyRootInterface->get_bin1ForH1D(iHist);
+	//left1_temp = fMyRootInterface->get_left1ForH1D(iHist);
+	//right1_temp = fMyRootInterface->get_right1ForH1D(iHist);
 	bin1_temp = h_SPEC->GetNbinsX();
 	left1_temp = h_SPEC->GetXaxis()->GetXmin();
 	right1_temp = h_SPEC->GetXaxis()->GetXmax();

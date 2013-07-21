@@ -38,22 +38,29 @@ class MyRootInterface{
 		int get_TBranch_index(std::string name);
 		int get_oTBranch_index(std::string name);
 
-		TH1D* add_TH1D(std::string name,
+		int add_TH1D(std::string name,
 					 std::string title,
 					 std::string xName,
 					 std::string yName,
 					 int bin1,
 					 double left1,
 					 double right1,
-					 double minx,
-					 double miny,
-					 int color,
-					 int compare,
-					 int xlog,
-					 int ylog,
-					 int marker,
-					 double norm,
-		             std::string drawOpt){
+					 double minx = 0,
+					 double miny = 0,
+					 int color = 1,
+					 int compare = 0,
+					 int xlog = 0,
+					 int ylog = 0,
+					 int marker = 3,
+					 double norm = 0,
+		             std::string drawOpt = "",
+					 int useLegend = 0,
+					 std::string legendName = "",
+					 double legendx1 = 0,
+					 double legendy1 = 0,
+					 double legendx2 = 0,
+					 double legendy2 = 0
+		             ){
 			nameForH1D.push_back(name);
 			titleForH1D.push_back(title);
 			xNameForH1D.push_back(xName);
@@ -70,10 +77,14 @@ class MyRootInterface{
 			markerForH1D.push_back(marker);
 			normForH1D.push_back(norm);
 			drawOptForH1D.push_back(drawOpt);
+			useLegendForH1D.push_back(useLegend);
+			legendNameForH1D.push_back(legendName);
+			legendx1ForH1D.push_back(legendx1);
+			legendy1ForH1D.push_back(legendy1);
+			legendx2ForH1D.push_back(legendx2);
+			legendy2ForH1D.push_back(legendy2);
 			int i = nameForH1D.size()-1;
-			TH1D *h = new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]);
-			vecH1D.push_back(h);
-			return h;
+			return i;
 		}
 
 		//*****************************************************************************
@@ -113,6 +124,12 @@ class MyRootInterface{
 		int get_bin1ForH1D(int i){if (i>=bin1ForH1D.size()) return NULL; return bin1ForH1D[i];}
 		double get_left1ForH1D(int i){if (i>=left1ForH1D.size()) return NULL; return left1ForH1D[i];}
 		double get_right1ForH1D(int i){if (i>=right1ForH1D.size()) return NULL; return right1ForH1D[i];}
+		int get_useLegendForH1D(int i){if (i>=useLegendForH1D.size()) return NULL; return useLegendForH1D[i];}
+		std::string get_legendNameForH1D(int i){if (i>=legendNameForH1D.size()) return NULL; return legendNameForH1D[i];}
+		double get_legendx1ForH1D(int i){if (i>=legendx1ForH1D.size()) return NULL; return legendx1ForH1D[i];}
+		double get_legendy1ForH1D(int i){if (i>=legendy1ForH1D.size()) return NULL; return legendy1ForH1D[i];}
+		double get_legendx2ForH1D(int i){if (i>=legendx2ForH1D.size()) return NULL; return legendx2ForH1D[i];}
+		double get_legendy2ForH1D(int i){if (i>=legendy2ForH1D.size()) return NULL; return legendy2ForH1D[i];}
 		TH1D* get_TH1D(int i){if (i>=vecH1D.size()) return NULL; return vecH1D[i];}
 
 		std::string get_nameForGraph(int i){if (i>=nameForGraph.size()) return NULL; return nameForGraph[i];}
@@ -201,6 +218,12 @@ class MyRootInterface{
 		int set_markerForH1D(int i, int val){if (i>=markerForH1D.size()) return -1; markerForH1D[i] = val; return 0;}
 		int set_normForH1D(int i, double val){if (i>=normForH1D.size()) return -1; normForH1D[i] = val; return 0;}
 		int set_drawOptForH1D(int i, std::string val){if (i>=drawOptForH1D.size()) return -1; drawOptForH1D[i] = val; return 0;}
+		int set_useLegendForH1D(int i, int val){if (i>=useLegendForH1D.size()) return -1; useLegendForH1D[i] = val; return 0;}
+		int set_legendNameForH1D(int i, std::string val){if (i>=legendNameForH1D.size()) return -1; legendNameForH1D[i] = val; return 0;}
+		int set_legendx1ForH1D(int i, double val){if (i>=legendx1ForH1D.size()) return -1; legendx1ForH1D[i] = val; return 0;}
+		int set_legendy1ForH1D(int i, double val){if (i>=legendy1ForH1D.size()) return -1; legendy1ForH1D[i] = val; return 0;}
+		int set_legendx2ForH1D(int i, double val){if (i>=legendx2ForH1D.size()) return -1; legendx2ForH1D[i] = val; return 0;}
+		int set_legendy2ForH1D(int i, double val){if (i>=legendy2ForH1D.size()) return -1; legendy2ForH1D[i] = val; return 0;}
 
 		int set_nameForGraph(int i, std::string val){if (i>=nameForGraph.size()) return -1; nameForGraph[i] = val; return 0;}
 		int set_titleForGraph(int i, std::string val){if (i>=titleForGraph.size()) return -1; titleForGraph[i] = val; return 0;}
@@ -292,6 +315,12 @@ class MyRootInterface{
 		std::vector<int> markerForH1D;
 		std::vector<double> normForH1D;
 		std::vector<std::string> drawOptForH1D;
+		std::vector<int> useLegendForH1D;
+		std::vector<std::string> legendNameForH1D;
+		std::vector<double> legendx1ForH1D;
+		std::vector<double> legendy1ForH1D;
+		std::vector<double> legendx2ForH1D;
+		std::vector<double> legendy2ForH1D;
 		std::vector<TH1D*>   vecH1D;
 
 		std::vector<std::string> nameForGraph;

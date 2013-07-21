@@ -14,6 +14,7 @@
 #include "TH1D.h"
 #include "TH2D.h"
 #include "TGraph.h"
+#include "TLegend.h"
 
 #include "MyRootInterface.hxx"
 
@@ -98,8 +99,36 @@ int MyRootInterface::read(std::string file){
 			if(iterator<segments.size()) markerForH1D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) normForH1D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) drawOptForH1D.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) useLegendForH1D.push_back(string2double(segments[iterator++])); else {useLegendForH1D.push_back(0);}
+			if(iterator<segments.size()) legendNameForH1D.push_back(segments[iterator++]); else {legendNameForH1D.push_back("");}
+			if(iterator<segments.size()) legendx1ForH1D.push_back(string2double(segments[iterator++])); else {legendx1ForH1D.push_back(0);}
+			if(iterator<segments.size()) legendy1ForH1D.push_back(string2double(segments[iterator++])); else {legendy1ForH1D.push_back(0);}
+			if(iterator<segments.size()) legendx2ForH1D.push_back(string2double(segments[iterator++])); else {legendx2ForH1D.push_back(0);}
+			if(iterator<segments.size()) legendy2ForH1D.push_back(string2double(segments[iterator++])); else {legendy2ForH1D.push_back(0);}
 			int i = nameForH1D.size() - 1;
-			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
+			if (m_verbose >= Verbose_InputInfo)
+				std::cout<<prefix_InputInfo
+				         <<"Input vecH1D["<<i<<"]: "<<nameForH1D[i]
+				         <<", "<<titleForH1D[i]
+				         <<", "<<xNameForH1D[i]
+				         <<", "<<yNameForH1D[i]
+				         <<", "<<bin1ForH1D[i]
+				         <<", "<<left1ForH1D[i]
+				         <<", "<<right1ForH1D[i]
+				         <<", Color="<<colorForH1D[i]
+				         <<", xlogSyle="<<xlogForH1D[i]
+				         <<", ylogSyle="<<ylogForH1D[i]
+				         <<", nCompare="<<compareForH1D[i]
+				         <<", markerStyle="<<markerForH1D[i]
+				         <<", normalize ="<<normForH1D[i]
+				         <<", drawOpt=\""<<drawOptForH1D[i]
+				         <<", useLegend=\""<<useLegendForH1D[i]
+				         <<", legendName=\""<<legendNameForH1D[i]
+				         <<", legendx1=\""<<legendx1ForH1D[i]
+				         <<", legendy1=\""<<legendy1ForH1D[i]
+				         <<", legendx2=\""<<legendx2ForH1D[i]
+				         <<", legendy2=\""<<legendy2ForH1D[i]
+				         <<"\""<<std::endl;
 		}
 		else if ( segments[0] == "TH2D" ){
 			if(iterator<segments.size()) nameForH2D.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
@@ -214,7 +243,29 @@ int MyRootInterface::init(){
 		vecH2D.push_back(new TH2D(nameForH2D[i].c_str(),titleForH2D[i].c_str(),bin1ForH2D[i],left1ForH2D[i],right1ForH2D[i],bin2ForH2D[i],left2ForH2D[i],right2ForH2D[i]) );
 	}
 	for ( int i = 0; i < nameForH1D.size(); i++ ){
-		if (m_verbose >= Verbose_InitInfo) std::cout<<prefix_InitInfo<<"Init vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
+		if (m_verbose >= Verbose_InitInfo)
+			std::cout<<prefix_InitInfo
+					 <<"Init vecH1D["<<i<<"]: "<<nameForH1D[i]
+					 <<", "<<titleForH1D[i]
+					 <<", "<<xNameForH1D[i]
+					 <<", "<<yNameForH1D[i]
+					 <<", "<<bin1ForH1D[i]
+					 <<", "<<left1ForH1D[i]
+					 <<", "<<right1ForH1D[i]
+					 <<", Color="<<colorForH1D[i]
+					 <<", xlogSyle="<<xlogForH1D[i]
+					 <<", ylogSyle="<<ylogForH1D[i]
+					 <<", nCompare="<<compareForH1D[i]
+					 <<", markerStyle="<<markerForH1D[i]
+					 <<", normalize ="<<normForH1D[i]
+					 <<", drawOpt=\""<<drawOptForH1D[i]
+					 <<", useLegend=\""<<useLegendForH1D[i]
+					 <<", legendName=\""<<legendNameForH1D[i]
+					 <<", legendx1=\""<<legendx1ForH1D[i]
+					 <<", legendy1=\""<<legendy1ForH1D[i]
+					 <<", legendx2=\""<<legendx2ForH1D[i]
+					 <<", legendy2=\""<<legendy2ForH1D[i]
+					 <<"\""<<std::endl;
 		vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
 	}
 	for ( int i = 0; i < refFileName.size(); i++ ){
@@ -229,9 +280,10 @@ int MyRootInterface::init(){
 			continue;
 		}
 		if ( (index_temp = get_TH1D_index(refHistName[i])) != -1 ){
-			if (!ISEMPTY(titleForH1D[index_temp])) h1_ref->SetTitle(titleForH1D[index_temp].c_str());
-			if (!ISEMPTY(xNameForH1D[index_temp])) h1_ref->GetXaxis()->SetTitle(xNameForH1D[index_temp].c_str());
-			if (!ISEMPTY(yNameForH1D[index_temp])) h1_ref->GetYaxis()->SetTitle(yNameForH1D[index_temp].c_str());
+			if (ISEMPTY(titleForH1D[index_temp])) titleForH1D[index_temp] = h1_ref->GetTitle();
+			if (ISEMPTY(xNameForH1D[index_temp])) xNameForH1D[index_temp] = h1_ref->GetXaxis()->GetTitle();
+			if (ISEMPTY(yNameForH1D[index_temp])) yNameForH1D[index_temp] = h1_ref->GetYaxis()->GetTitle();
+			h1_ref->SetTitle(titleForH1D[index_temp].c_str());
 			vecH1D[index_temp]=h1_ref;
 		}
 		else{
@@ -332,7 +384,29 @@ int MyRootInterface::dump(){
 	//  gStyle->SetTitleH(0.08);
 	//Output these histograms
 	for ( int i = 0; i < vecH1D.size(); i++ ){
-		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Output vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
+		if (m_verbose >= Verbose_HistInfo)
+			std::cout<<prefix_HistInfo
+					 <<"Output vecH1D["<<i<<"]: "<<nameForH1D[i]
+					 <<", "<<titleForH1D[i]
+					 <<", "<<xNameForH1D[i]
+					 <<", "<<yNameForH1D[i]
+					 <<", "<<bin1ForH1D[i]
+					 <<", "<<left1ForH1D[i]
+					 <<", "<<right1ForH1D[i]
+					 <<", Color="<<colorForH1D[i]
+					 <<", xlogSyle="<<xlogForH1D[i]
+					 <<", ylogSyle="<<ylogForH1D[i]
+					 <<", nCompare="<<compareForH1D[i]
+					 <<", markerStyle="<<markerForH1D[i]
+					 <<", normalize ="<<normForH1D[i]
+					 <<", drawOpt=\""<<drawOptForH1D[i]
+					 <<", useLegend=\""<<useLegendForH1D[i]
+					 <<", legendName=\""<<legendNameForH1D[i]
+					 <<", legendx1=\""<<legendx1ForH1D[i]
+					 <<", legendy1=\""<<legendy1ForH1D[i]
+					 <<", legendx2=\""<<legendx2ForH1D[i]
+					 <<", legendy2=\""<<legendy2ForH1D[i]
+					 <<"\""<<std::endl;
 		if (normForH1D[i]){
 			if (normForH1D[i] == 1) vecH1D[i]->Scale(1./vecH1D[i]->Integral());
 			else vecH1D[i]->Scale(1./normForH1D[i]);
@@ -367,8 +441,10 @@ int MyRootInterface::dump(){
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"  Logx! set xRange("<<minxForH1D[i]<<","<<right1ForH1D[i]<<")"<<std::endl;
 		}
 		else {
-			vecH1D[i]->GetXaxis()->SetRangeUser(left1ForH1D[i],right1ForH1D[i]);
-			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"        set xRange("<<left1ForH1D[i]<<","<<right1ForH1D[i]<<")"<<std::endl;
+			if (left1ForH1D[i]!=right1ForH1D[i]){
+				vecH1D[i]->GetXaxis()->SetRangeUser(left1ForH1D[i],right1ForH1D[i]);
+				if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"        set xRange("<<left1ForH1D[i]<<","<<right1ForH1D[i]<<")"<<std::endl;
+			}
 		}
 		if ( ylogForH1D[i] ) {
 			vecH1D[i]->GetYaxis()->SetRangeUser(minyForH1D[i],2*currentMaximum);
@@ -381,11 +457,16 @@ int MyRootInterface::dump(){
 		vecH1D[i]->SetMarkerStyle(markerForH1D[i]);
 		vecH1D[i]->SetMarkerColor(colorForH1D[i]);
 		vecH1D[i]->SetLineColor(colorForH1D[i]);
+		vecH1D[i]->GetXaxis()->SetTitle(xNameForH1D[i].c_str());
+		vecH1D[i]->GetYaxis()->SetTitle(yNameForH1D[i].c_str());
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Integral of ("<<nameForH1D[i]<<"): "<<vecH1D[i]->Integral()<<std::endl;
 		vecH1D[i]->Draw(drawOptForH1D[i].c_str());
 		int write_result = vecH1D[i]->Write();
 		if (!write_result)
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Cannot wirte vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
+		TLegend *legend = new TLegend(legendx1ForH1D[i],legendy1ForH1D[i],legendx2ForH1D[i],legendy2ForH1D[i]);
+		legend->AddEntry(vecH1D[i],legendNameForH1D[i].c_str());
+		int useLegend = useLegendForH1D[i];
 		for ( int j = 0; j < nCompare; j++ ){
 			i++;
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<" ->"<<j<<", vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
@@ -396,10 +477,12 @@ int MyRootInterface::dump(){
 			std::string drawOpt = drawOptForH1D[i]+"SAME";
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Integral of ("<<nameForH1D[i]<<"): "<<vecH1D[i]->Integral()<<std::endl;
 			vecH1D[i]->Draw(drawOpt.c_str());
+			legend->AddEntry(vecH1D[i],legendNameForH1D[i].c_str());
 			int write_result = vecH1D[i]->Write();
 			if (!write_result)
 				if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Cannot write vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
 		}
+		if (useLegend) legend->Draw("same");
 		std::string fileName = OutputDir + "/" + name + ".pdf";
 		c->Print(fileName.c_str());
 	}
@@ -413,6 +496,8 @@ int MyRootInterface::dump(){
 		TCanvas* c = new TCanvas(name.c_str());
 		gPad->SetGridx(1);
 		gPad->SetGridy(1);
+		vecH2D[i]->GetXaxis()->SetTitle(xNameForH2D[i].c_str());
+		vecH2D[i]->GetYaxis()->SetTitle(yNameForH2D[i].c_str());
 		vecH2D[i]->Draw("COLZ");
 		vecH2D[i]->Write();
 		std::string fileName = OutputDir + "/"+ name + ".pdf";
@@ -504,7 +589,7 @@ int MyRootInterface::dump(){
 }
 
 int MyRootInterface::get_TH2D_index(std::string name){
-	for ( int i = 0; i < vecH2D.size(); i++ ){
+	for ( int i = 0; i < nameForH2D.size(); i++ ){
 		if ( nameForH2D[i] == name ) return i;
 	}
 	if (m_verbose>=5) std::cout<<"###!!!In get_TH2D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;
@@ -512,7 +597,7 @@ int MyRootInterface::get_TH2D_index(std::string name){
 }
 
 int MyRootInterface::get_TH1D_index(std::string name){
-	for ( int i = 0; i < vecH1D.size(); i++ ){
+	for ( int i = 0; i < nameForH1D.size(); i++ ){
 		if ( nameForH1D[i] == name ) return i;
 	}
 	if (m_verbose>=5) std::cout<<"###!!!In get_TH1D_index: CAN NOT FIND "<<name<<"!!!"<<std::endl;

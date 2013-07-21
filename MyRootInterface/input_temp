@@ -35,8 +35,8 @@
 #	TYPE    | Directory                                                                               | histoName
 #	refTH1D | /home/chen/MyWorkArea/MyStudies/AntiProton/4BodyPhaseSpace/result/12p5GeV/output.root   | 4PS_theta
 
-#	TYPE    | NAME            | TITLE              | xAxisName    | yAxisName     | BIN | LEFT  | RIGHT | minX | minY  |COL|COM|LOGX|LOGY|Marker|Norm   |DrawOption
-#	TH1D    | A_e_ts20_pa     | e^{-} at ts2_0 | p_{a}(MeV/c) | probability   | 120 | 0     | 150   | 0    | 1e-7  | 1 | 0 | 0  | 1  | 20   | 1e6   | 
+#	TYPE    | NAME         | TITLE          | xAxisName    | yAxisName   |BIN|LEFT|RIGHT|minX|minY|COL|COM|LOGX|LOGY|Marker|Norm|DrawOption|legend|name| x1 | y1 | x2 | y2 |
+#	TH1D    | A_e_ts20_pa  | e^{-} at ts2_0 | p_{a}(MeV/c) | probability |120|0   |150  |0   |1e-7| 1 | 0 | 0  | 1  | 20   | 1e6|          |   1  |Andy|0.75|0.75|0.95|0.95|
 
 #	TYPE    | NAME           | TITLE                                                | xAxisName         | yAxisName     | BIN | LEFT  | RIGHT | BIN | LEFT | RIGHT
 #	TH2D    | costheta_VS_r  | anti-proton (incident proton @12.5GeV/c on Graphite) | cos#theta         | r(cm)         | 120 | -1    | 1     | 120 | 0    | 0.6

@@ -31,6 +31,13 @@ int main(int argc, char** argv){
 	inputDatas.push_back("K.txt");
 	inputDatas.push_back("L.txt");
 	std::vector<std::vector<std::vector<double> > > DataSet; // country, date, value
+	std::ofstream logstream;
+	file = "log.txt";
+	logstream.open(file.c_str());
+	if(!logstream){
+		std::cout<<"Cannot open "<<file<<" in ofstream format"<<std::endl;
+		return -1;
+	}
 
 	// ***********************************************************
 	// => Read inputCountries
@@ -41,7 +48,7 @@ int main(int argc, char** argv){
 		return -1;
 	}
 	// read file
-	while(getline(fin_card_country,s_card)){
+	while(std::getline(fin_card_country,s_card)){
 		std::vector<std::string> segments;
 		seperate_string(s_card,segments,'\t');
 		country_name_vec.push_back(segments[0]);
@@ -49,7 +56,7 @@ int main(int argc, char** argv){
 	}
 	// output countries
 	for (int i = 0; i < country_name_vec.size(); i++ ){
-		std::cout<<"Country["<<i<<"]: \""<<country_name_vec[i]<<"\", ("<<country_code_vec[i]<<")"<<std::endl;
+		logstream<<"Country["<<i<<"]: \""<<country_name_vec[i]<<"\", ("<<country_code_vec[i]<<")"<<std::endl;
 	}
 
 	// ***********************************************************
@@ -61,14 +68,14 @@ int main(int argc, char** argv){
 		return -1;
 	}
 	// read file
-	while(getline(fin_card_date,s_card)){
+	while(std::getline(fin_card_date,s_card)){
 		std::vector<std::string> segments;
 		seperate_string(s_card,segments,'\t');
 		date_name_vec.push_back(segments[0]);
 	}
 	// output countries
 	for (int i = 0; i < date_name_vec.size(); i++ ){
-		std::cout<<"Date["<<i<<"]: \""<<date_name_vec[i]<<"\""<<std::endl;
+		logstream<<"Date["<<i<<"]: \""<<date_name_vec[i]<<"\""<<std::endl;
 	}
 
 	// ***********************************************************
@@ -99,12 +106,12 @@ int main(int argc, char** argv){
 		std::vector<int> tempcountry_to_country;
 		std::vector<int> country_to_tempcountry;
 		int iline = 1;
-		while(getline(fin_card_date,s_card)){
+		while(std::getline(fin_card_date,s_card)){
 			if (iline==1){
 				seperate_string(s_card,tempcountry_name_vec,'\t');
 				// format
 				for (int itemp = 0; itemp < tempcountry_name_vec.size(); itemp++ ){
-					transform(tempcountry_name_vec[itemp].begin(),tempcountry_name_vec[itemp].end(),tempcountry_name_vec[itemp].begin(),toupper);
+					std::transform(tempcountry_name_vec[itemp].begin(),tempcountry_name_vec[itemp].end(),tempcountry_name_vec[itemp].begin(),toupper);
 					if (tempcountry_name_vec[itemp]=="SOUTH KOREA") tempcountry_name_vec[itemp]="KOREA (SOUTH)";
 					if (tempcountry_name_vec[itemp]=="RUSSIA") tempcountry_name_vec[itemp]="RUSSIAN FEDERATION";
 					if (tempcountry_name_vec[itemp]=="UAE") tempcountry_name_vec[itemp]="UNITED ARAB EMIRATES";
@@ -129,11 +136,13 @@ int main(int argc, char** argv){
 					}
 				}
 				// output map
+				logstream<<std::endl;
+				logstream<<"Dictionary for "<<inputDatas[iValue]<<":"<<std::endl;
 				for (int itemp = 0; itemp < tempcountry_name_vec.size(); itemp++ ){
-					std::cout<<"tempcountry["<<itemp<<"]: \""<<tempcountry_name_vec[itemp]<<"\" to ("<<tempcountry_to_country[itemp]<<")"<<std::endl;
+					logstream<<"tempcountry["<<itemp<<"]: \""<<tempcountry_name_vec[itemp]<<"\" to ("<<tempcountry_to_country[itemp]<<")"<<std::endl;
 				}
 				for (int iCountry = 0; iCountry < country_name_vec.size(); iCountry++ ){
-					std::cout<<"country["<<iCountry<<"]: \""<<country_name_vec[iCountry]<<"\" to ("<<country_to_tempcountry[iCountry]<<")"<<std::endl;
+					logstream<<"country["<<iCountry<<"]: \""<<country_name_vec[iCountry]<<"\" to ("<<country_to_tempcountry[iCountry]<<")"<<std::endl;
 				}
 			}
 			else if (iline<=3){
@@ -146,10 +155,10 @@ int main(int argc, char** argv){
 					if (segments[i]=="") values.push_back(-1);
 					else values.push_back(string2double(segments[i]));
 					int iDate = iline - 4;
-					//std::cout<<inputDatas[iValue]<<": "<<tempcountry_name_vec[i]<<" @ "<<date_name_vec[iDate]<<": from \""<<segments[i]<<"\" to ("<<values[i]<<")"<<std::endl;
+					//logstream<<inputDatas[iValue]<<": "<<tempcountry_name_vec[i]<<" @ "<<date_name_vec[iDate]<<": from \""<<segments[i]<<"\" to ("<<values[i]<<")"<<std::endl;
 				}
 				if (values.size()!=tempcountry_name_vec.size()){
-					std::cout<<"WARNING! in line["<<iline<<"] of file["<<file<<"], values size "<<values.size()<<" != country size "<<tempcountry_name_vec.size()<<" !!!"<<std::endl;
+					logstream<<"WARNING! in line["<<iline<<"] of file["<<file<<"], values size "<<values.size()<<" != country size "<<tempcountry_name_vec.size()<<" !!!"<<std::endl;
 				}
 				else{
 					for (int itemp = 0; itemp < tempcountry_name_vec.size(); itemp++ ){
@@ -167,16 +176,24 @@ int main(int argc, char** argv){
 
 	// ***********************************************************
 	// => Dump DataSet
+	std::ofstream fout;
+	file = "output.txt";
+	fout.open(file.c_str());
+	if(!fout){
+		std::cout<<"Cannot open "<<file<<" in ofstream format"<<std::endl;
+		return -1;
+	}
+
 	for ( int iCountry = 0; iCountry<country_name_vec.size(); iCountry++ ){
 		for ( int iDate = 0; iDate<date_name_vec.size(); iDate++ ){
-			std::cout<<date_name_vec[iDate]<<"\t"<<country_code_vec[iCountry]<<"\t";
+			fout<<country_name_vec[iCountry]<<"\t"<<date_name_vec[iDate]<<"\t"<<country_code_vec[iCountry]<<"\t";
 			for ( int iValue = 0; iValue<inputDatas.size(); iValue++ ){
 				if (DataSet[iCountry][iDate][iValue]==-1)
-					std::cout<<""<<"\t";
+					fout<<""<<"\t";
 				else
-					std::cout<<DataSet[iCountry][iDate][iValue]<<"\t";
+					fout<<DataSet[iCountry][iDate][iValue]<<"\t";
 			}
-			std::cout<<std::endl;
+			fout<<std::endl;
 		}
 	}
 }
@@ -203,6 +220,8 @@ void seperate_string(std::string line, std::vector<std::string> &strs, const cha
 		token.erase(0,token.find_first_not_of('\t'));
 		token.erase(token.find_last_not_of(' ')+1);
 		token.erase(0,token.find_first_not_of(' '));
+		token.erase(token.find_last_not_of('\r')+1);
+		token.erase(0,token.find_first_not_of('\r'));
 		strs.push_back(token);
 	}
 }
