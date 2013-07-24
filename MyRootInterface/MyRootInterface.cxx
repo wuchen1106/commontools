@@ -485,6 +485,8 @@ int MyRootInterface::dump(){
 		if (useLegend) legend->Draw("same");
 		std::string fileName = OutputDir + "/" + name + ".pdf";
 		c->Print(fileName.c_str());
+		fileName = OutputDir + "/" + name + ".png";
+		c->Print(fileName.c_str());
 	}
 	gStyle->SetOptStat(0);
 	for ( int i = 0; i < vecH2D.size(); i++ ){
@@ -501,6 +503,8 @@ int MyRootInterface::dump(){
 		vecH2D[i]->Draw("COLZ");
 		vecH2D[i]->Write();
 		std::string fileName = OutputDir + "/"+ name + ".pdf";
+		c->Print(fileName.c_str());
+		fileName = OutputDir + "/" + name + ".png";
 		c->Print(fileName.c_str());
 	}
 	for ( int i = 0; i < nameForGraph.size(); i++ ){
@@ -570,6 +574,8 @@ int MyRootInterface::dump(){
 			//bTGraph->Write();
 		}
 		std::string fileName = OutputDir + "/" + name + ".pdf";
+		c->Print(fileName.c_str());
+		fileName = OutputDir + "/" + name + ".png";
 		c->Print(fileName.c_str());
 	}
 
