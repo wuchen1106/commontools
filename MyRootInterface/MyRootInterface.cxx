@@ -105,6 +105,8 @@ int MyRootInterface::read(std::string file){
 			if(iterator<segments.size()) legendy1ForH1D.push_back(string2double(segments[iterator++])); else {legendy1ForH1D.push_back(0);}
 			if(iterator<segments.size()) legendx2ForH1D.push_back(string2double(segments[iterator++])); else {legendx2ForH1D.push_back(0);}
 			if(iterator<segments.size()) legendy2ForH1D.push_back(string2double(segments[iterator++])); else {legendy2ForH1D.push_back(0);}
+			if(iterator<segments.size()) npadxForH1D.push_back(string2double(segments[iterator++])); else {npadxForH1D.push_back(1);}
+			if(iterator<segments.size()) npadyForH1D.push_back(string2double(segments[iterator++])); else {npadyForH1D.push_back(1);}
 			int i = nameForH1D.size() - 1;
 			if (m_verbose >= Verbose_InputInfo)
 				std::cout<<prefix_InputInfo
@@ -128,6 +130,8 @@ int MyRootInterface::read(std::string file){
 				         <<", legendy1=\""<<legendy1ForH1D[i]
 				         <<", legendx2=\""<<legendx2ForH1D[i]
 				         <<", legendy2=\""<<legendy2ForH1D[i]
+				         <<", npadx=\""<<npadxForH1D[i]
+				         <<", npady=\""<<npadyForH1D[i]
 				         <<"\""<<std::endl;
 		}
 		else if ( segments[0] == "TH2D" ){
@@ -265,6 +269,8 @@ int MyRootInterface::init(){
 					 <<", legendy1=\""<<legendy1ForH1D[i]
 					 <<", legendx2=\""<<legendx2ForH1D[i]
 					 <<", legendy2=\""<<legendy2ForH1D[i]
+					 <<", npadx=\""<<npadxForH1D[i]
+					 <<", npady=\""<<npadyForH1D[i]
 					 <<"\""<<std::endl;
 		vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
 	}
@@ -310,7 +316,7 @@ int MyRootInterface::init(){
 		}
 	}
 	for ( int iFile = 0; iFile < oFileName.size(); iFile++ ){
-		if ( m_verbose >= Verbose_FileInfo) std::cout<<prefix_FileInfo<<"Adding oFile \""<<oFileName[iFile]<<std::endl;
+		if ( m_verbose >= Verbose_FileInfo) std::cout<<prefix_FileInfo<<"Adding oFile \""<<oFileName[iFile]<<"\""<<std::endl;
 		m_TChain->Add(oFileName[iFile].c_str());
 	}
 
@@ -375,6 +381,9 @@ int MyRootInterface::dump(){
 	std::string outputFileName = OutputDir + "/" + OutputName + ".root";
 	if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Creating output file \""<<outputFileName<<"\""<<std::endl;
 	TFile *file = new TFile(outputFileName.c_str(),"RECREATE");
+	std::stringstream buff;
+	int ww = 1440;
+	int wh = 900;
 
 	gStyle->SetPalette(1);
 	gStyle->SetOptStat(0);
@@ -383,6 +392,9 @@ int MyRootInterface::dump(){
 	//  gStyle->SetTitleW(0.99);
 	//  gStyle->SetTitleH(0.08);
 	//Output these histograms
+	std::vector<TPad*> padList;
+	int ipad = 0;
+	TCanvas* c = 0;
 	for ( int i = 0; i < vecH1D.size(); i++ ){
 		if (m_verbose >= Verbose_HistInfo)
 			std::cout<<prefix_HistInfo
@@ -406,14 +418,46 @@ int MyRootInterface::dump(){
 					 <<", legendy1=\""<<legendy1ForH1D[i]
 					 <<", legendx2=\""<<legendx2ForH1D[i]
 					 <<", legendy2=\""<<legendy2ForH1D[i]
+					 <<", npadx=\""<<npadxForH1D[i]
+					 <<", npady=\""<<npadyForH1D[i]
 					 <<"\""<<std::endl;
+		std::string name = vecH1D[i]->GetName();
+		if (ipad >= padList.size()){
+			if (m_verbose >= Verbose_HistInfo)
+				std::cout<<prefix_HistInfo
+						 <<"Need to create a new canvas"
+						 <<"\""<<std::endl;
+			c = new TCanvas(name.c_str(),name.c_str(),ww,wh);
+			padList.clear();
+			ipad=0;
+			for (int ix = 0; ix < npadxForH1D[i]; ix++ ){
+				for (int iy = npadyForH1D[i]-1; iy >= 0; iy--){
+					buff.str("");
+					buff.clear();
+					buff<<"pad("<<ix<<":"<<iy<<")"<<std::endl;
+					double x1 = ix/((double)npadxForH1D[i]);
+					double y1 = iy/((double)npadyForH1D[i]);
+					double x2 = (1+ix)/((double)npadxForH1D[i]);
+					double y2 = (1+iy)/((double)npadyForH1D[i]);
+					TPad *apad = new TPad(buff.str().c_str(),buff.str().c_str(),x1,y1,x2,y2);
+					apad->Draw();
+					padList.push_back(apad);
+				}
+			}
+			if (m_verbose >= Verbose_HistInfo)
+				std::cout<<prefix_HistInfo
+						 <<"Added ("
+						 <<npadxForH1D[i]*npadyForH1D[i]
+						 <<") pads"
+						 <<"\""<<std::endl;
+		}
+		padList[ipad]->cd();
+		ipad++;
 		if (normForH1D[i]){
 			if (normForH1D[i] == 1) vecH1D[i]->Scale(1./vecH1D[i]->Integral());
 			else vecH1D[i]->Scale(1./normForH1D[i]);
 		}
 		vecH1D[i]->SetLineColor(colorForH1D[i]);
-		std::string name = vecH1D[i]->GetName();
-		TCanvas* c = new TCanvas(name.c_str());
 		int nCompare = compareForH1D[i];
 		if ( nCompare ) if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<nCompare<<" histograms to be compared"<<std::endl;
 		double currentMaximum = vecH1D[i]->GetMaximum();
@@ -483,10 +527,12 @@ int MyRootInterface::dump(){
 				if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Cannot write vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
 		}
 		if (useLegend) legend->Draw("same");
-		std::string fileName = OutputDir + "/" + name + ".pdf";
-		c->Print(fileName.c_str());
-		fileName = OutputDir + "/" + name + ".png";
-		c->Print(fileName.c_str());
+		if (ipad >= padList.size()){
+			std::string fileName = OutputDir + "/" + name + ".pdf";
+			c->Print(fileName.c_str());
+			fileName = OutputDir + "/" + name + ".png";
+			c->Print(fileName.c_str());
+		}
 	}
 	gStyle->SetOptStat(0);
 	for ( int i = 0; i < vecH2D.size(); i++ ){
@@ -495,7 +541,7 @@ int MyRootInterface::dump(){
 		if (!write_result)
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Cannot write vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
 		std::string name = vecH2D[i]->GetName();
-		TCanvas* c = new TCanvas(name.c_str());
+		TCanvas* c = new TCanvas(name.c_str(),name.c_str(),ww,wh);
 		gPad->SetGridx(1);
 		gPad->SetGridy(1);
 		vecH2D[i]->GetXaxis()->SetTitle(xNameForH2D[i].c_str());
@@ -517,7 +563,7 @@ int MyRootInterface::dump(){
 			}
 		}
 		std::string name = nameForGraph[i];
-		TCanvas* c = new TCanvas(nameForGraph[i].c_str());
+		TCanvas* c = new TCanvas(nameForGraph[i].c_str(),name.c_str(),ww,wh);
 		TGraph *aTGraph = new TGraph(sizeOfThisGraph,&xForGraph[i][0],&yForGraph[i][0]);
 		aTGraph->SetTitle(titleForGraph[i].c_str());
 		int nCompare = compareForGraph[i];
