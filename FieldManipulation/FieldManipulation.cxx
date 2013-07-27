@@ -80,6 +80,15 @@ int main(int argc, char** argv){
 		m_mapfile = argv[optind++];
 		std::cout<<"m_mapfile = "<<m_mapfile<<std::endl;
 	}
+	if (m_workMode == "UK"){
+		if (argc-optind<1){
+			std::cout<<"This is \"UK\" mode which need arguments: input mapfile"<<std::endl;
+			std::cout<<"Insufficient names!"<<std::endl;
+			return -1;
+		}
+		m_mapfile = argv[optind++];
+		std::cout<<"m_mapfile = "<<m_mapfile<<std::endl;
+	}
 
 	//=======================================
 	//************Verbose Control***********
@@ -146,23 +155,23 @@ int main(int argc, char** argv){
 		}
 		std::string s_card;
 		// read file
+		int iline = 0;
 		while(getline(fin_card,s_card)){
 			if ( ISEMPTY(s_card) ) continue;
+			iline++;
+			if ( iline<=1 ){
+				continue;
+			}
 			//if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<": \""<<s_card<<"\""<<std::endl;
 			std::vector<std::string> segments;
 			seperate_string(s_card,segments,' ');
 			int iterator = 1;
-			if ( segments[0] == "x" ){
-				continue;
-			}
-			else{
-				if(iterator<segments.size()) in_x.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
-				if(iterator<segments.size()) in_y.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
-				if(iterator<segments.size()) in_z.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
-				if(iterator<segments.size()) in_bx.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
-				if(iterator<segments.size()) in_by.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
-				if(iterator<segments.size()) in_bz.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
-			}
+			if(iterator<segments.size()) in_x.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_y.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_z.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_bx.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_by.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_bz.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 		}
 
 		//######################GETMAP###############################
@@ -202,6 +211,120 @@ int main(int argc, char** argv){
 				<<std::endl;
 		}
 	}// End of sakaki workmode
+	else if (m_workMode == "UK"){
+		//##########################PRESET############################
+		int maxline = 128;
+		int current = 1;
+		int gradient = 1;
+		int normB = 1;
+		int normE = 1;
+
+		double scaleB = 1;
+
+		double deltaX = 7350*mm;
+		double deltaZ = -5790.5*mm;
+
+		double X0 = -550*mm;
+		double Y0 = -650*mm;
+		double Z0 = -6390.5*mm;
+		int nX=891;
+		int nY=132;
+		int nZ=761;
+		double dX=10*mm;
+		double dY=10*mm;
+		double dZ=10*mm;
+
+		std::vector<double> in_x;
+		std::vector<double> in_y;
+		std::vector<double> in_z;
+		std::vector<double> in_bx;
+		std::vector<double> in_by;
+		std::vector<double> in_bz;
+
+		std::vector<double> out_x;
+		std::vector<double> out_y;
+		std::vector<double> out_z;
+		std::vector<double> out_bx;
+		std::vector<double> out_by;
+		std::vector<double> out_bz;
+
+		//#######################READMAP################################
+		if (m_verbose >= Verbose_SectorInfo) std::cout<<prefix_SectorInfo<<"Read Map from \""<<m_mapfile<<"\""<<std::endl;
+		std::stringstream buff;
+
+		std::ifstream fin_card(m_mapfile.c_str());
+		if(!fin_card){
+			std::cout<<"Cannot find "<<m_mapfile<<std::endl;
+			return -1;
+		}
+		std::string s_card;
+		// read file
+		int iline = 0;
+		while(getline(fin_card,s_card)){
+			if ( ISEMPTY(s_card) ) continue;
+			iline++;
+			if ( iline<=3 ){
+				continue;
+			}
+			//if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<": \""<<s_card<<"\""<<std::endl;
+			std::vector<std::string> segments;
+			seperate_string(s_card,segments,' ');
+			int iterator = 0;
+			if(iterator<segments.size()) in_x.push_back(mm*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_y.push_back(mm*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_z.push_back(mm*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_bx.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_by.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) in_bz.push_back(tesla*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+		}
+
+		//######################GETMAP###############################
+		for (int i = 0; i < in_z.size(); i++ ){
+			double x = -in_z[i]+deltaX;
+			double y = in_y[i];
+			double z = in_x[i]+deltaZ;
+			double bx = -in_bz[i]*scaleB;
+			double by = in_by[i]*scaleB;
+			double bz = in_bx[i]*scaleB;
+			out_x.push_back(x);
+			out_y.push_back(y);
+			out_z.push_back(z);
+			out_bx.push_back(bx);
+			out_by.push_back(by);
+			out_bz.push_back(bz);
+		}
+
+		//######################Output###############################
+		std::ofstream fout;
+		fout.open("output.dat");
+		if(!fout){
+			std::cout<<"Cannot open output.dat in ofstream format"<<std::endl;
+			return -1;
+		}
+
+		fout<<"param maxline=128 current=1 gradient=1 normB=1 normE=1"<<std::endl;
+		fout<<"grid"
+			<<" X0="<<X0/mm
+			<<" Y0="<<Y0/mm
+			<<" Z0="<<Z0/mm
+			<<" nX="<<nX
+			<<" nY="<<nY
+			<<" nZ="<<nZ
+			<<" dX="<<dX/mm
+			<<" dY="<<dY/mm
+			<<" dZ="<<dZ/mm
+			<<std::endl;
+		fout<<"data"<<std::endl;
+		for (int i = 0; i < out_z.size(); i++ ){
+			fout<<out_x[i]/mm<<" "
+				<<out_y[i]/mm<<" "
+				<<out_z[i]/mm<<" "
+				<<out_bx[i]/tesla<<" "
+				<<out_by[i]/tesla<<" "
+				<<out_bz[i]/tesla
+				<<std::endl;
+		}
+	}
 
 }
 
