@@ -184,7 +184,7 @@ class MyRootInterface{
 			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing OutputDir to \""<<OutputDir<<"\""<<std::endl;
 		}
 		int set_OutputName(std::string name){
-			OutputName = name + "output";
+			OutputName = name;
 			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing OutputName to \""<<OutputName<<"\""<<std::endl;
 		}
 		int set_backup(bool backup){m_backup=backup;}
