@@ -164,12 +164,8 @@ int bin_to_txt(const char* input_file, const char* output_file){
 
 void print_usage(char* prog_name)
 {
-	fprintf(stderr,"Usage %s [options] [args]\n",prog_name);
+	fprintf(stderr,"Usage %s [options] [args] input output\n",prog_name);
 	fprintf(stderr,"[options]\n");
-	fprintf(stderr,"\t -i\n");
-	fprintf(stderr,"\t\t specify the input file.\n");
-	fprintf(stderr,"\t -o\n");
-	fprintf(stderr,"\t\t specify the output file.\n");
 	fprintf(stderr,"\t -t\n");
 	fprintf(stderr,"\t\t Generate root file directly from text file. NOTE: InputFile should be text file!!!\n");
 	fprintf(stderr,"\t -b\n");
@@ -199,7 +195,7 @@ int main(int argc, char** argv){
 	init_args();
 
 	int result;
-	while((result=getopt(argc,argv,"htbTBi:o:"))!=-1){
+	while((result=getopt(argc,argv,"htbTB"))!=-1){
 		switch(result){
 			/* INPUTS */
 			case 't':
@@ -218,14 +214,6 @@ int main(int argc, char** argv){
 				m_workmode = bin2txt;
 				printf("WorkMode: binary to text\n");
 				break;
-			case 'i':
-				strcpy(m_input_file,optarg);
-				printf("input file: %s\n",m_input_file);
-				break;
-			case 'o':
-				strcpy(m_output_file,optarg);
-				printf("output file: %s\n",m_output_file);
-				break;
 			case '?':
 				printf("Wrong option! optopt=%c, optarg=%s\n", optopt, optarg);
 				break;
@@ -235,6 +223,15 @@ int main(int argc, char** argv){
 				return 1;
 		}
 	}
+	if (argc-optind<1){
+		printf("You should specify an input file!\n");
+		return -1;
+	}
+	strcpy(m_input_file,argv[optind++]);
+	printf("input file: %s\n",m_input_file);
+	if (argc-optind>=1)
+		strcpy(m_output_file,argv[optind++]);
+	printf("output file: %s\n",m_output_file);
 
 	switch(m_workmode){
 		case txt2root:
