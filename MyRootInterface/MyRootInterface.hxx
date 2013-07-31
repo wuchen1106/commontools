@@ -61,7 +61,8 @@ class MyRootInterface{
 					 double legendx2 = 0,
 					 double legendy2 = 0,
 					 int npadx = 1,
-					 int npady = 1
+					 int npady = 1,
+					 double sep = 0
 		             ){
 			nameForH1D.push_back(name);
 			titleForH1D.push_back(title);
@@ -87,6 +88,7 @@ class MyRootInterface{
 			legendy2ForH1D.push_back(legendy2);
 			npadxForH1D.push_back(npadx);
 			npadyForH1D.push_back(npady);
+			sepForH1D.push_back(sep);
 			int i = nameForH1D.size()-1;
 			return i;
 		}
@@ -136,6 +138,7 @@ class MyRootInterface{
 		double get_legendy2ForH1D(int i){if (i>=legendy2ForH1D.size()) return NULL; return legendy2ForH1D[i];}
 		int get_npadxForH1D(int i){if (i>=npadxForH1D.size()) return NULL; return npadxForH1D[i];}
 		int get_npadyForH1D(int i){if (i>=npadyForH1D.size()) return NULL; return npadyForH1D[i];}
+		double get_sepForH1D(int i){if (i>=sepForH1D.size()) return NULL; return sepForH1D[i];}
 		TH1D* get_TH1D(int i){if (i>=vecH1D.size()) return NULL; return vecH1D[i];}
 
 		std::string get_nameForGraph(int i){if (i>=nameForGraph.size()) return NULL; return nameForGraph[i];}
@@ -232,6 +235,7 @@ class MyRootInterface{
 		int set_legendy2ForH1D(int i, double val){if (i>=legendy2ForH1D.size()) return -1; legendy2ForH1D[i] = val; return 0;}
 		int set_npadxForH1D(int i, int val){if (i>=npadxForH1D.size()) return -1; npadxForH1D[i] = val; return 0;}
 		int set_npadyForH1D(int i, int val){if (i>=npadyForH1D.size()) return -1; npadyForH1D[i] = val; return 0;}
+		int set_sepForH1D(int i, double val){if (i>=sepForH1D.size()) return -1; sepForH1D[i] = val; return 0;}
 
 		int set_nameForGraph(int i, std::string val){if (i>=nameForGraph.size()) return -1; nameForGraph[i] = val; return 0;}
 		int set_titleForGraph(int i, std::string val){if (i>=titleForGraph.size()) return -1; titleForGraph[i] = val; return 0;}
@@ -331,6 +335,7 @@ class MyRootInterface{
 		std::vector<double> legendy2ForH1D;
 		std::vector<int> npadxForH1D;
 		std::vector<int> npadyForH1D;
+		std::vector<double> sepForH1D;
 		std::vector<TH1D*>   vecH1D;
 
 		std::vector<std::string> nameForGraph;

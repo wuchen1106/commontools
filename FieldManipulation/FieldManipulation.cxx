@@ -73,7 +73,7 @@ int main(int argc, char** argv){
 				return 1;
 		}
 	}
-	if (m_workMode == "sasaki" || m_workMode == "UK" || m_workMode == "UK_line" ){
+	if (m_workMode == "sasaki" || m_workMode == "UK" || m_workMode == "UK_line" || m_workMode == "UK_line_r"){
 		if (argc-optind<1){
 			std::cout<<"This is \""<<m_workMode<<"\" mode which need arguments: input mapfile"<<std::endl;
 			std::cout<<"Insufficient names!"<<std::endl;
@@ -213,7 +213,7 @@ int main(int argc, char** argv){
 				<<std::endl;
 		}
 	}// End of sasaki workmode
-	else if (m_workMode == "UK" || m_workMode == "UK_line"){
+	else if (m_workMode == "UK" || m_workMode == "UK_line" || m_workMode == "UK_line_r"){
 		//##########################PRESET############################
 		int maxline = 128;
 		int current = 1;
@@ -265,7 +265,7 @@ int main(int argc, char** argv){
 				<<std::endl;
 			fout<<"data"<<std::endl;
 		}
-		else if (m_workMode == "UK_line"){
+		else if (m_workMode == "UK_line" || m_workMode == "UK_line_r"){
 			fout<<"x y z bx by bz"<<std::endl;
 		}
 
@@ -287,14 +287,24 @@ int main(int argc, char** argv){
 			std::vector<std::string> segments;
 			seperate_string(s_card,segments,' ');
 			int iterator = 0;
-			if(iterator<segments.size()) x=mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
-			if(iterator<segments.size()) y=mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
-			if(iterator<segments.size()) z=mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
-			if(iterator<segments.size()) bx=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
-			if(iterator<segments.size()) by=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
-			if(iterator<segments.size()) bz=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+			if (m_workMode=="UK_line_r"){
+				if(iterator<segments.size()) z=-mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) x=-mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) y=mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) bz=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) bx=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) by=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+			}
+			else{
+				if(iterator<segments.size()) x=mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) y=mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) z=mm*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) bx=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) by=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+				if(iterator<segments.size()) bz=tesla*string2double(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
+			}
 			//######################GETMAP###############################
-			if (m_workMode == "UK_line"){
+			if (m_workMode == "UK_line" || m_workMode == "UK_line_r"){
 				//std::cout<<"Before change: "
 				//         <<std::setiosflags(std::ios::left)<<std::setw(10)<<x
 				//         <<std::setiosflags(std::ios::left)<<std::setw(10)<<y
@@ -303,6 +313,7 @@ int main(int argc, char** argv){
 				//         <<std::setiosflags(std::ios::left)<<std::setw(10)<<by
 				//         <<std::setiosflags(std::ios::left)<<std::setw(10)<<bz
 				//         <<std::endl;
+				if (x>13200*mm) continue; // Beyond Phase-1 geometry
 				if (z<4350*mm){// SEG1,SEG2
 					//if (x!=0||y!=0) continue;
 				}
@@ -420,14 +431,27 @@ bool StartWithNumber(std::string content){
 void seperate_string(std::string line, std::vector<std::string> &strs, const char sep ){
 	std::string token;
 	std::stringstream ss(line);
-	while(std::getline(ss, token, sep)){
-		token.erase(token.find_last_not_of('\t')+1);
-		token.erase(0,token.find_first_not_of('\t'));
-		token.erase(token.find_last_not_of(' ')+1);
-		token.erase(0,token.find_first_not_of(' '));
-		token.erase(token.find_last_not_of('\r')+1);
-		token.erase(0,token.find_first_not_of('\r'));
-		strs.push_back(token);
+	if (sep!=' '&&sep!='\t'){
+		while(std::getline(ss, token, sep)){
+			token.erase(token.find_last_not_of('\t')+1);
+			token.erase(0,token.find_first_not_of('\t'));
+			token.erase(token.find_last_not_of(' ')+1);
+			token.erase(0,token.find_first_not_of(' '));
+			token.erase(token.find_last_not_of('\r')+1);
+			token.erase(0,token.find_first_not_of('\r'));
+			strs.push_back(token);
+		}
+	}
+	else{
+		while(ss>>token){
+			token.erase(token.find_last_not_of('\t')+1);
+			token.erase(0,token.find_first_not_of('\t'));
+			token.erase(token.find_last_not_of(' ')+1);
+			token.erase(0,token.find_first_not_of(' '));
+			token.erase(token.find_last_not_of('\r')+1);
+			token.erase(0,token.find_first_not_of('\r'));
+			strs.push_back(token);
+		}
 	}
 }
 
@@ -435,5 +459,6 @@ double string2double(std::string str){
 	double val;
 	std::stringstream ss(str);
 	ss>>val;
+	std::cout<<"\""<<str<<"\" -> ("<<val<<")"<<std::endl;
 	return val;
 }
