@@ -17,6 +17,7 @@ std::string m_workMode;
 std::string m_runName;
 std::string m_mapfile;
 std::string m_output_file;
+double m_ByOffset = 0;
 int m_verbose = 0;
 int nEvents = 0;
 int printModule = 1;
@@ -37,7 +38,7 @@ int main(int argc, char** argv){
 	//*************read parameter**********
 	init_args();
 	int result;
-	while((result=getopt(argc,argv,"hbv:n:m:r:p:"))!=-1){
+	while((result=getopt(argc,argv,"hbv:n:m:r:p:B:"))!=-1){
 		switch(result){
 			/* INPUTS */
 			case 'm':
@@ -59,6 +60,10 @@ int main(int argc, char** argv){
 			case 'n':
 				nEvents = atoi(optarg);
 				printf("nEvent: %d\n",nEvents);
+				break;
+			case 'B':
+				m_ByOffset = atol(optarg);
+				printf("By Offset: %lf\n",m_ByOffset);
 				break;
 			case 'p':
 				printModule = atoi(optarg);
@@ -350,6 +355,9 @@ int main(int argc, char** argv){
 				//         <<std::endl;
 			}
 			else if (m_workMode == "UK"){
+				if (x<3000*mm&&z>4350*mm){// MT1
+					by += m_ByOffset*tesla;
+				}
 				x = -z+deltaX;
 				z = x+deltaZ;
 				bx = -bz*scaleB;
@@ -373,6 +381,7 @@ void init_args()
 	m_workMode="sasaki";
 	m_output_file="output.dat";
 	m_verbose = 0;
+	m_ByOffset=0;
 	nEvents = 0;
 	printModule = 10000;
 	backup = false;
@@ -396,6 +405,8 @@ void print_usage(char* prog_name)
 	fprintf(stderr,"\t\t Usage message.\n");
 	fprintf(stderr,"\t -b\n");
 	fprintf(stderr,"\t\t restore backup file.\n");
+	fprintf(stderr,"\t -B\n");
+	fprintf(stderr,"\t\t Set By offset for MT1 region. Only for UK mode.\n");
 	fprintf(stderr,"[example]\n");
 	fprintf(stderr,"\t\t%s -m ab -v 20 -n 100\n",prog_name);
 }
@@ -459,6 +470,6 @@ double string2double(std::string str){
 	double val;
 	std::stringstream ss(str);
 	ss>>val;
-	std::cout<<"\""<<str<<"\" -> ("<<val<<")"<<std::endl;
+	//std::cout<<"\""<<str<<"\" -> ("<<val<<")"<<std::endl;
 	return val;
 }
