@@ -62,7 +62,7 @@ int main(int argc, char** argv){
 				printf("nEvent: %d\n",nEvents);
 				break;
 			case 'B':
-				m_ByOffset = atol(optarg);
+				m_ByOffset = atof(optarg);
 				printf("By Offset: %lf\n",m_ByOffset);
 				break;
 			case 'p':
@@ -355,14 +355,22 @@ int main(int argc, char** argv){
 				//         <<std::endl;
 			}
 			else if (m_workMode == "UK"){
+				if (z>625*mm){// SEG1,SEG2
+					continue;
+				}
 				if (x<3000*mm&&z>4350*mm){// MT1
 					by += m_ByOffset*tesla;
 				}
-				x = -z+deltaX;
-				z = x+deltaZ;
-				bx = -bz*scaleB;
-				by *= by*scaleB;
-				bz = bx*scaleB;
+				double xp = -z+deltaX;
+				double zp = x+deltaZ;
+				x = xp;
+				z = zp;
+				double bxp = -bz*scaleB;
+				double byp = by*scaleB;
+				double bzp = bx*scaleB;
+				bx = bxp;
+				by = byp;
+				bz = bzp;
 			}
 			//######################Output###############################
 			fout<<x/mm<<" "
