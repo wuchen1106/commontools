@@ -118,6 +118,8 @@ int MyRootInterface::read(std::string file){
 				         <<", "<<bin1ForH1D[i]
 				         <<", "<<left1ForH1D[i]
 				         <<", "<<right1ForH1D[i]
+				         <<", minx="<<minxForH1D[i]
+				         <<", miny="<<minyForH1D[i]
 				         <<", Color="<<colorForH1D[i]
 				         <<", xlogSyle="<<xlogForH1D[i]
 				         <<", ylogSyle="<<ylogForH1D[i]
@@ -258,6 +260,8 @@ int MyRootInterface::init(){
 					 <<", "<<bin1ForH1D[i]
 					 <<", "<<left1ForH1D[i]
 					 <<", "<<right1ForH1D[i]
+					 <<", minx="<<minxForH1D[i]
+					 <<", miny="<<minyForH1D[i]
 					 <<", Color="<<colorForH1D[i]
 					 <<", xlogSyle="<<xlogForH1D[i]
 					 <<", ylogSyle="<<ylogForH1D[i]
@@ -409,6 +413,8 @@ int MyRootInterface::dump(){
 					 <<", "<<left1ForH1D[i]
 					 <<", "<<right1ForH1D[i]
 					 <<", Color="<<colorForH1D[i]
+					 <<", minx="<<minxForH1D[i]
+					 <<", miny="<<minyForH1D[i]
 					 <<", xlogSyle="<<xlogForH1D[i]
 					 <<", ylogSyle="<<ylogForH1D[i]
 					 <<", nCompare="<<compareForH1D[i]
@@ -505,12 +511,12 @@ int MyRootInterface::dump(){
 				}
 				currentMinimum*=-1;
 			}
-			if (currentMinimum>minyForH1D[i]&&minyForH1D[i]>0) currentMinimum=minyForH1D[i];
+			if (minyForH1D[i]>0) currentMinimum=minyForH1D[i];
 			vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum/2,2*currentMaximum);
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"  Logy! set yRange("<<minyForH1D[i]<<","<<2*currentMaximum<<")"<<std::endl;
 		}
 		else {
-			if (currentMinimum>minyForH1D[i]) currentMinimum=minyForH1D[i];
+//			if (currentMinimum>minyForH1D[i]) currentMinimum=minyForH1D[i];
 			if (currentMinimum>0) currentMinimum /= 1.1;
 			else currentMinimum *= 1.1;
 			vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum,1.05*currentMaximum);
@@ -541,7 +547,6 @@ int MyRootInterface::dump(){
 			i++;
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<" ->"<<j<<", vecH1D["<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
 			double offset = sep*((double)j)+sep;
-			std::cout<<"offset  = "<<offset<<std::endl;
 			for (int i_bin = 0; i_bin<= vecH1D[i]->GetNbinsX(); i_bin++){
 				vecH1D[i]->AddBinContent(i_bin,offset);
 			}

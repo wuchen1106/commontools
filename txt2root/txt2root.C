@@ -35,7 +35,7 @@ int get_names(const char* line, char** names, int *inames){
 	while(ic++<1000){
 		char c = line[ic];
 //		fprintf(stderr,"c[%d]=%c\n",ic,c);
-		if ( c == ' ' || c == '\t' ){
+		if ( c == ' ' || c == '\t' || c == '\r' ){
 			if ( isC ){
 				names[*inames][count] = '\0';
 				(*inames)++;

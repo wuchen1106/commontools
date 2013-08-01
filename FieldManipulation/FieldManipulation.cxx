@@ -119,17 +119,43 @@ int main(int argc, char** argv){
 		int normE = 1;
 
 		int flip = -1;
-		double scaleB = 1.1;
+		double scaleB = 1;
 		double deltaZ = -12.5*m;
 
-		int nR=181;
-		int nZ=541;
+		//=> DetectorArea130720fm.txt, DetectorArea130701fm.txt
+//		int nR=181;
+//		int nZ=541;
+//		double dR=5*mm;
+//		double dZ=5*mm;
+//		double Z0=11.2095*m;
+
+		//=> BessArea130720fm.txt, BessArea130701fm.txt
 //		int nR=81;
 //		int nZ=221;
-		double dR=5*mm;
-		double dZ=5*mm;
+//		double dR=5*mm;
+//		double dZ=5*mm;
 //		double Z0=10.1095*m;
-		double Z0=11.2095*m;
+
+		//=> TS3Area130731fm.dat
+		int nR=31;
+		int nZ=54;
+		double dR=10*mm;
+		double dZ=10*mm;
+		double Z0=9.46239*m;
+
+		//=> BESSArea130731fm.dat
+//		int nR=41;
+//		int nZ=121;
+//		double dR=10*mm;
+//		double dZ=10*mm;
+//		double Z0=10.0024*m;
+
+		//=> DetArea130731fm.dat
+//		int nR=91;
+//		int nZ=369;
+//		double dR=10*mm;
+//		double dZ=10*mm;
+//		double Z0=11.2124*m;
 
 		Z0 += deltaZ;
 
@@ -172,7 +198,7 @@ int main(int argc, char** argv){
 			//if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<": \""<<s_card<<"\""<<std::endl;
 			std::vector<std::string> segments;
 			seperate_string(s_card,segments,' ');
-			int iterator = 1;
+			int iterator = 0;
 			if(iterator<segments.size()) in_x.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
 			if(iterator<segments.size()) in_y.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
 			if(iterator<segments.size()) in_z.push_back(m*string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; continue;}
