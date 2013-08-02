@@ -60,6 +60,7 @@ int MyRootInterface::read(std::string file){
 	DirNames.clear(); 
 	RunNames.clear(); 
 	NCPU.clear();
+	beginCPU.clear();
 	NJob.clear();
 	ovec_double.clear();
 	ovec_int.clear();
@@ -162,10 +163,10 @@ int MyRootInterface::read(std::string file){
 			else{
 				RunNames.push_back(runname);
 			}
-			if(iterator<segments.size()) NCPU.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) {NCPU.push_back(string2double(segments[iterator++]));beginCPU.push_back(0);} else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) NJob.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			int i = DirNames.size() - 1;
-			if ( m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input FILE["<<i<<"]: "<<DirNames[i]<<"\" with runname = \""<<RunNames[i]<<"\" has "<<NJob[i]<<" jobs on "<<NCPU[i]<<" CPUs"<<std::endl;
+			if ( m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input FILE["<<i<<"]: "<<DirNames[i]<<"\" with runname = \""<<RunNames[i]<<"\" has "<<NJob[i]<<" jobs on "<<NCPU[i]<<" CPUs starting from "<<beginCPU[i]<<std::endl;
 		}
 		else if ( segments[0] == "TGraph" ){
 			if(iterator<segments.size()) nameForGraph.push_back(segments[iterator++]); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
@@ -307,14 +308,11 @@ int MyRootInterface::init(){
 
 	//=> Get Tree in
 	m_TChain = new TChain(TreeName.c_str());
-	int iStart = 0;
-	int nBit = 2;
 	for ( int iFile = 0; iFile < DirNames.size(); iFile++ ){
-		int nCPU = NCPU[iFile];
-		int njob = NJob[iFile];
-		if ( m_verbose >= Verbose_FileInfo) std::cout<<prefix_FileInfo<<"Adding FileList \""<<DirNames[iFile]<<"\" with runname = \""<<RunNames[iFile]<<"\" has "<<NJob[iFile]<<" jobs on "<<NCPU[iFile]<<" CPUs"<<std::endl;
-		for (int i = iStart; i < iStart + nCPU; i ++){
-			for (int j = iStart; j < iStart + njob; j ++){
+		if ( m_verbose >= Verbose_FileInfo) std::cout<<prefix_FileInfo<<"Adding FileList \""<<DirNames[iFile]<<"\" with runname = \""<<RunNames[iFile]<<"\" has "<<NJob[iFile]<<" jobs on "<<NCPU[iFile]<<" CPUs starting from "<<beginCPU[iFile]<<std::endl;
+		for (int i = beginCPU[iFile]; i < beginCPU[iFile] + NCPU[iFile]; i ++){
+			int iStart = 0;
+			for (int j = iStart; j < iStart + NJob[iFile]; j ++){
 				buff.str("");
 				buff.clear();
 				buff<<DirNames[iFile]<<"/"<<i<<"_job"<<j<<RunNames[iFile]<<".raw";

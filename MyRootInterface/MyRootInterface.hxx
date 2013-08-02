@@ -1,6 +1,5 @@
 #ifndef MyRootInterface_h
 #define MyRootInterface_h 1
-
 #include <string>
 #include <vector>
 
@@ -181,6 +180,18 @@ class MyRootInterface{
 
 		//*****************************************************************************
 		// to set
+		int set_beginCPU(int i, int val){
+			if (i >= DirNames.size()) return -1;
+			beginCPU[i]= val;
+			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing beginCPU["<<i<<"] to \""<<val<<"\""<<std::endl;
+			return 0;
+		}
+		int set_NCPU(int i, int val){
+			if (i >= DirNames.size()) return -1;
+			NCPU[i] = val;
+			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing NCPU["<<i<<"] to \""<<val<<"\""<<std::endl;
+			return 0;
+		}
 		int add_oFileName(std::string name){oFileName.push_back(name);}
 		int set_OutputDir(std::string dir){
 			OutputDir = dir;
@@ -358,6 +369,7 @@ class MyRootInterface{
 		std::vector<std::string> DirNames; 
 		std::vector<std::string> RunNames; 
 		std::vector<int> NCPU;
+		std::vector<int> beginCPU;
 		std::vector<int> NJob;
 
 		// for output
