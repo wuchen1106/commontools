@@ -27,6 +27,8 @@ class MyRootInterface{
 
 		int read(std::string file);
 		int init();
+		int init_hist();
+		int init_file();
 		int GetEntry(Long64_t iEvent);
 		int dump();
 		int Fill(){d_tree->Fill();}

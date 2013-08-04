@@ -244,7 +244,11 @@ int MyRootInterface::read(std::string file){
 }
 
 int MyRootInterface::init(){
-	std::stringstream buff;
+	init_hist();
+	init_file();
+}
+
+int MyRootInterface::init_hist(){
 	int index_temp = 0;
 	//=> Get histograms in
 	for ( int i = 0; i < nameForH2D.size(); i++ ){
@@ -305,7 +309,10 @@ int MyRootInterface::init(){
 			continue;
 		}
 	}
+}
 
+int MyRootInterface::init_file(){
+	std::stringstream buff;
 	//=> Get Tree in
 	m_TChain = new TChain(TreeName.c_str());
 	for ( int iFile = 0; iFile < DirNames.size(); iFile++ ){
