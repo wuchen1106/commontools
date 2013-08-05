@@ -381,7 +381,7 @@ int main(int argc, char** argv){
 				//         <<std::endl;
 			}
 			else if (m_workMode == "UK"){
-				if (z>625*mm){// SEG1,SEG2
+				if (z>760*mm){// SEG1
 					continue;
 				}
 				if (x<3000*mm&&z>4350*mm){// MT1
