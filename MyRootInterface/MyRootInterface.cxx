@@ -41,6 +41,7 @@ MyRootInterface::MyRootInterface(int verbose,bool backup)
 }
 
 MyRootInterface::~MyRootInterface(){
+	delete m_file;
 }
 
 int MyRootInterface::read(std::string file){
@@ -308,6 +309,7 @@ int MyRootInterface::init_hist(){
 			std::cout<<"ERROR: Can not find histogram \""<<refHistName[i]<<"\"in vecH1D!!!"<<std::endl;
 			continue;
 		}
+		fp_ref->Close();
 	}
 }
 
@@ -364,6 +366,10 @@ int MyRootInterface::init_file(){
 			else if (type == 2) d_tree->Branch(vec_oTBranchName[i_TB].c_str(), &ovec_string[i_TB]);
 		}
 	}
+//	d_tree->SetCircular(100);
+	std::string outputFileName = OutputDir + "/" + OutputName + ".root";
+	if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Creating output file \""<<outputFileName<<"\""<<std::endl;
+	m_file = new TFile(outputFileName.c_str(),"RECREATE");
 }
 
 int MyRootInterface::GetEntry(Long64_t iEvent){
@@ -390,9 +396,6 @@ int MyRootInterface::GetEntry(Long64_t iEvent){
 int MyRootInterface::dump(){
 	//=======================================================================================================
 	//************WRITE AND OUTPUT********************
-	std::string outputFileName = OutputDir + "/" + OutputName + ".root";
-	if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Creating output file \""<<outputFileName<<"\""<<std::endl;
-	TFile *file = new TFile(outputFileName.c_str(),"RECREATE");
 	std::stringstream buff;
 	int ww = 1440;
 	int wh = 900;
@@ -670,7 +673,7 @@ int MyRootInterface::dump(){
 	}
 
 	d_tree->Write();
-	file->Close();
+	m_file->Close();
 
 	std::string backupFileName = OutputDir + "/backup.root";
 	if (m_backup){
@@ -680,7 +683,6 @@ int MyRootInterface::dump(){
 		file2->Close();
 	}
 
-	delete file;
 	return 0;
 }
 

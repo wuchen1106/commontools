@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "TChain.h"
+#include "TObject.h"
 
 class TTree;
 class TStyle;
@@ -32,6 +33,7 @@ class MyRootInterface{
 		int GetEntry(Long64_t iEvent);
 		int dump();
 		int Fill(){d_tree->Fill();}
+		int Write(){d_tree->Write("",TObject::kOverwrite);}
 
 		int get_TH2D_index(std::string name);
 		int get_TH1D_index(std::string name);
@@ -375,6 +377,7 @@ class MyRootInterface{
 		std::vector<int> NJob;
 
 		// for output
+		TFile *m_file;
 		TTree *d_tree;
 		std::vector<double> ovec_double;
 		std::vector<int> ovec_int;
