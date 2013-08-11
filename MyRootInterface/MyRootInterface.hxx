@@ -39,6 +39,13 @@ class MyRootInterface{
 			}
 			return 0;
 		}
+		int Fill(std::string name, double val1, double val2){
+			int i = get_TH2D_index(name);
+			if (i!=-1){
+				vecH2D[i]->Fill(val1,val2);
+			}
+			return 0;
+		}
 		int Fill(){d_tree->Fill();}
 		int Write(){d_tree->Write("",TObject::kOverwrite);}
 
