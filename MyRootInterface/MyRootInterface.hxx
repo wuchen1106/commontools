@@ -32,6 +32,13 @@ class MyRootInterface{
 		int init_file();
 		int GetEntry(Long64_t iEvent);
 		int dump();
+		int Fill(std::string name, double val){
+			int i = get_TH1D_index(name);
+			if (i!=-1){
+				vecH1D[i]->Fill(val);
+			}
+			return 0;
+		}
 		int Fill(){d_tree->Fill();}
 		int Write(){d_tree->Write("",TObject::kOverwrite);}
 
