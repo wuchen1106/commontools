@@ -286,6 +286,8 @@ int MyRootInterface::init_hist(){
 					 <<", sep=\""<<sepForH1D[i]
 					 <<"\""<<std::endl;
 		vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
+		std::cout<<"vecH1D["<<i<<"] @("<<(void*)vecH1D[i]<<")"<<std::endl;
+		vecH1D[i]->Print();
 	}
 	for ( int i = 0; i < refFileName.size(); i++ ){
 		TFile * fp_ref = new TFile(refFileName[i].c_str());
@@ -304,12 +306,14 @@ int MyRootInterface::init_hist(){
 			if (ISEMPTY(yNameForH1D[index_temp])) yNameForH1D[index_temp] = h1_ref->GetYaxis()->GetTitle();
 			h1_ref->SetTitle(titleForH1D[index_temp].c_str());
 			vecH1D[index_temp]=h1_ref;
+			std::cout<<"vecH1D["<<index_temp<<"] @("<<(void*)vecH1D[index_temp]<<")"<<std::endl;
+			vecH1D[index_temp]->Print();
 		}
 		else{
 			std::cout<<"ERROR: Can not find histogram \""<<refHistName[i]<<"\"in vecH1D!!!"<<std::endl;
 			continue;
 		}
-		fp_ref->Close();
+//		fp_ref->Close();
 	}
 }
 
@@ -439,6 +443,8 @@ int MyRootInterface::dump(){
 					 <<", npady=\""<<npadyForH1D[i]
 					 <<", sep=\""<<sepForH1D[i]
 					 <<"\""<<std::endl;
+		std::cout<<"vecH1D["<<i<<"] @("<<(void*)vecH1D[i]<<")"<<std::endl;
+		vecH1D[i]->Print();
 		std::string name = vecH1D[i]->GetName();
 		if (ipad >= padList.size()){
 			if (m_verbose >= Verbose_HistInfo)
@@ -519,16 +525,17 @@ int MyRootInterface::dump(){
 				}
 				currentMinimum*=-1;
 			}
+			currentMinimum /= 2;
 			if (minyForH1D[i]>0) currentMinimum=minyForH1D[i];
-			vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum/2,2*currentMaximum);
-			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"  Logy! set yRange("<<minyForH1D[i]<<","<<2*currentMaximum<<")"<<std::endl;
+			vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum,2*currentMaximum);
+			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"  Logy! set yRange("<<currentMinimum<<","<<2*currentMaximum<<")"<<std::endl;
 		}
 		else {
 //			if (currentMinimum>minyForH1D[i]) currentMinimum=minyForH1D[i];
-			if (currentMinimum>0) currentMinimum /= 1.1;
-			else currentMinimum *= 1.1;
-			vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum,1.05*currentMaximum);
-			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"        set yRange("<<minyForH1D[i]<<","<<1.05*currentMaximum<<")"<<std::endl;
+//			if (currentMinimum>0) currentMinimum /= 1.1;
+//			else currentMinimum *= 1.1;
+//			vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum,1.05*currentMaximum);
+//			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"        set yRange("<<currentMinimum<<","<<1.05*currentMaximum<<")"<<std::endl;
 		}
 		if ( xlogForH1D[i] ) gPad->SetLogx(1);
 		else gPad->SetLogx(0);
@@ -557,6 +564,20 @@ int MyRootInterface::dump(){
 			double offset = sep*((double)j)+sep;
 			for (int i_bin = 0; i_bin<= vecH1D[i]->GetNbinsX(); i_bin++){
 				vecH1D[i]->AddBinContent(i_bin,offset);
+			}
+			if ( ylogForH1D[i] ) {
+				if (currentMinimum<0){
+					for ( int j = 0; j <= nCompare; j++ ){
+						for (int i_bin = 0; i_bin<= vecH1D[i+j]->GetNbinsX(); i_bin++){
+							vecH1D[i+j]->AddBinContent(i_bin,-currentMinimum*2);
+						}
+					}
+					currentMinimum*=-1;
+				}
+				currentMinimum /= 2;
+				if (minyForH1D[i]>0) currentMinimum=minyForH1D[i];
+				vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum,2*currentMaximum);
+				if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"  Logy! set yRange("<<currentMinimum<<","<<2*currentMaximum<<")"<<std::endl;
 			}
 			vecH1D[i]->SetLineColor(colorForH1D[i]);
 			vecH1D[i]->SetMarkerSize(0.5);
