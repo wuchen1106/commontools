@@ -781,7 +781,7 @@ int MyRootInterface::get_value(std::string name, int &val, double scale){
 	return 0;
 }
 
-int MyRootInterface::get_value(std::string name, std::string *val){
+int MyRootInterface::get_value(std::string name, std::string val){
 	int index = -1;
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ){
@@ -797,7 +797,7 @@ int MyRootInterface::get_value(std::string name, std::string *val){
 		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::string"<<std::endl;
 		return -1;
 	}
-	val = vec_string[index];
+	val = *vec_string[index];
 	return 0;
 }
 
