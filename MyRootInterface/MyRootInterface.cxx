@@ -216,7 +216,7 @@ int MyRootInterface::read(std::string file){
 			vec_TBranch.push_back(0);
 			vec_double.push_back(0);
 			vec_int.push_back(0);
-			vec_string.push_back("");
+			vec_string.push_back(0);
 			vec_vecdouble.push_back(0);
 			vec_vecint.push_back(0);
 			vec_vecstring.push_back(0);
@@ -781,7 +781,7 @@ int MyRootInterface::get_value(std::string name, int &val, double scale){
 	return 0;
 }
 
-int MyRootInterface::get_value(std::string name, std::string &val){
+int MyRootInterface::get_value(std::string name, std::string *val){
 	int index = -1;
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ){

@@ -176,14 +176,14 @@ class MyRootInterface{
 
 		double get_vec_double(int i){if (i>=vec_double.size()) return NULL; return vec_double[i];}
 		int get_vec_int(int i){if (i>=vec_int.size()) return NULL; return vec_int[i];}
-		std::string get_vec_string(int i){if (i>=vec_string.size()) return NULL; return vec_string[i];}
+		std::string get_vec_string(int i){if (i>=vec_string.size()) return NULL; return *vec_string[i];}
 		std::vector<double>*  get_vec_vecdouble(int i){if (i>=vec_vecdouble.size()) return NULL; return vec_vecdouble[i];}
 		std::vector<int>*  get_vec_vecint(int i){if (i>=vec_vecint.size()) return NULL; return vec_vecint[i];}
 		std::vector<std::string>*  get_vec_vecstring(int i){if (i>=vec_vecstring.size()) return NULL; return vec_vecstring[i];}
 
 		int get_value(std::string name, double &val, double scale = 1);
 		int get_value(std::string name, int &val, double scale = 1);
-		int get_value(std::string name, std::string &val);
+		int get_value(std::string name, std::string *val);
 		int get_value(std::string name, std::vector<double> &val, double scale = 1);
 		int get_value(std::string name, std::vector<int> &val, double scale = 1);
 		int get_value(std::string name, std::vector<std::string> &val);
@@ -420,7 +420,7 @@ class MyRootInterface{
 		std::vector<int> vec_oTBranchIsVec;
 		std::vector<double> vec_double;
 		std::vector<int> vec_int;
-		std::vector<std::string> vec_string;
+		std::vector<std::string *> vec_string;
 		std::vector<std::vector<double>* > vec_vecdouble;
 		std::vector<std::vector<int>* > vec_vecint;
 		std::vector<std::vector<std::string>* > vec_vecstring;
