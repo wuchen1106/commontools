@@ -525,11 +525,11 @@ int MyRootInterface::dump(){
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"  Logy! set yRange("<<currentMinimum<<","<<2*currentMaximum<<")"<<std::endl;
 		}
 		else {
-//			if (currentMinimum>minyForH1D[i]) currentMinimum=minyForH1D[i];
-//			if (currentMinimum>0) currentMinimum /= 1.1;
-//			else currentMinimum *= 1.1;
-//			vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum,1.05*currentMaximum);
-//			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"        set yRange("<<currentMinimum<<","<<1.05*currentMaximum<<")"<<std::endl;
+			if (currentMinimum>minyForH1D[i]) currentMinimum=minyForH1D[i];
+			if (currentMinimum>0) currentMinimum /= 1.1;
+			else currentMinimum *= 1.1;
+			vecH1D[i]->GetYaxis()->SetRangeUser(currentMinimum,1.05*currentMaximum);
+			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"        set yRange("<<currentMinimum<<","<<1.05*currentMaximum<<")"<<std::endl;
 		}
 		if ( xlogForH1D[i] ) gPad->SetLogx(1);
 		else gPad->SetLogx(0);
