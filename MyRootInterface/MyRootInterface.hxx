@@ -198,6 +198,12 @@ class MyRootInterface{
 
 		//*****************************************************************************
 		// to set
+		int set_DirNames(int i, std::string val){
+			if (i >= DirNames.size()) return -1;
+			DirNames[i]= val;
+			if (m_verbose >= Verbose_GeneralInfo) std::cout<<prefix_GeneralInfo<<"Changing DirNames["<<i<<"] to \""<<val<<"\""<<std::endl;
+			return 0;
+		}
 		int set_beginCPU(int i, int val){
 			if (i >= DirNames.size()) return -1;
 			beginCPU[i]= val;
