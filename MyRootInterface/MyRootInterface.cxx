@@ -286,8 +286,6 @@ int MyRootInterface::init_hist(){
 					 <<", sep=\""<<sepForH1D[i]
 					 <<"\""<<std::endl;
 		vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
-		std::cout<<"vecH1D["<<i<<"] @("<<(void*)vecH1D[i]<<")"<<std::endl;
-		vecH1D[i]->Print();
 	}
 	for ( int i = 0; i < refFileName.size(); i++ ){
 		TFile * fp_ref = new TFile(refFileName[i].c_str());
@@ -306,8 +304,6 @@ int MyRootInterface::init_hist(){
 			if (ISEMPTY(yNameForH1D[index_temp])) yNameForH1D[index_temp] = h1_ref->GetYaxis()->GetTitle();
 			h1_ref->SetTitle(titleForH1D[index_temp].c_str());
 			vecH1D[index_temp]=h1_ref;
-			std::cout<<"vecH1D["<<index_temp<<"] @("<<(void*)vecH1D[index_temp]<<")"<<std::endl;
-			vecH1D[index_temp]->Print();
 		}
 		else{
 			std::cout<<"ERROR: Can not find histogram \""<<refHistName[i]<<"\"in vecH1D!!!"<<std::endl;
@@ -443,8 +439,6 @@ int MyRootInterface::dump(){
 					 <<", npady=\""<<npadyForH1D[i]
 					 <<", sep=\""<<sepForH1D[i]
 					 <<"\""<<std::endl;
-		std::cout<<"vecH1D["<<i<<"] @("<<(void*)vecH1D[i]<<")"<<std::endl;
-		vecH1D[i]->Print();
 		std::string name = vecH1D[i]->GetName();
 		if (ipad >= padList.size()){
 			if (m_verbose >= Verbose_HistInfo)
