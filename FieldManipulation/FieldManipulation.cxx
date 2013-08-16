@@ -395,13 +395,16 @@ int main(int argc, char** argv){
 					continue;
 				}
 				if (x<=3000*mm&&z<=-2790.5*mm){// MT1
-					bx = 0;
-					by = m_ByOffset;
-					bz = 0;
+					by += m_ByOffset;
 				}
-				else{
-					continue;
-				}
+//				if (x<=3000*mm&&z<=-2790.5*mm){// MT1
+//					bx = 0;
+//					by = m_ByOffset;
+//					bz = 0;
+//				}
+//				else{
+//					continue;
+//				}
 			}
 			//######################Output###############################
 			fout<<x/mm<<" "
