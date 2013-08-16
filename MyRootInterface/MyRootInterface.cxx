@@ -338,6 +338,11 @@ int MyRootInterface::init_file(){
 	for ( int i_TB = 0; i_TB < vec_TBranchName.size(); i_TB++ ){
 		int isvec = vec_TBranchIsVec[i_TB];
 		int type = vec_TBranchType[i_TB];
+		if ( m_verbose >= Verbose_BranchInfo)
+			std::cout<<prefix_BranchInfo<<"Setting Branch["<<i_TB<<"]: "
+			                            <<vec_TBranchName[i_TB]<<", @("
+			                            <<(void *)&vec_TBranch[i_TB]<<") "
+			                            <<std::endl;
 		if (isvec){
 			if (type == 0) m_TChain->SetBranchAddress(vec_TBranchName[i_TB].c_str(), &vec_vecdouble[i_TB], &vec_TBranch[i_TB]);
 			else if (type == 1) m_TChain->SetBranchAddress(vec_TBranchName[i_TB].c_str(), &vec_vecint[i_TB], &vec_TBranch[i_TB]);
@@ -379,11 +384,6 @@ int MyRootInterface::GetEntry(Long64_t iEvent){
 	if ( m_verbose >= Verbose_BranchInfo)
 		std::cout<<prefix_BranchInfo<<" tentry = LoadTree("<<iEvent<<") = "<<tentry<<std::endl;
 	for ( int i_TB = 0; i_TB < vec_TBranchName.size(); i_TB++ ){
-		if ( m_verbose >= Verbose_BranchInfo)
-			std::cout<<prefix_BranchInfo<<"Setting Branch["<<i_TB<<"]: "
-			                            <<vec_TBranchName[i_TB]<<", @("
-			                            <<(void *)&vec_TBranch[i_TB]<<") "
-			                            <<std::endl;
 		if (vec_TBranch[i_TB]) vec_TBranch[i_TB]->GetEntry(tentry);
 	}
 	if ( m_verbose >= Verbose_BranchInfo)
@@ -754,7 +754,7 @@ int MyRootInterface::get_value(std::string name, double &val, double scale){
 		return -1;
 	}
 	if (vec_TBranchType[index] != 0 || vec_TBranchIsVec[index] != 0){
-		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"double"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match for "<<name<<"! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"double"<<std::endl;
 		return -1;
 	}
 	val = vec_double[index]*scale;
@@ -774,7 +774,7 @@ int MyRootInterface::get_value(std::string name, int &val, double scale){
 		return -1;
 	}
 	if (vec_TBranchType[index] != 1 || vec_TBranchIsVec[index] != 0){
-		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"int"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match for "<<name<<"! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"int"<<std::endl;
 		return -1;
 	}
 	val = vec_int[index]*scale;
@@ -794,7 +794,7 @@ int MyRootInterface::get_value(std::string name, std::string val){
 		return -1;
 	}
 	if (vec_TBranchType[index] != 2 || vec_TBranchIsVec[index] != 0){
-		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::string"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match for "<<name<<"! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::string"<<std::endl;
 		return -1;
 	}
 	val = *vec_string[index];
@@ -814,7 +814,7 @@ int MyRootInterface::get_value(std::string name, std::vector<double> &val, doubl
 		return -1;
 	}
 	if (vec_TBranchType[index] != 0 || vec_TBranchIsVec[index] != 1){
-		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::vector<double>"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match for "<<name<<"! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::vector<double>"<<std::endl;
 		return -1;
 	}
 	val = *vec_vecdouble[index];
@@ -837,7 +837,7 @@ int MyRootInterface::get_value(std::string name, std::vector<int> &val, double s
 		return -1;
 	}
 	if (vec_TBranchType[index] != 1 || vec_TBranchIsVec[index] != 1){
-		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::vector<int>"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match for "<<name<<"! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::vector<int>"<<std::endl;
 		return -1;
 	}
 	val = *vec_vecint[index];
@@ -860,7 +860,7 @@ int MyRootInterface::get_value(std::string name, std::vector<std::string> &val){
 		return -1;
 	}
 	if (vec_TBranchType[index] != 2 || vec_TBranchIsVec[index] != 1){
-		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::vector<std::string>"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_TBranch_index: Type does not match for "<<name<<"! original: ("<<vec_TBranchType[index]<<","<<vec_TBranchIsVec[index]<<") while required"<<"std::vector<std::string>"<<std::endl;
 		return -1;
 	}
 	val = *vec_vecstring[index];
@@ -880,7 +880,7 @@ int MyRootInterface::set_ovalue(std::string name, double val){
 		return -1;
 	}
 	if (vec_oTBranchType[index] != 0 || vec_oTBranchIsVec[index] != 0){
-		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"double"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match for "<<name<<"! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"double"<<std::endl;
 		return -1;
 	}
 	ovec_double[index] = val;
@@ -900,7 +900,7 @@ int MyRootInterface::set_ovalue(std::string name, int val){
 		return -1;
 	}
 	if (vec_oTBranchType[index] != 1 || vec_oTBranchIsVec[index] != 0){
-		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"int"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match for "<<name<<"! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"int"<<std::endl;
 		return -1;
 	}
 	ovec_int[index] = val;
@@ -920,7 +920,7 @@ int MyRootInterface::set_ovalue(std::string name, std::string val){
 		return -1;
 	}
 	if (vec_oTBranchType[index] != 2 || vec_oTBranchIsVec[index] != 0){
-		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"std::string"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match for "<<name<<"! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"std::string"<<std::endl;
 		return -1;
 	}
 	ovec_string[index] = val;
@@ -940,7 +940,7 @@ int MyRootInterface::set_ovalue(std::string name, std::vector<double> val){
 		return -1;
 	}
 	if (vec_oTBranchType[index] != 0 || vec_oTBranchIsVec[index] != 1){
-		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"std::vector<double>"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match for "<<name<<"! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"std::vector<double>"<<std::endl;
 		return -1;
 	}
 	ovec_vecdouble[index] = val;
@@ -960,7 +960,7 @@ int MyRootInterface::set_ovalue(std::string name, std::vector<int> val){
 		return -1;
 	}
 	if (vec_oTBranchType[index] != 1 || vec_oTBranchIsVec[index] != 1){
-		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"std::vector<int>"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match for "<<name<<"! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"std::vector<int>"<<std::endl;
 		return -1;
 	}
 	ovec_vecint[index] = val;
@@ -980,7 +980,7 @@ int MyRootInterface::set_ovalue(std::string name, std::vector<std::string> val){
 		return -1;
 	}
 	if (vec_oTBranchType[index] != 2 || vec_oTBranchIsVec[index] != 1){
-		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"std::vector<std::string>"<<std::endl;
+		if (m_verbose>=5) std::cout<<"###!!!In get_oTBranch_index: Type does not match for "<<name<<"! original: ("<<vec_oTBranchType[index]<<","<<vec_oTBranchIsVec[index]<<") while required"<<"std::vector<std::string>"<<std::endl;
 		return -1;
 	}
 	ovec_vecstring[index] = val;
