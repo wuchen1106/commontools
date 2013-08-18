@@ -10,7 +10,7 @@
 #	FILE    | /home/chen/MyWorkArea/Data/raw/g4sim/RMC_ph2e                   |         | 8    | 1
 
 #	TYPE    | Path
-#	oFILE   | /home/chen/MyWorkArea/MyStudies/Beam/result/g60cm6mm/Andy/ts2_0.electron.root
+	oFILE   | /home/chen/MyWorkArea/g4sim/data/A9.mum.stop.g40cm10mm.003T.0701.g4s.QBH.root
 
 #	TYPE    | Name                         | Type      | Vector?
 #	                                0:double;1:int;string:2
@@ -21,6 +21,8 @@
 	TBranch | py                           | 0         | 0
 	TBranch | pz                           | 0         | 0
 	TBranch | t                            | 0         | 0
+	TBranch | pid                          | 1         | 0
+	TBranch | cvolume                      | 2         | 0
 
 #	TYPE     | Name                         | Type      | Vector?
 #	                                0:double;1:int;string:2
@@ -31,6 +33,7 @@
 	oTBranch | py                           | 0         | 0
 	oTBranch | pz                           | 0         | 0
 	oTBranch | t                            | 0         | 0
+	oTBranch | pid                          | 1         | 0
 
 #	TYPE    | Directory                                                                               | histoName
 #	refTH1D | /home/chen/MyWorkArea/MyStudies/AntiProton/4BodyPhaseSpace/result/12p5GeV/output.root   | 4PS_theta

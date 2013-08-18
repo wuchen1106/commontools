@@ -138,6 +138,7 @@ int main(int argc, char** argv){
 	//=>About Statistical
 	init_Ncut();
 
+	/*
 	//*********If you have to read a histogram************************
 	int ihist_SPEC = 1;
 	TH1D* h_SPEC = fMyRootInterface->get_TH1D(ihist_SPEC);
@@ -172,8 +173,9 @@ int main(int argc, char** argv){
 	miny_temp = 1e-5;
 	ylog_temp = 1;
 	TH1D* h_MisMeas = fMyRootInterface->add_TH1D(name_temp,title_temp,xName_temp,yName_temp,bin1_temp,left1_temp,right1_temp,minx_temp,miny_temp,color_temp,compare_temp,xlog_temp,ylog_temp,marker_temp,norm_temp,drawOpt_temp);
+	*/
 
-	// if you have to read a branch
+	// Prepare some variables
 	double x;
 	double y;
 	double z;
@@ -181,20 +183,8 @@ int main(int argc, char** argv){
 	double py;
 	double pz;
 	double t;
-	double ox;
-	double oy;
-	double oz;
-
-	fMyRootInterface->get_value("x",x,mm);
-	fMyRootInterface->get_value("y",y,mm);
-	fMyRootInterface->get_value("z",z,mm);
-	fMyRootInterface->get_value("px",px,MeV);
-	fMyRootInterface->get_value("py",py,MeV);
-	fMyRootInterface->get_value("pz",pz,MeV);
-	fMyRootInterface->get_value("t",t,ns);
-	fMyRootInterface->get_value("ox",ox,mm);
-	fMyRootInterface->get_value("oy",oy,mm);
-	fMyRootInterface->get_value("oz",oz,mm);
+	int pid;
+	std::string volume;
 
 	//=======================================================================================================
 	//************DO THE DIRTY WORK*******************
@@ -207,49 +197,39 @@ int main(int argc, char** argv){
 		inc_Ncut("Got entries");
 
 		//************If you Need to read TTree*************
-		// => prepare volume
-		// int
-		int evt_num = 0;
-		// double
-		double x = 0;
-		// vec double
-		std::vector<double> time;
-		// vec string
-		std::vector<std::string> process;
-		// => Get value
-		// int
-		if (index_temp = fMyRootInterface->get_TBranch_index("evt_num") != -1)
-			evt_num = fMyRootInterface->get_vec_int(index_temp);
-		// double
-		if ((index_temp = fMyRootInterface->get_TBranch_index("x") )!=-1)
-			x = fMyRootInterface->get_vec_double(index_temp)*mm;
-		// vec double
-		if ((index_temp = fMyRootInterface->get_TBranch_index("ProcessCounting_time") )!=-1)
-			time = *(fMyRootInterface->get_vec_vecdouble(index_temp));
-		for (int i = 0; i<time.size();i++) time[i] *= ns;
-		// vec string
-		if ((index_temp = fMyRootInterface->get_TBranch_index("ProcessCounting_process") )!=-1)
-			process = *(fMyRootInterface->get_vec_vecstring(index_temp));
+		fMyRootInterface->get_value("x",x,mm);
+		fMyRootInterface->get_value("y",y,mm);
+		fMyRootInterface->get_value("z",z,mm);
+		fMyRootInterface->get_value("px",px,MeV);
+		fMyRootInterface->get_value("py",py,MeV);
+		fMyRootInterface->get_value("pz",pz,MeV);
+		fMyRootInterface->get_value("t",t,ns);
+		fMyRootInterface->get_value("pid",pid);
+		fMyRootInterface->get_value("volume",volume);
+
+		//****************************CUT************************
+		//
+		std::cout<<"x = "<<x/mm<<" mm"<<std::endl;
+		std::cout<<"volume = \""<<volume<<"\""<<std::endl;
+		if (volume!="BLTCollimator") continue;
+		inc_Ncut("Stopped in BLTCollimator");
+		//
+		//****************************CUT************************
 
 		//************If you need to ouput TTree***************
-		// int
-		if (((index_temp = fMyRootInterface->get_oTBranch_index("evt_num")) )!=-1)
-			fMyRootInterface->set_ovec_int(index_temp,evt_num); 
-		// double
-		if (((index_temp = fMyRootInterface->get_oTBranch_index("x")) )!=-1)
-			fMyRootInterface->set_ovec_double(index_temp,x/mm); 
-
-		//************Apply some cut**************
-		if (1)
-			continue;
-		inc_Ncut("Passed cut one");
-
-		//************If you need to ouput TTree***************
+		fMyRootInterface->set_ovalue("x",x);
+		fMyRootInterface->set_ovalue("y",y);
+		fMyRootInterface->set_ovalue("z",z);
+		fMyRootInterface->set_ovalue("px",px);
+		fMyRootInterface->set_ovalue("py",py);
+		fMyRootInterface->set_ovalue("pz",pz);
+		fMyRootInterface->set_ovalue("t",t);
+		fMyRootInterface->set_ovalue("pid",pid);
 		fMyRootInterface->Fill();
 
 		//************If you need to fill TH1D*****************
-		if (((index_temp = fMyRootInterface->get_TH1D_index(m_runName+"x")))!=-1)
-			fMyRootInterface->get_TH1D(index_temp)->Fill(x/cm);
+//		if (((index_temp = fMyRootInterface->get_TH1D_index(m_runName+"x")))!=-1)
+//			fMyRootInterface->get_TH1D(index_temp)->Fill(x/cm);
 
 		if (verbose >= Verbose_EventInfo || iEvent%printModule == 0) std::cout<<prefix_EventInfoStart<<"Done"<<std::endl;
 	}
@@ -274,6 +254,7 @@ int main(int argc, char** argv){
 void init_args()
 {
 	strcpy(m_workMode,"gen");
+	m_runName="output";
 	verbose = 0;
 	nEvents = 0;
 	printModule = 10000;

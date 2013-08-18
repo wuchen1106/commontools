@@ -183,7 +183,7 @@ class MyRootInterface{
 
 		int get_value(std::string name, double &val, double scale = 1);
 		int get_value(std::string name, int &val, double scale = 1);
-		int get_value(std::string name, std::string val);
+		int get_value(std::string name, std::string &val);
 		int get_value(std::string name, std::vector<double> &val, double scale = 1);
 		int get_value(std::string name, std::vector<int> &val, double scale = 1);
 		int get_value(std::string name, std::vector<std::string> &val);

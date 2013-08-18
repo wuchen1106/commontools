@@ -781,7 +781,7 @@ int MyRootInterface::get_value(std::string name, int &val, double scale){
 	return 0;
 }
 
-int MyRootInterface::get_value(std::string name, std::string val){
+int MyRootInterface::get_value(std::string name, std::string &val){
 	int index = -1;
 	for ( int i = 0; i < vec_TBranchName.size(); i++ ){
 		if ( vec_TBranchName[i] == name ){
