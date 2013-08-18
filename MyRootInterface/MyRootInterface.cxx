@@ -258,14 +258,14 @@ int MyRootInterface::init_hist(){
 	}
 	for ( int i = 0; i < nameForH1D.size(); i++ ){
 		int pre_index = get_TH1D_index(nameForH1D[i]);
-		if (pre_index != -1){
+		if (pre_index != -1&&pre_index!=i){
 			if (m_verbose >= Verbose_InitInfo)
 				std::cout<<prefix_InitInfo
 						 <<"Init vecH1D["<<i<<"]: \""<<nameForH1D[i]
 						 <<"\" initialiezed already at vecH1D["<<pre_index<<"]"
 						 <<std::endl;
 			vecH1D.push_back(vecH1D[pre_index]);
-			fakeH1D[i]=true;
+			fakeH1D.push_back(true);
 		}
 		else{
 			if (m_verbose >= Verbose_InitInfo)
@@ -297,7 +297,7 @@ int MyRootInterface::init_hist(){
 						 <<", sep=\""<<sepForH1D[i]
 						 <<"\""<<std::endl;
 			vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
-			fakeH1D[i]=false;
+			fakeH1D.push_back(false);
 		}
 	}
 	for ( int i = 0; i < refFileName.size(); i++ ){
