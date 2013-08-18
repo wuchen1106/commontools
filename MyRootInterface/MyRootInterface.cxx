@@ -257,35 +257,48 @@ int MyRootInterface::init_hist(){
 		vecH2D.push_back(new TH2D(nameForH2D[i].c_str(),titleForH2D[i].c_str(),bin1ForH2D[i],left1ForH2D[i],right1ForH2D[i],bin2ForH2D[i],left2ForH2D[i],right2ForH2D[i]) );
 	}
 	for ( int i = 0; i < nameForH1D.size(); i++ ){
-		if (m_verbose >= Verbose_InitInfo)
-			std::cout<<prefix_InitInfo
-					 <<"Init vecH1D["<<i<<"]: "<<nameForH1D[i]
-					 <<", "<<titleForH1D[i]
-					 <<", "<<xNameForH1D[i]
-					 <<", "<<yNameForH1D[i]
-					 <<", "<<bin1ForH1D[i]
-					 <<", "<<left1ForH1D[i]
-					 <<", "<<right1ForH1D[i]
-					 <<", minx="<<minxForH1D[i]
-					 <<", miny="<<minyForH1D[i]
-					 <<", Color="<<colorForH1D[i]
-					 <<", xlogSyle="<<xlogForH1D[i]
-					 <<", ylogSyle="<<ylogForH1D[i]
-					 <<", nCompare="<<compareForH1D[i]
-					 <<", markerStyle="<<markerForH1D[i]
-					 <<", normalize ="<<normForH1D[i]
-					 <<", drawOpt=\""<<drawOptForH1D[i]
-					 <<", useLegend=\""<<useLegendForH1D[i]
-					 <<", legendName=\""<<legendNameForH1D[i]
-					 <<", legendx1=\""<<legendx1ForH1D[i]
-					 <<", legendy1=\""<<legendy1ForH1D[i]
-					 <<", legendx2=\""<<legendx2ForH1D[i]
-					 <<", legendy2=\""<<legendy2ForH1D[i]
-					 <<", npadx=\""<<npadxForH1D[i]
-					 <<", npady=\""<<npadyForH1D[i]
-					 <<", sep=\""<<sepForH1D[i]
-					 <<"\""<<std::endl;
-		vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
+		int pre_index = get_TH1D_index(nameForH1D[i]);
+		if (pre_index != -1){
+			if (m_verbose >= Verbose_InitInfo)
+				std::cout<<prefix_InitInfo
+						 <<"Init vecH1D["<<i<<"]: \""<<nameForH1D[i]
+						 <<"\" initialiezed already at vecH1D["<<pre_index<<"]"
+						 <<std::endl;
+			vecH1D.push_back(vecH1D[pre_index]);
+			fakeH1D[i]=true;
+		}
+		else{
+			if (m_verbose >= Verbose_InitInfo)
+				std::cout<<prefix_InitInfo
+						 <<"Init vecH1D["<<i<<"]: "<<nameForH1D[i]
+						 <<", "<<titleForH1D[i]
+						 <<", "<<xNameForH1D[i]
+						 <<", "<<yNameForH1D[i]
+						 <<", "<<bin1ForH1D[i]
+						 <<", "<<left1ForH1D[i]
+						 <<", "<<right1ForH1D[i]
+						 <<", minx="<<minxForH1D[i]
+						 <<", miny="<<minyForH1D[i]
+						 <<", Color="<<colorForH1D[i]
+						 <<", xlogSyle="<<xlogForH1D[i]
+						 <<", ylogSyle="<<ylogForH1D[i]
+						 <<", nCompare="<<compareForH1D[i]
+						 <<", markerStyle="<<markerForH1D[i]
+						 <<", normalize ="<<normForH1D[i]
+						 <<", drawOpt=\""<<drawOptForH1D[i]
+						 <<", useLegend=\""<<useLegendForH1D[i]
+						 <<", legendName=\""<<legendNameForH1D[i]
+						 <<", legendx1=\""<<legendx1ForH1D[i]
+						 <<", legendy1=\""<<legendy1ForH1D[i]
+						 <<", legendx2=\""<<legendx2ForH1D[i]
+						 <<", legendy2=\""<<legendy2ForH1D[i]
+						 <<", npadx=\""<<npadxForH1D[i]
+						 <<", npady=\""<<npadyForH1D[i]
+						 <<", sep=\""<<sepForH1D[i]
+						 <<"\""<<std::endl;
+			vecH1D.push_back(new TH1D(nameForH1D[i].c_str(),titleForH1D[i].c_str(),bin1ForH1D[i],left1ForH1D[i],right1ForH1D[i]) );
+			fakeH1D[i]=false;
+		}
 	}
 	for ( int i = 0; i < refFileName.size(); i++ ){
 		TFile * fp_ref = new TFile(refFileName[i].c_str());
@@ -545,9 +558,11 @@ int MyRootInterface::dump(){
 		vecH1D[i]->GetYaxis()->SetTitle(yNameForH1D[i].c_str());
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Integral of ("<<nameForH1D[i]<<"): "<<vecH1D[i]->Integral()<<std::endl;
 		vecH1D[i]->Draw(drawOptForH1D[i].c_str());
-		int write_result = vecH1D[i]->Write();
-		if (!write_result)
-			std::cout<<prefix_HistInfo<<"Cannot wirte vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
+		if (!fakeH1D[i]){
+			int write_result = vecH1D[i]->Write();
+			if (!write_result)
+				std::cout<<prefix_HistInfo<<"Cannot wirte vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
+		}
 		TLegend *legend = new TLegend(legendx1ForH1D[i],legendy1ForH1D[i],legendx2ForH1D[i],legendy2ForH1D[i]);
 		legend->AddEntry(vecH1D[i],legendNameForH1D[i].c_str());
 		int useLegend = useLegendForH1D[i];
@@ -582,9 +597,11 @@ int MyRootInterface::dump(){
 			if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    Integral of ("<<nameForH1D[i]<<"): "<<vecH1D[i]->Integral()<<std::endl;
 			vecH1D[i]->Draw(drawOpt.c_str());
 			legend->AddEntry(vecH1D[i],legendNameForH1D[i].c_str());
-			int write_result = vecH1D[i]->Write();
-			if (!write_result)
-				std::cout<<prefix_HistInfo<<"Cannot write vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
+			if (!fakeH1D[i]){
+				int write_result = vecH1D[i]->Write();
+				if (!write_result)
+					std::cout<<prefix_HistInfo<<"Cannot write vecH1D"<<i<<"]: "<<nameForH1D[i]<<", "<<titleForH1D[i]<<", "<<xNameForH1D[i]<<", "<<yNameForH1D[i]<<", "<<bin1ForH1D[i]<<", "<<left1ForH1D[i]<<", "<<right1ForH1D[i]<<", Color="<<colorForH1D[i]<<", xlogSyle="<<xlogForH1D[i]<<", ylogSyle="<<ylogForH1D[i]<<", nCompare="<<compareForH1D[i]<<", markerStyle="<<markerForH1D[i]<<", normalize ="<<normForH1D[i]<<", drawOpt=\""<<drawOptForH1D[i]<<"\""<<std::endl;
+			}
 		}
 		if (useLegend) legend->Draw("same");
 		if (ipad >= padList.size()){

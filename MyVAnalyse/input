@@ -10,7 +10,9 @@
 #	FILE    | /home/chen/MyWorkArea/Data/raw/g4sim/RMC_ph2e                   |         | 8    | 1
 
 #	TYPE    | Path
-	oFILE   | /home/chen/MyWorkArea/g4sim/data/A9.mum.stop.g40cm10mm.003T.0701.g4s.QBH.root
+#	oFILE   | /home/chen/MyWorkArea/g4sim/data/A9.mum.stop.g40cm10mm.003T.0701.g4s.QBH.root
+#	oFILE   | /home/chen/MyWorkArea/g4sim/data/A9.pim.stop.g40cm10mm.003TS.0701.g4s.QBH.root
+	oFILE   | /home/chen/MyWorkArea/g4sim/data/MT1.EP.mum.g40cm10mm.003T.g4s.QBH.root
 
 #	TYPE    | Name                         | Type      | Vector?
 #	                                0:double;1:int;string:2
@@ -23,6 +25,9 @@
 	TBranch | t                            | 0         | 0
 	TBranch | pid                          | 1         | 0
 	TBranch | cvolume                      | 2         | 0
+
+#	TYPE      | Name
+	oTreeName | t
 
 #	TYPE     | Name                         | Type      | Vector?
 #	                                0:double;1:int;string:2

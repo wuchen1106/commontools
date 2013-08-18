@@ -372,6 +372,7 @@ class MyRootInterface{
 		std::vector<int> npadyForH1D;
 		std::vector<double> sepForH1D;
 		std::vector<TH1D*>   vecH1D;
+		std::vector<bool>    fakeH1D;
 
 		std::vector<std::string> nameForGraph;
 		std::vector<std::string> titleForGraph;

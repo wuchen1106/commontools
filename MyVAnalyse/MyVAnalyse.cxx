@@ -205,14 +205,12 @@ int main(int argc, char** argv){
 		fMyRootInterface->get_value("pz",pz,MeV);
 		fMyRootInterface->get_value("t",t,ns);
 		fMyRootInterface->get_value("pid",pid);
-		fMyRootInterface->get_value("volume",volume);
 
 		//****************************CUT************************
 		//
-		std::cout<<"x = "<<x/mm<<" mm"<<std::endl;
-		std::cout<<"volume = \""<<volume<<"\""<<std::endl;
-		if (volume!="BLTCollimator") continue;
-		inc_Ncut("Stopped in BLTCollimator");
+		double pa = sqrt(px*px+py*py+pz*pz);
+		if (pa>15*MeV) continue;
+		inc_Ncut("pa <= 15 MeV");
 		//
 		//****************************CUT************************
 
