@@ -19,6 +19,7 @@ char m_workMode[128];
 std::string m_runName;
 int verbose = 0;
 int nEvents = 0;
+int bEvent = 0;
 int printModule = 1;
 bool backup = false;
 std::vector<int> Ncut;
@@ -38,7 +39,7 @@ int main(int argc, char** argv){
 	//*************read parameter**********
 	init_args();
 	int result;
-	while((result=getopt(argc,argv,"hbv:n:m:r:p:"))!=-1){
+	while((result=getopt(argc,argv,"B:hbv:n:m:r:p:"))!=-1){
 		switch(result){
 			/* INPUTS */
 			case 'm':
@@ -56,6 +57,10 @@ int main(int argc, char** argv){
 			case 'b':
 				backup = true;
 				printf("restore backup file!\n");
+				break;
+			case 'B':
+				bEvent = atoi(optarg);
+				printf("bEvent: %d\n",bEvent);
 				break;
 			case 'n':
 				nEvents = atoi(optarg);
@@ -198,12 +203,13 @@ int main(int argc, char** argv){
 	std::string process;
 	std::string particle;
 	std::string volume;
+	std::string cvolume;
 
 	//=======================================================================================================
 	//************DO THE DIRTY WORK*******************
 	if (verbose >= Verbose_SectorInfo ) std::cout<<prefix_SectorInfo<<"In DO THE DIRTY WORK###"<<std::endl;
 	Long64_t nEvent = fMyRootInterface->get_Entries();
-	for( Long64_t iEvent = 0; iEvent < (nEvents&&nEvents<nEvent?nEvents:nEvent); iEvent++ ){
+	for( Long64_t iEvent = bEvent; iEvent < (nEvents&&nEvents<nEvent?nEvents:nEvent); iEvent++ ){
 		if (verbose >= Verbose_EventInfo || iEvent%printModule == 0) std::cout<<prefix_EventInfoStart<<"In Event "<<iEvent<<std::endl;
 		fMyRootInterface->GetEntry(iEvent);
 		if (verbose >= Verbose_EventInfo || iEvent%printModule == 0) std::cout<<prefix_EventInfoStart<<"Got entries"<<std::endl;
@@ -230,6 +236,7 @@ int main(int argc, char** argv){
 		fMyRootInterface->get_value("tid",tid);
 		fMyRootInterface->get_value("ppid",ppid);
 		fMyRootInterface->get_value("volume",volume);
+		fMyRootInterface->get_value("cvolume",cvolume);
 		fMyRootInterface->get_value("particle",particle);
 		fMyRootInterface->get_value("process",process);
 
@@ -238,8 +245,9 @@ int main(int argc, char** argv){
 //		double pa = sqrt(px*px+py*py+pz*pz);
 //		if (pa>15*MeV) continue;
 //		inc_Ncut("pa <= 15 MeV");
-		if (ot>=20*ns||t<350*ns) continue;
-		inc_Ncut("1");
+//		if (ot>=20*ns||t<350*ns) continue;
+//		inc_Ncut("1");
+		if (cvolume!="BLTCollimator"&&cvolume!="BLTShell"&&cvolume!="Trigger"||pid!=13) continue;
 		//
 		//****************************CUT************************
 
@@ -264,6 +272,7 @@ int main(int argc, char** argv){
 		fMyRootInterface->set_ovalue("tid",tid);
 		fMyRootInterface->set_ovalue("ppid",ppid);
 		fMyRootInterface->set_ovalue("volume",volume);
+		fMyRootInterface->set_ovalue("cvolume",cvolume);
 		fMyRootInterface->set_ovalue("process",process);
 		fMyRootInterface->set_ovalue("particle",particle);
 		fMyRootInterface->Fill();
@@ -298,6 +307,7 @@ void init_args()
 	m_runName="output";
 	verbose = 0;
 	nEvents = 0;
+	bEvent = 0;
 	printModule = 10000;
 	backup = false;
 }
