@@ -176,6 +176,8 @@ int main(int argc, char** argv){
 	*/
 
 	// Prepare some variables
+	int evt_num;
+	int run_num;
 	double x;
 	double y;
 	double z;
@@ -183,7 +185,18 @@ int main(int argc, char** argv){
 	double py;
 	double pz;
 	double t;
+	double ox;
+	double oy;
+	double oz;
+	double opx;
+	double opy;
+	double opz;
+	double ot;
 	int pid;
+	int tid;
+	int ppid;
+	std::string process;
+	std::string particle;
 	std::string volume;
 
 	//=======================================================================================================
@@ -197,6 +210,8 @@ int main(int argc, char** argv){
 		inc_Ncut("Got entries");
 
 		//************If you Need to read TTree*************
+		fMyRootInterface->get_value("run_num",run_num);
+		fMyRootInterface->get_value("evt_num",evt_num);
 		fMyRootInterface->get_value("x",x,mm);
 		fMyRootInterface->get_value("y",y,mm);
 		fMyRootInterface->get_value("z",z,mm);
@@ -204,17 +219,33 @@ int main(int argc, char** argv){
 		fMyRootInterface->get_value("py",py,MeV);
 		fMyRootInterface->get_value("pz",pz,MeV);
 		fMyRootInterface->get_value("t",t,ns);
+		fMyRootInterface->get_value("ox",ox,mm);
+		fMyRootInterface->get_value("oy",oy,mm);
+		fMyRootInterface->get_value("oz",oz,mm);
+		fMyRootInterface->get_value("opx",opx,MeV);
+		fMyRootInterface->get_value("opy",opy,MeV);
+		fMyRootInterface->get_value("opz",opz,MeV);
+		fMyRootInterface->get_value("ot",ot,ns);
 		fMyRootInterface->get_value("pid",pid);
+		fMyRootInterface->get_value("tid",tid);
+		fMyRootInterface->get_value("ppid",ppid);
+		fMyRootInterface->get_value("volume",volume);
+		fMyRootInterface->get_value("particle",particle);
+		fMyRootInterface->get_value("process",process);
 
 		//****************************CUT************************
 		//
-		double pa = sqrt(px*px+py*py+pz*pz);
-		if (pa>15*MeV) continue;
-		inc_Ncut("pa <= 15 MeV");
+//		double pa = sqrt(px*px+py*py+pz*pz);
+//		if (pa>15*MeV) continue;
+//		inc_Ncut("pa <= 15 MeV");
+		if (ot>=20*ns||t<350*ns) continue;
+		inc_Ncut("1");
 		//
 		//****************************CUT************************
 
 		//************If you need to ouput TTree***************
+		fMyRootInterface->set_ovalue("run_num",run_num);
+		fMyRootInterface->set_ovalue("evt_num",evt_num);
 		fMyRootInterface->set_ovalue("x",x);
 		fMyRootInterface->set_ovalue("y",y);
 		fMyRootInterface->set_ovalue("z",z);
@@ -222,7 +253,19 @@ int main(int argc, char** argv){
 		fMyRootInterface->set_ovalue("py",py);
 		fMyRootInterface->set_ovalue("pz",pz);
 		fMyRootInterface->set_ovalue("t",t);
+		fMyRootInterface->set_ovalue("ox",ox);
+		fMyRootInterface->set_ovalue("oy",oy);
+		fMyRootInterface->set_ovalue("oz",oz);
+		fMyRootInterface->set_ovalue("opx",opx);
+		fMyRootInterface->set_ovalue("opy",opy);
+		fMyRootInterface->set_ovalue("opz",opz);
+		fMyRootInterface->set_ovalue("ot",ot);
 		fMyRootInterface->set_ovalue("pid",pid);
+		fMyRootInterface->set_ovalue("tid",tid);
+		fMyRootInterface->set_ovalue("ppid",ppid);
+		fMyRootInterface->set_ovalue("volume",volume);
+		fMyRootInterface->set_ovalue("process",process);
+		fMyRootInterface->set_ovalue("particle",particle);
 		fMyRootInterface->Fill();
 
 		//************If you need to fill TH1D*****************

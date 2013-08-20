@@ -12,10 +12,14 @@
 #	TYPE    | Path
 #	oFILE   | /home/chen/MyWorkArea/g4sim/data/A9.mum.stop.g40cm10mm.003T.0701.g4s.QBH.root
 #	oFILE   | /home/chen/MyWorkArea/g4sim/data/A9.pim.stop.g40cm10mm.003TS.0701.g4s.QBH.root
-	oFILE   | /home/chen/MyWorkArea/g4sim/data/MT1.EP.mum.g40cm10mm.003T.g4s.QBH.root
+#	oFILE   | /home/chen/MyWorkArea/g4sim/data/MT1.EP.mum.g40cm10mm.003T.g4s.QBH.root
+	oFILE   | /home/chen/MyWorkArea/g4sim/data/MT1.pim.pim.g40cm10mm.003T.g4s.QBH.root
+#	oFILE   | /home/chen/MyWorkArea/g4sim/data/PTACS.EP.pim.g40cm10mm.g4s.QBH.root
 
 #	TYPE    | Name                         | Type      | Vector?
 #	                                0:double;1:int;string:2
+	TBranch | evt_num                      | 1         | 0
+	TBranch | run_num                      | 1         | 0
 	TBranch | x                            | 0         | 0
 	TBranch | y                            | 0         | 0
 	TBranch | z                            | 0         | 0
@@ -23,14 +27,28 @@
 	TBranch | py                           | 0         | 0
 	TBranch | pz                           | 0         | 0
 	TBranch | t                            | 0         | 0
+	TBranch | ox                           | 0         | 0
+	TBranch | oy                           | 0         | 0
+	TBranch | oz                           | 0         | 0
+	TBranch | opx                          | 0         | 0
+	TBranch | opy                          | 0         | 0
+	TBranch | opz                          | 0         | 0
+	TBranch | ot                           | 0         | 0
 	TBranch | pid                          | 1         | 0
-	TBranch | cvolume                      | 2         | 0
+	TBranch | tid                          | 1         | 0
+	TBranch | ppid                         | 1         | 0
+	TBranch | particle                     | 2         | 0
+	TBranch | process                      | 2         | 0
+	TBranch | volume                       | 2         | 0
+#	TBranch | cvolume                      | 2         | 0
 
 #	TYPE      | Name
 	oTreeName | t
 
 #	TYPE     | Name                         | Type      | Vector?
 #	                                0:double;1:int;string:2
+	oTBranch | evt_num                      | 1         | 0
+	oTBranch | run_num                      | 1         | 0
 	oTBranch | x                            | 0         | 0
 	oTBranch | y                            | 0         | 0
 	oTBranch | z                            | 0         | 0
@@ -38,6 +56,19 @@
 	oTBranch | py                           | 0         | 0
 	oTBranch | pz                           | 0         | 0
 	oTBranch | t                            | 0         | 0
+	oTBranch | ox                           | 0         | 0
+	oTBranch | oy                           | 0         | 0
+	oTBranch | oz                           | 0         | 0
+	oTBranch | opx                          | 0         | 0
+	oTBranch | opy                          | 0         | 0
+	oTBranch | opz                          | 0         | 0
+	oTBranch | ot                           | 0         | 0
+	oTBranch | pid                          | 1         | 0
+	oTBranch | tid                          | 1         | 0
+	oTBranch | ppid                         | 1         | 0
+	oTBranch | particle                     | 2         | 0
+	oTBranch | process                      | 2         | 0
+	oTBranch | volume                       | 2         | 0
 	oTBranch | pid                          | 1         | 0
 
 #	TYPE    | Directory                                                                               | histoName
