@@ -151,6 +151,8 @@ int MyRootInterface::read(std::string file){
 			if(iterator<segments.size()) bin2ForH2D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) left2ForH2D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
 			if(iterator<segments.size()) right2ForH2D.push_back(string2double(segments[iterator++])); else {std::cout<<"Not enough segments in"<<s_card<<"!!!"<<std::endl; return -1;}
+			if(iterator<segments.size()) npadxForH2D.push_back(string2double(segments[iterator++])); else {npadxForH2D.push_back(1);}
+			if(iterator<segments.size()) npadyForH2D.push_back(string2double(segments[iterator++])); else {npadyForH2D.push_back(1);}
 			int i = nameForH2D.size() - 1;
 			if (m_verbose >= Verbose_InputInfo) std::cout<<prefix_InputInfo<<"Input vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
 		}
@@ -613,9 +615,39 @@ int MyRootInterface::dump(){
 	}
 	gStyle->SetOptStat(0);
 	for ( int i = 0; i < vecH2D.size(); i++ ){
-		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Output vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
 		std::string name = vecH2D[i]->GetName();
-		TCanvas* c = new TCanvas(name.c_str(),name.c_str(),ww,wh);
+		if (ipad >= padList.size()){
+			if (m_verbose >= Verbose_HistInfo)
+				std::cout<<prefix_HistInfo
+						 <<"Need to create a new canvas"
+						 <<"\""<<std::endl;
+			c = new TCanvas(name.c_str(),name.c_str(),ww,wh);
+			padList.clear();
+			ipad=0;
+			for (int ix = 0; ix < npadxForH2D[i]; ix++ ){
+				for (int iy = npadyForH2D[i]-1; iy >= 0; iy--){
+					buff.str("");
+					buff.clear();
+					buff<<"pad("<<ix<<":"<<iy<<")"<<std::endl;
+					double x1 = ix/((double)npadxForH2D[i]);
+					double y1 = iy/((double)npadyForH2D[i]);
+					double x2 = (1+ix)/((double)npadxForH2D[i]);
+					double y2 = (1+iy)/((double)npadyForH2D[i]);
+					TPad *apad = new TPad(buff.str().c_str(),buff.str().c_str(),x1,y1,x2,y2);
+					apad->Draw();
+					padList.push_back(apad);
+				}
+			}
+			if (m_verbose >= Verbose_HistInfo)
+				std::cout<<prefix_HistInfo
+						 <<"Added ("
+						 <<npadxForH2D[i]*npadyForH2D[i]
+						 <<") pads"
+						 <<"\""<<std::endl;
+		}
+		padList[ipad]->cd();
+		ipad++;
+		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"Output vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
 		gPad->SetGridx(1);
 		gPad->SetGridy(1);
 		vecH2D[i]->GetXaxis()->SetTitle(xNameForH2D[i].c_str());
@@ -625,10 +657,12 @@ int MyRootInterface::dump(){
 		int write_result = vecH2D[i]->Write();
 		if (!write_result)
 			std::cout<<prefix_HistInfo<<"Cannot write vecH2D["<<i<<"]: "<<nameForH2D[i]<<", "<<titleForH2D[i]<<", "<<xNameForH2D[i]<<", "<<yNameForH2D[i]<<", "<<bin1ForH2D[i]<<", "<<left1ForH2D[i]<<", "<<right1ForH2D[i]<<", "<<bin2ForH2D[i]<<", "<<left2ForH2D[i]<<", "<<right2ForH2D[i]<<std::endl;
-		std::string fileName = OutputDir + "/"+ name + ".pdf";
-		c->Print(fileName.c_str());
-		fileName = OutputDir + "/" + name + ".png";
-		c->Print(fileName.c_str());
+		if (ipad >= padList.size()){
+			std::string fileName = OutputDir + "/"+ name + ".pdf";
+			c->Print(fileName.c_str());
+			fileName = OutputDir + "/" + name + ".png";
+			c->Print(fileName.c_str());
+		}
 	}
 	for ( int i = 0; i < nameForGraph.size(); i++ ){
 		int sizeOfThisGraph = xForGraph[i].size();

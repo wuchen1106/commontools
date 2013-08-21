@@ -129,6 +129,8 @@ class MyRootInterface{
 		int get_bin2ForH2D(int i){if (i>=bin2ForH2D.size()) return NULL; return bin2ForH2D[i];}
 		double get_left2ForH2D(int i){if (i>=left2ForH2D.size()) return NULL; return left2ForH2D[i];}
 		double get_right2ForH2D(int i){if (i>=right2ForH2D.size()) return NULL; return right2ForH2D[i];}
+		int get_npadxForH2D(int i){if (i>=npadxForH2D.size()) return NULL; return npadxForH2D[i];}
+		int get_npadyForH2D(int i){if (i>=npadyForH2D.size()) return NULL; return npadyForH2D[i];}
 		TH2D* get_TH2D(int i){if (i>=vecH2D.size()) return NULL; return vecH2D[i];}
 
 		std::string get_nameForH1D(int i){if (i>=nameForH1D.size()) return NULL; return nameForH1D[i];}
@@ -245,6 +247,8 @@ class MyRootInterface{
 		int set_bin2ForH2D(int i, int val){if (i>=bin2ForH2D.size()) return -1; bin2ForH2D[i] = val; return 0;}
 		int set_left2ForH2D(int i, double val){if (i>=left2ForH2D.size()) return -1; left2ForH2D[i] = val; return 0;}
 		int set_right2ForH2D(int i, double val){if (i>=right2ForH2D.size()) return -1; right2ForH2D[i] = val; return 0;}
+		int set_npadxForH2D(int i, int val){if (i>=npadxForH2D.size()) return -1; npadxForH2D[i] = val; return 0;}
+		int set_npadyForH2D(int i, int val){if (i>=npadyForH2D.size()) return -1; npadyForH2D[i] = val; return 0;}
 
 		int set_nameForH1D(int i, std::string val){if (i>=nameForH1D.size()) return -1; nameForH1D[i] = val; return 0;}
 		int set_titleForH1D(int i, std::string val){if (i>=titleForH1D.size()) return -1; titleForH1D[i] = val; return 0;}
@@ -344,6 +348,8 @@ class MyRootInterface{
 		std::vector<int>     bin2ForH2D;
 		std::vector<double>  left2ForH2D;
 		std::vector<double>  right2ForH2D;
+		std::vector<int> npadxForH2D;
+		std::vector<int> npadyForH2D;
 		std::vector<TH2D*>   vecH2D;
 
 		std::vector<std::string> nameForH1D;
