@@ -4,13 +4,15 @@
 ###########################################################################################################################
 
 #	TYPE     | Name
-	TreeName | t
+	TreeName | tree
 
 #	TYPE    | Directory                                                       | runname | #CPU | #job
 #	FILE    | /home/chen/MyWorkArea/Data/raw/g4sim/RMC_ph2e                   |         | 8    | 1
 
 #	TYPE    | Path
-	oFILE   | /home/chen/MyWorkArea/MyStudies/Beam/result/A9/result/A9.mum.g40cm10mm.003T.He0731.g4s.QBH.root
+	oFILE   | /home/chen/MyWorkArea/g4sim/output/raw_g4sim.root
+#	oFILE   | /home/chen/MyWorkArea/MyStudies/Beam/result/A9/result/A9.mum.g40cm10mm.003T.He0731.g4s.QBH.root
+#	oFILE   | /home/chen/MyWorkArea/MyStudies/Beam/result/g40cm10mm/MT1.pim.g40cm10mm_lt20ns.003T.g4s.QBH.root
 #	oFILE   | /home/chen/MyWorkArea/g4sim/data/A9.pim.stop.g40cm10mm.003TS.0701.g4s.QBH.root
 #	oFILE   | /home/chen/MyWorkArea/g4sim/data/MT1.EP.mum.g40cm10mm.003T.g4s.QBH.root
 #	oFILE   | /home/chen/MyWorkArea/g4sim/data/MT1.pim.pim.g40cm10mm.003T.g4s.QBH.root
@@ -18,37 +20,58 @@
 
 #	TYPE    | Name                         | Type      | Vector?
 #	                                0:double;1:int;string:2
-	TBranch | evt_num                      | 1         | 0
-	TBranch | run_num                      | 1         | 0
-	TBranch | x                            | 0         | 0
-	TBranch | y                            | 0         | 0
-	TBranch | z                            | 0         | 0
-	TBranch | px                           | 0         | 0
-	TBranch | py                           | 0         | 0
-	TBranch | pz                           | 0         | 0
-	TBranch | t                            | 0         | 0
-	TBranch | ox                           | 0         | 0
-	TBranch | oy                           | 0         | 0
-	TBranch | oz                           | 0         | 0
-	TBranch | opx                          | 0         | 0
-	TBranch | opy                          | 0         | 0
-	TBranch | opz                          | 0         | 0
-	TBranch | ot                           | 0         | 0
-	TBranch | pid                          | 1         | 0
-	TBranch | tid                          | 1         | 0
-	TBranch | ppid                         | 1         | 0
-	TBranch | particle                     | 2         | 0
-	TBranch | process                      | 2         | 0
-	TBranch | volume                       | 2         | 0
-	TBranch | cvolume                      | 2         | 0
+#	TBranch | evt_num                      | 1         | 0
+#	TBranch | run_num                      | 1         | 0
+#	TBranch | x                            | 0         | 0
+#	TBranch | y                            | 0         | 0
+#	TBranch | z                            | 0         | 0
+#	TBranch | px                           | 0         | 0
+#	TBranch | py                           | 0         | 0
+#	TBranch | pz                           | 0         | 0
+#	TBranch | t                            | 0         | 0
+#	TBranch | ox                           | 0         | 0
+#	TBranch | oy                           | 0         | 0
+#	TBranch | oz                           | 0         | 0
+#	TBranch | opx                          | 0         | 0
+#	TBranch | opy                          | 0         | 0
+#	TBranch | opz                          | 0         | 0
+#	TBranch | ot                           | 0         | 0
+#	TBranch | pid                          | 1         | 0
+#	TBranch | tid                          | 1         | 0
+#	TBranch | ppid                         | 1         | 0
+#	TBranch | particle                     | 2         | 0
+#	TBranch | process                      | 2         | 0
+#	TBranch | volume                       | 2         | 0
+#	TBranch | cvolume                      | 2         | 0
+
+	TBranch | CDCLayer_nHits            | 1         | 0
+	TBranch | CDCLayer_t                | 0         | 1
+	TBranch | CDCLayer_tid              | 1         | 1
+	TBranch | CDCLayer_pid              | 1         | 1
+	TBranch | CDCLayer_ppid             | 1         | 1
+	TBranch | CDCLayer_x                | 0         | 1
+	TBranch | CDCLayer_y                | 0         | 1
+	TBranch | CDCLayer_z                | 0         | 1
+	TBranch | CDCLayer_px               | 0         | 1
+	TBranch | CDCLayer_py               | 0         | 1
+	TBranch | CDCLayer_pz               | 0         | 1
+	TBranch | CDCLayer_ox               | 0         | 1
+	TBranch | CDCLayer_oy               | 0         | 1
+	TBranch | CDCLayer_oz               | 0         | 1
+	TBranch | CDCLayer_opx              | 0         | 1
+	TBranch | CDCLayer_opy              | 0         | 1
+	TBranch | CDCLayer_opz              | 0         | 1
+	TBranch | CDCLayer_oprocess         | 2         | 1
+	TBranch | CDCLayer_ovolName         | 2         | 1
+	TBranch | CDCLayer_charge           | 1         | 1
 
 #	TYPE      | Name
 	oTreeName | t
 
 #	TYPE     | Name                         | Type      | Vector?
 #	                                0:double;1:int;string:2
-	oTBranch | evt_num                      | 1         | 0
-	oTBranch | run_num                      | 1         | 0
+#	oTBranch | evt_num                      | 1         | 0
+#	oTBranch | run_num                      | 1         | 0
 	oTBranch | x                            | 0         | 0
 	oTBranch | y                            | 0         | 0
 	oTBranch | z                            | 0         | 0
@@ -56,21 +79,20 @@
 	oTBranch | py                           | 0         | 0
 	oTBranch | pz                           | 0         | 0
 	oTBranch | t                            | 0         | 0
-	oTBranch | ox                           | 0         | 0
-	oTBranch | oy                           | 0         | 0
-	oTBranch | oz                           | 0         | 0
-	oTBranch | opx                          | 0         | 0
-	oTBranch | opy                          | 0         | 0
-	oTBranch | opz                          | 0         | 0
-	oTBranch | ot                           | 0         | 0
+#	oTBranch | ox                           | 0         | 0
+#	oTBranch | oy                           | 0         | 0
+#	oTBranch | oz                           | 0         | 0
+#	oTBranch | opx                          | 0         | 0
+#	oTBranch | opy                          | 0         | 0
+#	oTBranch | opz                          | 0         | 0
+#	oTBranch | ot                           | 0         | 0
 	oTBranch | pid                          | 1         | 0
-	oTBranch | tid                          | 1         | 0
-	oTBranch | ppid                         | 1         | 0
-	oTBranch | particle                     | 2         | 0
-	oTBranch | process                      | 2         | 0
-	oTBranch | volume                       | 2         | 0
-	oTBranch | cvolume                      | 2         | 0
-	oTBranch | pid                          | 1         | 0
+#	oTBranch | tid                          | 1         | 0
+#	oTBranch | ppid                         | 1         | 0
+#	oTBranch | particle                     | 2         | 0
+#	oTBranch | process                      | 2         | 0
+#	oTBranch | volume                       | 2         | 0
+#	oTBranch | cvolume                      | 2         | 0
 
 #	TYPE    | Directory                                                                               | histoName
 #	refTH1D | /home/chen/MyWorkArea/MyStudies/AntiProton/4BodyPhaseSpace/result/12p5GeV/output.root   | 4PS_theta

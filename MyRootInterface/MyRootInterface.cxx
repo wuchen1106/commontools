@@ -1022,10 +1022,14 @@ void MyRootInterface::seperate_string(std::string line, std::vector<std::string>
 	std::string token;
 	std::stringstream ss(line);
 	while(std::getline(ss, token, sep)){
-		token.erase(token.find_last_not_of('\t')+1);
-		token.erase(0,token.find_first_not_of('\t'));
-		token.erase(token.find_last_not_of(' ')+1);
-		token.erase(0,token.find_first_not_of(' '));
+		int first_not_blank = token.find_first_not_of(' ');
+		int last_not_blank = token.find_last_not_of(' ');
+		int first_not_tab = token.find_first_not_of('\t');
+		int last_not_tab = token.find_last_not_of('\t');
+		int first = first_not_blank>first_not_tab?first_not_blank:first_not_tab;
+		int last = last_not_blank<last_not_tab?last_not_blank:last_not_tab;
+		token.erase(last+1);
+		token.erase(0,first);
 		strs.push_back(token);
 	}
 }

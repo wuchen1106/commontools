@@ -205,6 +205,15 @@ int main(int argc, char** argv){
 	std::string volume;
 	std::string cvolume;
 
+	std::vector<int> Monitor_pid;
+	std::vector<double> Monitor_t;
+	std::vector<double> Monitor_x;
+	std::vector<double> Monitor_y;
+	std::vector<double> Monitor_z;
+	std::vector<double> Monitor_px;
+	std::vector<double> Monitor_py;
+	std::vector<double> Monitor_pz;
+
 	//=======================================================================================================
 	//************DO THE DIRTY WORK*******************
 	if (verbose >= Verbose_SectorInfo ) std::cout<<prefix_SectorInfo<<"In DO THE DIRTY WORK###"<<std::endl;
@@ -216,66 +225,88 @@ int main(int argc, char** argv){
 		inc_Ncut("Got entries");
 
 		//************If you Need to read TTree*************
-		fMyRootInterface->get_value("run_num",run_num);
-		fMyRootInterface->get_value("evt_num",evt_num);
-		fMyRootInterface->get_value("x",x,mm);
-		fMyRootInterface->get_value("y",y,mm);
-		fMyRootInterface->get_value("z",z,mm);
-		fMyRootInterface->get_value("px",px,MeV);
-		fMyRootInterface->get_value("py",py,MeV);
-		fMyRootInterface->get_value("pz",pz,MeV);
-		fMyRootInterface->get_value("t",t,ns);
-		fMyRootInterface->get_value("ox",ox,mm);
-		fMyRootInterface->get_value("oy",oy,mm);
-		fMyRootInterface->get_value("oz",oz,mm);
-		fMyRootInterface->get_value("opx",opx,MeV);
-		fMyRootInterface->get_value("opy",opy,MeV);
-		fMyRootInterface->get_value("opz",opz,MeV);
-		fMyRootInterface->get_value("ot",ot,ns);
-		fMyRootInterface->get_value("pid",pid);
-		fMyRootInterface->get_value("tid",tid);
-		fMyRootInterface->get_value("ppid",ppid);
-		fMyRootInterface->get_value("volume",volume);
-		fMyRootInterface->get_value("cvolume",cvolume);
-		fMyRootInterface->get_value("particle",particle);
-		fMyRootInterface->get_value("process",process);
+//		fMyRootInterface->get_value("run_num",run_num);
+//		fMyRootInterface->get_value("evt_num",evt_num);
+//		fMyRootInterface->get_value("x",x,mm);
+//		fMyRootInterface->get_value("y",y,mm);
+//		fMyRootInterface->get_value("z",z,mm);
+//		fMyRootInterface->get_value("px",px,MeV);
+//		fMyRootInterface->get_value("py",py,MeV);
+//		fMyRootInterface->get_value("pz",pz,MeV);
+//		fMyRootInterface->get_value("t",t,ns);
+//		fMyRootInterface->get_value("ox",ox,mm);
+//		fMyRootInterface->get_value("oy",oy,mm);
+//		fMyRootInterface->get_value("oz",oz,mm);
+//		fMyRootInterface->get_value("opx",opx,MeV);
+//		fMyRootInterface->get_value("opy",opy,MeV);
+//		fMyRootInterface->get_value("opz",opz,MeV);
+//		fMyRootInterface->get_value("ot",ot,ns);
+//		fMyRootInterface->get_value("pid",pid);
+//		fMyRootInterface->get_value("tid",tid);
+//		fMyRootInterface->get_value("ppid",ppid);
+//		fMyRootInterface->get_value("volume",volume);
+//		fMyRootInterface->get_value("cvolume",cvolume);
+//		fMyRootInterface->get_value("particle",particle);
+//		fMyRootInterface->get_value("process",process);
+
+		fMyRootInterface->get_value("CDCLayer_ox",Monitor_x,cm);
+		fMyRootInterface->get_value("CDCLayer_oy",Monitor_y,cm);
+		fMyRootInterface->get_value("CDCLayer_oz",Monitor_z,cm);
+		fMyRootInterface->get_value("CDCLayer_opx",Monitor_px,GeV);
+		fMyRootInterface->get_value("CDCLayer_opy",Monitor_py,GeV);
+		fMyRootInterface->get_value("CDCLayer_opz",Monitor_pz,GeV);
+		fMyRootInterface->get_value("CDCLayer_t",Monitor_t,ns);
+		fMyRootInterface->get_value("CDCLayer_pid",Monitor_pid);
+		pid=11;
 
 		//****************************CUT************************
 		//
 //		double pa = sqrt(px*px+py*py+pz*pz);
 //		if (pa>15*MeV) continue;
 //		inc_Ncut("pa <= 15 MeV");
-//		if (ot>=20*ns||t<350*ns) continue;
-//		inc_Ncut("1");
-		if (cvolume!="BLTCollimator"&&cvolume!="BLTShell"&&cvolume!="Trigger"||pid!=13) continue;
+//		if (t<350*ns) continue;
+//		if (cvolume!="BLTCollimator"&&cvolume!="BLTShell"&&cvolume!="Trigger"||pid!=13) continue;
 		//
 		//****************************CUT************************
 
+		//************If you need to output for every hit*************
+		for ( int i_Mon = 0; i_Mon < Monitor_t.size(); i_Mon++ ){
+			fMyRootInterface->set_ovalue("x",Monitor_x[i_Mon]/mm);
+			fMyRootInterface->set_ovalue("y",Monitor_y[i_Mon]/mm);
+			fMyRootInterface->set_ovalue("z",Monitor_z[i_Mon]/mm);
+			fMyRootInterface->set_ovalue("px",Monitor_px[i_Mon]/MeV);
+			fMyRootInterface->set_ovalue("py",Monitor_py[i_Mon]/MeV);
+			fMyRootInterface->set_ovalue("pz",Monitor_pz[i_Mon]/MeV);
+			fMyRootInterface->set_ovalue("t",Monitor_t[i_Mon]/ns);
+			fMyRootInterface->set_ovalue("pid",Monitor_pid[i_Mon]);
+			fMyRootInterface->Fill();
+		}
+
 		//************If you need to ouput TTree***************
-		fMyRootInterface->set_ovalue("run_num",run_num);
-		fMyRootInterface->set_ovalue("evt_num",evt_num);
-		fMyRootInterface->set_ovalue("x",x);
-		fMyRootInterface->set_ovalue("y",y);
-		fMyRootInterface->set_ovalue("z",z);
-		fMyRootInterface->set_ovalue("px",px);
-		fMyRootInterface->set_ovalue("py",py);
-		fMyRootInterface->set_ovalue("pz",pz);
-		fMyRootInterface->set_ovalue("t",t);
-		fMyRootInterface->set_ovalue("ox",ox);
-		fMyRootInterface->set_ovalue("oy",oy);
-		fMyRootInterface->set_ovalue("oz",oz);
-		fMyRootInterface->set_ovalue("opx",opx);
-		fMyRootInterface->set_ovalue("opy",opy);
-		fMyRootInterface->set_ovalue("opz",opz);
-		fMyRootInterface->set_ovalue("ot",ot);
-		fMyRootInterface->set_ovalue("pid",pid);
-		fMyRootInterface->set_ovalue("tid",tid);
-		fMyRootInterface->set_ovalue("ppid",ppid);
-		fMyRootInterface->set_ovalue("volume",volume);
-		fMyRootInterface->set_ovalue("cvolume",cvolume);
-		fMyRootInterface->set_ovalue("process",process);
-		fMyRootInterface->set_ovalue("particle",particle);
-		fMyRootInterface->Fill();
+//		fMyRootInterface->set_ovalue("run_num",run_num);
+//		fMyRootInterface->set_ovalue("evt_num",evt_num);
+//		fMyRootInterface->set_ovalue("x",x/mm);
+//		fMyRootInterface->set_ovalue("y",y/mm);
+//		fMyRootInterface->set_ovalue("z",z/mm);
+//		fMyRootInterface->set_ovalue("px",px/MeV);
+//		fMyRootInterface->set_ovalue("py",py/MeV);
+//		fMyRootInterface->set_ovalue("pz",pz/MeV);
+//		fMyRootInterface->set_ovalue("t",t/ns);
+//		fMyRootInterface->set_ovalue("ox",ox);
+//		fMyRootInterface->set_ovalue("oy",oy);
+//		fMyRootInterface->set_ovalue("oz",oz);
+//		fMyRootInterface->set_ovalue("opx",opx);
+//		fMyRootInterface->set_ovalue("opy",opy);
+//		fMyRootInterface->set_ovalue("opz",opz);
+//		fMyRootInterface->set_ovalue("ot",ot);
+//		fMyRootInterface->set_ovalue("pid",pid);
+//		fMyRootInterface->set_ovalue("tid",tid);
+//		fMyRootInterface->set_ovalue("ppid",ppid);
+//		fMyRootInterface->set_ovalue("volume",volume);
+//		fMyRootInterface->set_ovalue("cvolume",cvolume);
+//		fMyRootInterface->set_ovalue("process",process);
+//		fMyRootInterface->set_ovalue("particle",particle);
+//		fMyRootInterface->Fill();
 
 		//************If you need to fill TH1D*****************
 //		if (((index_temp = fMyRootInterface->get_TH1D_index(m_runName+"x")))!=-1)
