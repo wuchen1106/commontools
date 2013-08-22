@@ -18,6 +18,7 @@ tuple2hist/AutoDict_pair_string_string__cxx.d
 tuple2hist/AutoDict_vector_pair_string_string___.cxx
 tuple2hist/AutoDict_vector_pair_string_string____cxx.d
 tuple2hist/*.root
+MyVAnalyse/MyVAnalyse
 
 # frequently modifying
 result/
