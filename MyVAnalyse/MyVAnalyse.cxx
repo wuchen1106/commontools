@@ -190,18 +190,18 @@ int main(int argc, char** argv){
 	double py;
 	double pz;
 	double t;
-	double ox;
-	double oy;
-	double oz;
-	double opx;
-	double opy;
-	double opz;
-	double ot;
+	double i_x;
+	double i_y;
+	double i_z;
+	double i_px;
+	double i_py;
+	double i_pz;
+	double i_t;
 	int pid;
 	int tid;
 	int ppid;
+	double weight;
 	std::string process;
-	std::string particle;
 	std::string volume;
 	std::string cvolume;
 
@@ -234,29 +234,29 @@ int main(int argc, char** argv){
 //		fMyRootInterface->get_value("py",py,MeV);
 //		fMyRootInterface->get_value("pz",pz,MeV);
 //		fMyRootInterface->get_value("t",t,ns);
-//		fMyRootInterface->get_value("ox",ox,mm);
-//		fMyRootInterface->get_value("oy",oy,mm);
-//		fMyRootInterface->get_value("oz",oz,mm);
-//		fMyRootInterface->get_value("opx",opx,MeV);
-//		fMyRootInterface->get_value("opy",opy,MeV);
-//		fMyRootInterface->get_value("opz",opz,MeV);
-//		fMyRootInterface->get_value("ot",ot,ns);
+//		fMyRootInterface->get_value("i_x",i_x,mm);
+//		fMyRootInterface->get_value("i_y",i_y,mm);
+//		fMyRootInterface->get_value("i_z",i_z,mm);
+//		fMyRootInterface->get_value("i_px",i_px,MeV);
+//		fMyRootInterface->get_value("i_py",i_py,MeV);
+//		fMyRootInterface->get_value("i_pz",i_pz,MeV);
+//		fMyRootInterface->get_value("i_t",i_t,ns);
 //		fMyRootInterface->get_value("pid",pid);
 //		fMyRootInterface->get_value("tid",tid);
 //		fMyRootInterface->get_value("ppid",ppid);
 //		fMyRootInterface->get_value("volume",volume);
 //		fMyRootInterface->get_value("cvolume",cvolume);
-//		fMyRootInterface->get_value("particle",particle);
 //		fMyRootInterface->get_value("process",process);
+//		fMyRootInterface->get_value("weight",weight);
 
-		fMyRootInterface->get_value("CDCLayer_ox",Monitor_x,cm);
-		fMyRootInterface->get_value("CDCLayer_oy",Monitor_y,cm);
-		fMyRootInterface->get_value("CDCLayer_oz",Monitor_z,cm);
-		fMyRootInterface->get_value("CDCLayer_opx",Monitor_px,GeV);
-		fMyRootInterface->get_value("CDCLayer_opy",Monitor_py,GeV);
-		fMyRootInterface->get_value("CDCLayer_opz",Monitor_pz,GeV);
-		fMyRootInterface->get_value("CDCLayer_t",Monitor_t,ns);
-		fMyRootInterface->get_value("CDCLayer_pid",Monitor_pid);
+		fMyRootInterface->get_value("CDCMonitor_x",Monitor_x,cm);
+		fMyRootInterface->get_value("CDCMonitor_y",Monitor_y,cm);
+		fMyRootInterface->get_value("CDCMonitor_z",Monitor_z,cm);
+		fMyRootInterface->get_value("CDCMonitor_px",Monitor_px,GeV);
+		fMyRootInterface->get_value("CDCMonitor_py",Monitor_py,GeV);
+		fMyRootInterface->get_value("CDCMonitor_pz",Monitor_pz,GeV);
+		fMyRootInterface->get_value("CDCMonitor_t",Monitor_t,ns);
+		fMyRootInterface->get_value("CDCMonitor_pid",Monitor_pid);
 		pid=11;
 
 		//****************************CUT************************
@@ -265,7 +265,8 @@ int main(int argc, char** argv){
 //		if (pa>15*MeV) continue;
 //		inc_Ncut("pa <= 15 MeV");
 //		if (t<350*ns) continue;
-//		if (cvolume!="BLTCollimator"&&cvolume!="BLTShell"&&cvolume!="Trigger"||pid!=13) continue;
+//		if (cvolume=="Target"||cvolume=="CDCLayer"||cvolume=="McTruth") continue;
+//		if (cvolume!="McTruth") continue;
 		//
 		//****************************CUT************************
 
@@ -292,20 +293,20 @@ int main(int argc, char** argv){
 //		fMyRootInterface->set_ovalue("py",py/MeV);
 //		fMyRootInterface->set_ovalue("pz",pz/MeV);
 //		fMyRootInterface->set_ovalue("t",t/ns);
-//		fMyRootInterface->set_ovalue("ox",ox);
-//		fMyRootInterface->set_ovalue("oy",oy);
-//		fMyRootInterface->set_ovalue("oz",oz);
-//		fMyRootInterface->set_ovalue("opx",opx);
-//		fMyRootInterface->set_ovalue("opy",opy);
-//		fMyRootInterface->set_ovalue("opz",opz);
-//		fMyRootInterface->set_ovalue("ot",ot);
+//		fMyRootInterface->set_ovalue("i_x",i_x);
+//		fMyRootInterface->set_ovalue("i_y",i_y);
+//		fMyRootInterface->set_ovalue("i_z",i_z);
+//		fMyRootInterface->set_ovalue("i_px",i_px);
+//		fMyRootInterface->set_ovalue("i_py",i_py);
+//		fMyRootInterface->set_ovalue("i_pz",i_pz);
+//		fMyRootInterface->set_ovalue("i_t",i_t);
 //		fMyRootInterface->set_ovalue("pid",pid);
 //		fMyRootInterface->set_ovalue("tid",tid);
 //		fMyRootInterface->set_ovalue("ppid",ppid);
+//		fMyRootInterface->set_ovalue("weight",weight);
 //		fMyRootInterface->set_ovalue("volume",volume);
 //		fMyRootInterface->set_ovalue("cvolume",cvolume);
 //		fMyRootInterface->set_ovalue("process",process);
-//		fMyRootInterface->set_ovalue("particle",particle);
 //		fMyRootInterface->Fill();
 
 		//************If you need to fill TH1D*****************
