@@ -1044,7 +1044,7 @@ bool MyRootInterface::ISEMPTY(std::string content){
 	int length = strlen(c_card);
 	int offset = 0;
 	for ( ; offset < length; offset++ ){
-		if ( c_card[offset] != ' ' ) break;
+		if ( c_card[offset] != ' ' && c_card[offset] != '\t' ) break;
 	}
 	if ( c_card[offset] == '#' || (c_card[offset] == '/' && c_card[offset+1] == '/') || length - offset == 0 ){
 		flag = true;
