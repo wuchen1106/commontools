@@ -486,7 +486,7 @@ int MyRootInterface::dump(){
 		}
 		padList[ipad]->cd();
 		ipad++;
-		if (normForH1D[i]){
+		if (normForH1D[i]&&!fakeH1D[i]){
 			if (normForH1D[i] == 1) vecH1D[i]->Scale(1./vecH1D[i]->Integral());
 			else vecH1D[i]->Scale(1./normForH1D[i]);
 		}
@@ -498,7 +498,7 @@ int MyRootInterface::dump(){
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    currentMaximum y value is ("<<currentMaximum<<")"<<std::endl;
 		if (m_verbose >= Verbose_HistInfo) std::cout<<prefix_HistInfo<<"    currentMinimum y value is ("<<currentMinimum<<")"<<std::endl;
 		for ( int j = 1; j <= nCompare; j++ ){
-			if (normForH1D[i+j]){
+			if (normForH1D[i+j]&&!fakeH1D[i+j]){
 				if (normForH1D[i+j] == 1) vecH1D[i+j]->Scale(1./vecH1D[i+j]->Integral());
 				else vecH1D[i+j]->Scale(1./normForH1D[i+j]);
 			}

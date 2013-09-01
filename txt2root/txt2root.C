@@ -88,11 +88,24 @@ int txt_to_root(const char* input_file, const char* output_file){
 		return -1;
 	}
 
-	double* values = (double *) malloc(1000);
+	double* values_double = (double *) malloc(1000);
+	int* values_int = (int*) malloc(1000);
 	TFile file_output( output_file, "RECREATE" );
 	TTree* d_tree = new TTree( "t", "t" );
 	for ( int i = 0; i < inames; i++ ){
-		d_tree->Branch(names[i],&values[i],"/D");
+		std::string type = names[i];
+		std::string name = names[i];
+		int first_slash = type.find_first_of('/');
+		if (first_slash>=0&&first_slash<=type.length()){
+			type.erase(0,first_slash);
+			name.erase(first_slash,name.length());
+		}
+		else
+			type = "/D";
+		if (type=="/D")
+			d_tree->Branch(name.c_str(),&values_double[i],type.c_str());
+		else if (type=="/I")
+			d_tree->Branch(name.c_str(),&values_int[i],type.c_str());
 	}
 
 	fprintf(stdout,"Hi!\n");
@@ -113,8 +126,9 @@ int txt_to_root(const char* input_file, const char* output_file){
 			buffer.clear();
 			buffer<<astr;
 			buffer>>aval;
-			values[ival] = aval;
-			//printf("(%s)->(%lf)",names[ival],values[ival]);
+			values_int[ival] = aval;
+			values_double[ival] = aval;
+			//printf("(%s)->(%lf)",names[ival],values_double[ival]);
 		}
 		//printf("\n");
 		d_tree->Fill();
