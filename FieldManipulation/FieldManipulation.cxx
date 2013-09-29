@@ -137,11 +137,11 @@ int main(int argc, char** argv){
 //		double Z0=10.1095*m;
 
 		//=> TS3Area130731fm.dat
-		int nR=31;
-		int nZ=54;
-		double dR=10*mm;
-		double dZ=10*mm;
-		double Z0=9.46239*m;
+//		int nR=31;
+//		int nZ=54;
+//		double dR=10*mm;
+//		double dZ=10*mm;
+//		double Z0=9.46239*m;
 
 		//=> BESSArea130731fm.dat
 //		int nR=41;
@@ -156,6 +156,13 @@ int main(int argc, char** argv){
 //		double dR=10*mm;
 //		double dZ=10*mm;
 //		double Z0=11.2124*m;
+
+		//=> Bmap130927fm.dat
+		int nR=91;
+		int nZ=393;
+		double dR=10*mm;
+		double dZ=10*mm;
+		double Z0=9.4624*m;
 
 		Z0 += deltaZ;
 
