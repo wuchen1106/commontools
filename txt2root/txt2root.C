@@ -76,16 +76,30 @@ int txt_to_root(const char* input_file, const char* output_file){
 	}
 
 	char* buf = (char *)malloc(20480);
-	fgets(buf,20480,fpi); // get the first line, which contains names of these column
 	char* names[1000];
-	for ( int i = 0; i < 1000; i++ ){
-		names[i] = (char *) malloc(1000); // up to 1000 names with 1000 charectors inside
-	}
 	int inames = 0;
-	get_names(buf,names,&inames);
-	if ( inames > 1000 ){
-		fprintf(stderr,"More than 1000 names!\n");
-		return -1;
+
+	bool gotit = false;
+	while(!gotit){
+		fgets(buf,20480,fpi); // get the first line, which contains names of these column
+		int length = strlen(buf);
+		int offset = 0;
+		for ( ; offset < length; offset++ ){
+			if ( buf[offset] != ' ' ) break;
+		}
+		if ( buf[offset] == '#' ) continue;
+		else if ( buf[offset] == '/' && buf[offset+1] == '/' ) continue;
+		else if ( length - offset == 0 ) continue;
+
+		for ( int i = 0; i < 1000; i++ ){
+			names[i] = (char *) malloc(1000); // up to 1000 names with 1000 charectors inside
+		}
+		get_names(buf,names,&inames);
+		if ( inames > 1000 ){
+			fprintf(stderr,"More than 1000 names!\n");
+			return -1;
+		}
+		gotit = true;
 	}
 
 	double* values_double = (double *) malloc(1000);
