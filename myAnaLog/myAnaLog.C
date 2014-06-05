@@ -589,6 +589,8 @@ int main(int argc, char** argv){
 		lb_canv->Divide(2,2);
 //		gStyle->SetPadGridX(kTRUE);
 //		gStyle->SetPadGridY(kTRUE);
+		gPad->SetGridx(1);
+		gPad->SetGridy(1);
 		lb_canv->cd(1);
 		double time_max = -48;
 		double time_min = 48;
