@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+//#include <string.h>
+#include <cstring>
 #include <sstream>
 #include <unistd.h> //getopt
 
@@ -104,6 +105,8 @@ int txt_to_root(const char* input_file, const char* output_file){
 
 	double* values_double = (double *) malloc(1000);
 	int* values_int = (int*) malloc(1000);
+	int nchars = 256;
+	char* values_char = (char*) malloc(nchars*1000);
 	TFile file_output( output_file, "RECREATE" );
 	TTree* d_tree = new TTree( "t", "t" );
 	for ( int i = 0; i < inames; i++ ){
@@ -120,6 +123,8 @@ int txt_to_root(const char* input_file, const char* output_file){
 			d_tree->Branch(name.c_str(),&values_double[i],type.c_str());
 		else if (type=="/I")
 			d_tree->Branch(name.c_str(),&values_int[i],type.c_str());
+		else if (type=="/C")
+			d_tree->Branch(name.c_str(),&values_char[i*nchars],type.c_str());
 	}
 
 	fprintf(stdout,"Hi!\n");
@@ -142,6 +147,8 @@ int txt_to_root(const char* input_file, const char* output_file){
 			buffer>>aval;
 			values_int[ival] = aval;
 			values_double[ival] = aval;
+//			values_char[ival*nchars] = astr.c_str();
+			std::strcpy(values_char+ival*nchars,astr.c_str());
 			//printf("(%s)->(%lf)",names[ival],values_double[ival]);
 		}
 		//printf("\n");
