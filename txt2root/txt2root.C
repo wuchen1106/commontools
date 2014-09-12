@@ -17,6 +17,7 @@ enum workmode{
 } m_workmode;
 char m_input_file[128];
 char m_output_file[128];
+int nchars = 256;
 
 void init_args()
 {
@@ -66,49 +67,7 @@ int get_names(const char* line, char** names, int *inames){
 	return 0;
 }
 
-int txt_to_root(const char* input_file, const char* output_file){
-//	fprintf(stderr,"This is txt_to_root!\n");
-	std::stringstream buffer;
-	FILE* fpi = 0;
-	fpi = fopen(input_file,"r+");
-	if ( !fpi ){
-		fprintf(stderr,"Cannot open file \"%s\"!!!\n",input_file);
-		return -1;
-	}
-
-	char* buf = (char *)malloc(20480);
-	char* names[1000];
-	int inames = 0;
-
-	bool gotit = false;
-	while(!gotit){
-		fgets(buf,20480,fpi); // get the first line, which contains names of these column
-		int length = strlen(buf);
-		int offset = 0;
-		for ( ; offset < length; offset++ ){
-			if ( buf[offset] != ' ' ) break;
-		}
-		if ( buf[offset] == '#' ) continue;
-		else if ( buf[offset] == '/' && buf[offset+1] == '/' ) continue;
-		else if ( length - offset == 0 ) continue;
-
-		for ( int i = 0; i < 1000; i++ ){
-			names[i] = (char *) malloc(1000); // up to 1000 names with 1000 charectors inside
-		}
-		get_names(buf,names,&inames);
-		if ( inames > 1000 ){
-			fprintf(stderr,"More than 1000 names!\n");
-			return -1;
-		}
-		gotit = true;
-	}
-
-	double* values_double = (double *) malloc(1000);
-	int* values_int = (int*) malloc(1000);
-	int nchars = 256;
-	char* values_char = (char*) malloc(nchars*1000);
-	TFile file_output( output_file, "RECREATE" );
-	TTree* d_tree = new TTree( "t", "t" );
+SetBranches(int inames, char* names[1000],TTree *d_tree){
 	for ( int i = 0; i < inames; i++ ){
 		std::string type = names[i];
 		std::string name = names[i];
@@ -126,35 +85,89 @@ int txt_to_root(const char* input_file, const char* output_file){
 		else if (type=="/C")
 			d_tree->Branch(name.c_str(),&values_char[i*nchars],type.c_str());
 	}
+}
 
-	fprintf(stdout,"Hi!\n");
-	int iline = 0;
+SetValues(int inames, char* names[1000],TTree *d_tree,){
+	for ( int ival = 0; ival < count; ival++ ){
+		double aval;
+		std::string astr = names[ival];
+		buffer.str("");
+		buffer.clear();
+		buffer<<astr;
+		buffer>>aval;
+		values_int[ival] = aval;
+		values_double[ival] = aval;
+//		values_char[ival*nchars] = astr.c_str();
+		std::strcpy(values_char+ival*nchars,astr.c_str());
+		//printf("(%s)->(%lf)",names[ival],values_double[ival]);
+	}
+	d_tree->Fill();
+}
+
+int txt_to_root(const char* input_file, const char* output_file){
+//	fprintf(stderr,"This is txt_to_root!\n");
+	std::stringstream buffer;
+	FILE* fpi = 0;
+	fpi = fopen(input_file,"r+");
+	if ( !fpi ){
+		fprintf(stderr,"Cannot open file \"%s\"!!!\n",input_file);
+		return -1;
+	}
+
+	char* buf = (char *)malloc(20480);
+	char* names[1000];
+	int inames = 0;
+	TTree* d_tree = 0;
+	double* values_double = (double *) malloc(1000);
+	int* values_int = (int*) malloc(1000);
+	char* values_char = (char*) malloc(nchars*1000);
+
+	bool gotit = false;
+	TFile file_output( output_file, "RECREATE" );
 	while(fgets(buf,20480,fpi)){
-		iline++;
-		int count = 0;
-		get_names(buf,names,&count);
-		if ( count != inames ){
-			fprintf(stderr,"There are %d values in line %d, different from %d names in the first line!\n",count,iline,inames);
+		int length = strlen(buf);
+		int offset = 0;
+		for ( ; offset < length; offset++ ){
+			if ( buf[offset] != ' ' ) break;
+		}
+		if ( buf[offset] == '#' ) continue;
+		else if ( buf[offset] == '/' && buf[offset+1] == '/' ) continue;
+		else if ( length - offset == 0 ) continue;
+
+		for ( int i = 0; i < 1000; i++ ){
+			names[i] = (char *) malloc(1000); // up to 1000 names with 1000 charectors inside
+		}
+		get_names(buf,names,&inames);
+		if ( inames > 1000 ){
+			fprintf(stderr,"More than 1000 names!\n");
 			return -1;
 		}
-		//printf("\n");
-		for ( int ival = 0; ival < count; ival++ ){
-			double aval;
-			std::string astr = names[ival];
-			buffer.str("");
-			buffer.clear();
-			buffer<<astr;
-			buffer>>aval;
-			values_int[ival] = aval;
-			values_double[ival] = aval;
-//			values_char[ival*nchars] = astr.c_str();
-			std::strcpy(values_char+ival*nchars,astr.c_str());
-			//printf("(%s)->(%lf)",names[ival],values_double[ival]);
+
+		if (inames == 2 && names[0] == "TTREE"){ // assign the name to a tree
+			if (d_tree){ // there is a tree before
+				d_tree->Write();
+				delete d_tree;
+				d_tree = 0;
+			}
+			d_tree = new TTree( names[1], names[1] );
+			continue;
 		}
-		//printf("\n");
-		d_tree->Fill();
+
+		if (!gotit){ // first content line
+			if (!d_tree){ // no tree exists, create a default one
+				d_tree = new TTree( "t", "t" );
+			}
+			SetBranches(inames,names,d_tree);
+		}
+		else{ // this is value
+			SetValues(inames,names,d_tree,values_double,values_int,values_char);
+		}
+
+		gotit = true;
 	}
-	d_tree->Write();
+
+
+	if (d_tree) d_tree->Write();
 	file_output.Close();
 	return 0;
 }
