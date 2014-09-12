@@ -133,6 +133,9 @@ int txt_to_root(const char* input_file, const char* output_file){
 		iline++;
 		int count = 0;
 		get_names(buf,names,&count);
+//		printf("names[0] = \"%s\"\n",names[0]);
+		if ((std::string)names[0]=="#")
+			continue;
 		if ( count != inames ){
 			fprintf(stderr,"There are %d values in line %d, different from %d names in the first line!\n",count,iline,inames);
 			return -1;
