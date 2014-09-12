@@ -18,6 +18,7 @@ enum workmode{
 char m_input_file[128];
 char m_output_file[128];
 int nchars = 256;
+std::stringstream buffer;
 
 void init_args()
 {
@@ -67,7 +68,7 @@ int get_names(const char* line, char** names, int *inames){
 	return 0;
 }
 
-SetBranches(int inames, char* names[1000],TTree *d_tree){
+void SetBranches(int inames, char* names[1000],TTree *d_tree,double* values_double, int* values_int, char* values_char){
 	for ( int i = 0; i < inames; i++ ){
 		std::string type = names[i];
 		std::string name = names[i];
@@ -87,13 +88,8 @@ SetBranches(int inames, char* names[1000],TTree *d_tree){
 	}
 }
 
-SetValues(int inames, char* names[1000],TTree *d_tree,){
-	if ((std::string)names[0]=="#")
-		continue;
-	if ( count != inames ){
-		fprintf(stderr,"There are %d values in line %d, different from %d names in the first line!\n",count,iline,inames);
-		return -1;
-	for ( int ival = 0; ival < count; ival++ ){
+int SetValues(int inames, char* names[1000],TTree *d_tree,double* values_double, int* values_int, char* values_char){
+	for ( int ival = 0; ival < inames; ival++ ){
 		double aval;
 		std::string astr = names[ival];
 		buffer.str("");
@@ -111,7 +107,6 @@ SetValues(int inames, char* names[1000],TTree *d_tree,){
 
 int txt_to_root(const char* input_file, const char* output_file){
 //	fprintf(stderr,"This is txt_to_root!\n");
-	std::stringstream buffer;
 	FILE* fpi = 0;
 	fpi = fopen(input_file,"r+");
 	if ( !fpi ){
@@ -122,14 +117,17 @@ int txt_to_root(const char* input_file, const char* output_file){
 	char* buf = (char *)malloc(20480);
 	char* names[1000];
 	int inames = 0;
+	int nBranches = 0;
 	TTree* d_tree = 0;
 	double* values_double = (double *) malloc(1000);
 	int* values_int = (int*) malloc(1000);
 	char* values_char = (char*) malloc(nchars*1000);
+	int iline = 0;
 
 	bool gotit = false;
 	TFile file_output( output_file, "RECREATE" );
 	while(fgets(buf,20480,fpi)){
+		iline++;
 		int length = strlen(buf);
 		int offset = 0;
 		for ( ; offset < length; offset++ ){
@@ -148,29 +146,36 @@ int txt_to_root(const char* input_file, const char* output_file){
 			return -1;
 		}
 
-		if (inames == 2 && names[0] == "TTREE"){ // assign the name to a tree
+		if (inames == 2 && (std::string)(names[0]) == "TTREE"){ // assign the name to a tree
+			printf("New tree: %s\n",names[1]);
 			if (d_tree){ // there is a tree before
 				d_tree->Write();
 				delete d_tree;
 				d_tree = 0;
 			}
 			d_tree = new TTree( names[1], names[1] );
+			gotit = false; // need branch info
 			continue;
 		}
 
-		if (!gotit){ // first content line
+		if (!gotit){ // still need branch info
 			if (!d_tree){ // no tree exists, create a default one
 				d_tree = new TTree( "t", "t" );
 			}
-			SetBranches(inames,names,d_tree);
+			SetBranches(inames,names,d_tree,values_double,values_int,values_char);
+			nBranches = inames;
+			gotit = true;
 		}
 		else{ // this is value
+			if ((std::string)names[0]=="#") // commented
+				continue;
+			if ( inames != nBranches){
+				fprintf(stderr,"There are %d values in line %d, different from %d branches!\n",inames,iline,nBranches);
+				continue;
+			}
 			SetValues(inames,names,d_tree,values_double,values_int,values_char);
 		}
-
-		gotit = true;
 	}
-
 
 	if (d_tree) d_tree->Write();
 	file_output.Close();
