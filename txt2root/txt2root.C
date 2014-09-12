@@ -88,6 +88,11 @@ SetBranches(int inames, char* names[1000],TTree *d_tree){
 }
 
 SetValues(int inames, char* names[1000],TTree *d_tree,){
+	if ((std::string)names[0]=="#")
+		continue;
+	if ( count != inames ){
+		fprintf(stderr,"There are %d values in line %d, different from %d names in the first line!\n",count,iline,inames);
+		return -1;
 	for ( int ival = 0; ival < count; ival++ ){
 		double aval;
 		std::string astr = names[ival];
