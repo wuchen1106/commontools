@@ -68,7 +68,7 @@ int get_names(const char* line, char** names, int *inames){
 	return 0;
 }
 
-void SetBranches(int inames, char* names[1000],TTree *d_tree,double* values_double, int* values_int, char* values_char){
+void SetBranches(int inames, char* names[1000],TTree *d_tree,double* values_double, int* values_int, char* values_char, float* values_float, bool* values_bool){
 	for ( int i = 0; i < inames; i++ ){
 		std::string type = names[i];
 		std::string name = names[i];
@@ -79,16 +79,21 @@ void SetBranches(int inames, char* names[1000],TTree *d_tree,double* values_doub
 		}
 		else
 			type = "/D";
+
 		if (type=="/D")
 			d_tree->Branch(name.c_str(),&values_double[i],type.c_str());
 		else if (type=="/I")
 			d_tree->Branch(name.c_str(),&values_int[i],type.c_str());
 		else if (type=="/C")
 			d_tree->Branch(name.c_str(),&values_char[i*nchars],type.c_str());
+		else if (type=="/F")
+			d_tree->Branch(name.c_str(),&values_float[i],type.c_str());
+		else if (type=="/B")
+			d_tree->Branch(name.c_str(),&values_bool[i],type.c_str());
 	}
 }
 
-int SetValues(int inames, char* names[1000],TTree *d_tree,double* values_double, int* values_int, char* values_char){
+int SetValues(int inames, char* names[1000],TTree *d_tree,double* values_double, int* values_int, char* values_char, float* values_float, bool* values_bool){
 	for ( int ival = 0; ival < inames; ival++ ){
 		double aval;
 		std::string astr = names[ival];
@@ -98,9 +103,11 @@ int SetValues(int inames, char* names[1000],TTree *d_tree,double* values_double,
 		buffer>>aval;
 		values_int[ival] = aval;
 		values_double[ival] = aval;
+		values_float[ival] = aval;
+		values_bool[ival] = aval;
 //		values_char[ival*nchars] = astr.c_str();
 		std::strcpy(values_char+ival*nchars,astr.c_str());
-		//printf("(%s)->(%lf)",names[ival],values_double[ival]);
+//		printf("(%s)->(%d)",names[ival],values_bool[ival]);
 	}
 	d_tree->Fill();
 }
@@ -116,12 +123,17 @@ int txt_to_root(const char* input_file, const char* output_file){
 
 	char* buf = (char *)malloc(20480);
 	char* names[1000];
+	for ( int i = 0; i < 1000; i++ ){
+		names[i] = (char *) malloc(1000); // up to 1000 names with 1000 charectors inside
+	}
 	int inames = 0;
 	int nBranches = 0;
 	TTree* d_tree = 0;
 	double* values_double = (double *) malloc(1000);
 	int* values_int = (int*) malloc(1000);
 	char* values_char = (char*) malloc(nchars*1000);
+	float* values_float= (float*) malloc(1000);
+	bool* values_bool= (bool*) malloc(1000);
 	int iline = 0;
 
 	bool gotit = false;
@@ -136,10 +148,6 @@ int txt_to_root(const char* input_file, const char* output_file){
 		if ( buf[offset] == '#' ) continue;
 		else if ( buf[offset] == '/' && buf[offset+1] == '/' ) continue;
 		else if ( length - offset == 0 ) continue;
-
-		for ( int i = 0; i < 1000; i++ ){
-			names[i] = (char *) malloc(1000); // up to 1000 names with 1000 charectors inside
-		}
 		get_names(buf,names,&inames);
 		if ( inames > 1000 ){
 			fprintf(stderr,"More than 1000 names!\n");
@@ -162,7 +170,7 @@ int txt_to_root(const char* input_file, const char* output_file){
 			if (!d_tree){ // no tree exists, create a default one
 				d_tree = new TTree( "t", "t" );
 			}
-			SetBranches(inames,names,d_tree,values_double,values_int,values_char);
+			SetBranches(inames,names,d_tree,values_double,values_int,values_char,values_float,values_bool);
 			nBranches = inames;
 			gotit = true;
 		}
@@ -173,7 +181,7 @@ int txt_to_root(const char* input_file, const char* output_file){
 				fprintf(stderr,"There are %d values in line %d, different from %d branches!\n",inames,iline,nBranches);
 				continue;
 			}
-			SetValues(inames,names,d_tree,values_double,values_int,values_char);
+			SetValues(inames,names,d_tree,values_double,values_int,values_char,values_float,values_bool);
 		}
 	}
 
