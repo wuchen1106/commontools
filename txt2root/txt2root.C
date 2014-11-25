@@ -88,7 +88,7 @@ void SetBranches(int inames, char* names[1000],TTree *d_tree,double* values_doub
 			d_tree->Branch(name.c_str(),&values_char[i*nchars],type.c_str());
 		else if (type=="/F")
 			d_tree->Branch(name.c_str(),&values_float[i],type.c_str());
-		else if (type=="/B")
+		else if (type=="/O")
 			d_tree->Branch(name.c_str(),&values_bool[i],type.c_str());
 	}
 }
