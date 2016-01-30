@@ -8,7 +8,7 @@
 # Specify the compiler. Usually it is g++, if you are using gcc.
 CXX = g++
 # Here you can pass different options to the compiler
-CXXFLAGS = -g -O2 -W -Wall
+CXXFLAGS = -g -O2 -W -Wall --std=c++11
 
 #--------------------------PART 2: about packages you would use-------------------------------------------
 # If you want to use external files, or third party packages, you need to specify two kinds of paths and a list of shared library files.
@@ -19,7 +19,7 @@ CXXFLAGS = -g -O2 -W -Wall
 # Take root as an example. ( Root is a widely used package developed by CERN for analysing. )
 INCDIR = -I$(shell $(ROOTSYS)/bin/root-config --incdir) -I$(MYGEANT4ROOT)/include/Geant4 -I$(MYCLHEPROOT)/include
 LIBDIR = $(shell $(ROOTSYS)/bin/root-config --glibs) -L$(MYGEANT4ROOT)/lib64 -L$(MYCLHEPROOT)/lib
-LIBS = -pthread -lm -ldl -rdynamic\
+LIBS = -pthread -lm -ldl -rdynamic
 
 #--------------------------PART 3: about your own packages and the main program-------------------------------------------
 # Names of user defined packages
