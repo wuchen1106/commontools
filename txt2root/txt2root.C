@@ -35,7 +35,7 @@ int get_names(const char* line, char** names, int *inames){
 	int count = 0;
 	bool isC = false;
 	int ic = -1;
-	while(ic++<1000){
+	while(ic++<20480){
 		char c = line[ic];
 //		fprintf(stderr,"c[%d]=%c\n",ic,c);
 		if ( c == ' ' || c == '\t' || c == '\r' ){
@@ -107,9 +107,10 @@ int SetValues(int inames, char* names[1000],TTree *d_tree,double* values_double,
 		values_bool[ival] = aval;
 //		values_char[ival*nchars] = astr.c_str();
 		std::strcpy(values_char+ival*nchars,astr.c_str());
-//		printf("(%s)->(%d)",names[ival],values_bool[ival]);
+//		printf("%d %s -> %f\n",ival,names[ival],values_double[ival]);
 	}
 	d_tree->Fill();
+	return 0;
 }
 
 int txt_to_root(const char* input_file, const char* output_file){
